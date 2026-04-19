@@ -1,0 +1,7697 @@
+[
+  {
+    "brand": "AMC",
+    "model": "Gremlin X",
+    "pi": 403,
+    "topSpeedKmh": 180.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "AMC",
+    "model": "Javelin AMX",
+    "pi": 493,
+    "topSpeedKmh": 201.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "AMC",
+    "model": "Rebel \"The Machine\"",
+    "pi": 531,
+    "topSpeedKmh": 226.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "AMG",
+    "model": "Transport Dynamics M12S Warthog CST",
+    "pi": 719,
+    "topSpeedKmh": 188.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "ATS",
+    "model": "GT",
+    "pi": 877,
+    "topSpeedKmh": 355.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Abarth",
+    "model": "124 Spider",
+    "pi": 562,
+    "topSpeedKmh": 230.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Abarth",
+    "model": "595 esseesse",
+    "pi": 100,
+    "topSpeedKmh": 118.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Abarth",
+    "model": "695 Biposto",
+    "pi": 657,
+    "topSpeedKmh": 223.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Abarth",
+    "model": "Fiat 131",
+    "pi": 510,
+    "topSpeedKmh": 193.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Acura",
+    "model": "Integra Type-R",
+    "pi": 596,
+    "topSpeedKmh": 250.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Acura",
+    "model": "NSX",
+    "pi": 831,
+    "topSpeedKmh": 311.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Acura",
+    "model": "RSX Type-S",
+    "pi": 585,
+    "topSpeedKmh": 238.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Alfa",
+    "model": "Romeo 155 Q4",
+    "pi": 561,
+    "topSpeedKmh": 236.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Alfa",
+    "model": "Romeo 33 Stradale",
+    "pi": 707,
+    "topSpeedKmh": 275,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Alfa",
+    "model": "Romeo 4C",
+    "pi": 755,
+    "topSpeedKmh": 259.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Alfa",
+    "model": "Romeo 8C Competizione",
+    "pi": 755,
+    "topSpeedKmh": 311.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Alfa",
+    "model": "Romeo Giulia Quadrifoglio",
+    "pi": 775,
+    "topSpeedKmh": 319.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Alfa",
+    "model": "Romeo Giulia Sprint GTA Stradale",
+    "pi": 486,
+    "topSpeedKmh": 183.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Alfa",
+    "model": "Romeo Giulia TZ2",
+    "pi": 641,
+    "topSpeedKmh": 245.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Alpine",
+    "model": "A110",
+    "pi": 694,
+    "topSpeedKmh": 263.9,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Alpine",
+    "model": "A110 1600s",
+    "pi": 550,
+    "topSpeedKmh": 222.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Alumicraft",
+    "model": "#122 Class 1 Buggy",
+    "pi": 689,
+    "topSpeedKmh": 216.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Alumicraft",
+    "model": "#6165 Trick Truck",
+    "pi": 596,
+    "topSpeedKmh": 193.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Alumicraft",
+    "model": "Class 10 Race Car",
+    "pi": 642,
+    "topSpeedKmh": 196.2,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Apollo",
+    "model": "Intensa Emozione",
+    "pi": 963,
+    "topSpeedKmh": 329.1,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Apollo",
+    "model": "Intensa Emozione 'Welcome Pack'",
+    "pi": 998,
+    "topSpeedKmh": 339.6,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ariel",
+    "model": "Atom 500 V8",
+    "pi": 924,
+    "topSpeedKmh": 284.5,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ariel",
+    "model": "Nomad",
+    "pi": 711,
+    "topSpeedKmh": 231.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ascari",
+    "model": "KZ1R",
+    "pi": 829,
+    "topSpeedKmh": 349.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin DB11",
+    "pi": 787,
+    "topSpeedKmh": 324.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin DB5",
+    "pi": 548,
+    "topSpeedKmh": 243.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin DBR1",
+    "pi": 678,
+    "topSpeedKmh": 287.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin DBS",
+    "pi": 746,
+    "topSpeedKmh": 318.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin DBS Superleggera",
+    "pi": 835,
+    "topSpeedKmh": 346.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin DBX",
+    "pi": 732,
+    "topSpeedKmh": 287.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin Lagonda",
+    "pi": 502,
+    "topSpeedKmh": 234.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin One-77",
+    "pi": 843,
+    "topSpeedKmh": 338.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin V12 Vantage S",
+    "pi": 796,
+    "topSpeedKmh": 343.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin Valhalla Concept Car",
+    "pi": 959,
+    "topSpeedKmh": 389.9,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin Valkyrie",
+    "pi": 978,
+    "topSpeedKmh": 402.8,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin Valkyrie AMR Pro",
+    "pi": 998,
+    "topSpeedKmh": 316.7,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin Vanquish Zagato Coupe",
+    "pi": 803,
+    "topSpeedKmh": 325.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin Vantage",
+    "pi": 801,
+    "topSpeedKmh": 309,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin Vantage GT12",
+    "pi": 829,
+    "topSpeedKmh": 294.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Aston",
+    "model": "Martin Vulcan AMR Pro",
+    "pi": 953,
+    "topSpeedKmh": 339.6,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "#2 Audi Sport quattro S1",
+    "pi": 827,
+    "topSpeedKmh": 282.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "Avant RS 2",
+    "pi": 601,
+    "topSpeedKmh": 265.9,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "R8 Coupe V10 plus 5.2 FSI quattro",
+    "pi": 802,
+    "topSpeedKmh": 325.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "R8 V10 plus",
+    "pi": 834,
+    "topSpeedKmh": 347.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "RS 3 Sedan",
+    "pi": 734,
+    "topSpeedKmh": 292.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "RS 3 Sportback",
+    "pi": 682,
+    "topSpeedKmh": 267.2,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "RS 4",
+    "pi": 710,
+    "topSpeedKmh": 306.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "RS 4 Avant",
+    "pi": 751,
+    "topSpeedKmh": 317.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "RS 5 Coupe",
+    "pi": 750,
+    "topSpeedKmh": 312.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "RS 5 Coupé",
+    "pi": 750,
+    "topSpeedKmh": 312.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "RS 6",
+    "pi": 722,
+    "topSpeedKmh": 319.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "RS 6 Avant",
+    "pi": 763,
+    "topSpeedKmh": 315.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "RS 7 Sportback",
+    "pi": 768,
+    "topSpeedKmh": 328.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "RS e-tron GT",
+    "pi": 770,
+    "topSpeedKmh": 276.5,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "S1",
+    "pi": 644,
+    "topSpeedKmh": 248.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "Sport quattro",
+    "pi": 638,
+    "topSpeedKmh": 253.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "TT RS",
+    "pi": 748,
+    "topSpeedKmh": 297.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "TT RS Coupe",
+    "pi": 765,
+    "topSpeedKmh": 309.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Audi",
+    "model": "TTS Coupe",
+    "pi": 724,
+    "topSpeedKmh": 301.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Austin-Healey",
+    "model": "Sprite MkI",
+    "pi": 131,
+    "topSpeedKmh": 143.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Auto",
+    "model": "Union Type D",
+    "pi": 675,
+    "topSpeedKmh": 367.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Automobili",
+    "model": "Pininfarina Battista",
+    "pi": 928,
+    "topSpeedKmh": 353.4,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Autozam",
+    "model": "AZ-1",
+    "pi": 450,
+    "topSpeedKmh": 188.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BAC",
+    "model": "Mono",
+    "pi": 868,
+    "topSpeedKmh": 276.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "#1 BMW M Motorsport M8 GTE",
+    "pi": 910,
+    "topSpeedKmh": 321.1,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "1 Series M Coupe",
+    "pi": 712,
+    "topSpeedKmh": 284.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "2002 Turbo",
+    "pi": 531,
+    "topSpeedKmh": 219.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "850CSi",
+    "pi": 610,
+    "topSpeedKmh": 290.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "Isetta 300 Export",
+    "pi": 100,
+    "topSpeedKmh": 88.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M1",
+    "pi": 629,
+    "topSpeedKmh": 263.3,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M2",
+    "pi": 762,
+    "topSpeedKmh": 300.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M2 Coupé",
+    "pi": 718,
+    "topSpeedKmh": 286.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M3",
+    "pi": 725,
+    "topSpeedKmh": 299.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M3 Competition Sedan",
+    "pi": 772,
+    "topSpeedKmh": 279.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M3 GTS",
+    "pi": 794,
+    "topSpeedKmh": 320.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M3-GTR",
+    "pi": 747,
+    "topSpeedKmh": 292.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M4 Competition Coupé",
+    "pi": 778,
+    "topSpeedKmh": 314.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M4 Coupe",
+    "pi": 782,
+    "topSpeedKmh": 312.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M4 GTS",
+    "pi": 814,
+    "topSpeedKmh": 317,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M5",
+    "pi": 784,
+    "topSpeedKmh": 334.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M5 CS",
+    "pi": 827,
+    "topSpeedKmh": 335.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M6 Coupe",
+    "pi": 758,
+    "topSpeedKmh": 327.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M635CSi",
+    "pi": 589,
+    "topSpeedKmh": 258.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "M8 Competition Coupe",
+    "pi": 791,
+    "topSpeedKmh": 337.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "X5 M",
+    "pi": 666,
+    "topSpeedKmh": 282.9,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "X5 M Forza Edition",
+    "pi": 998,
+    "topSpeedKmh": 357,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "X6 M",
+    "pi": 687,
+    "topSpeedKmh": 288.2,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "Z3 M Coupe",
+    "pi": 675,
+    "topSpeedKmh": 272,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "Z4 M Coupe",
+    "pi": 694,
+    "topSpeedKmh": 282.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "Z4 Roadster",
+    "pi": 751,
+    "topSpeedKmh": 293.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "i4 eDrive40",
+    "pi": 633,
+    "topSpeedKmh": 190.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "i8",
+    "pi": 764,
+    "topSpeedKmh": 319.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "BMW",
+    "model": "iX xDrive50",
+    "pi": 703,
+    "topSpeedKmh": 200.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Bentley",
+    "model": "8 Litre",
+    "pi": 181,
+    "topSpeedKmh": 165.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Bentley",
+    "model": "Bentayga",
+    "pi": 727,
+    "topSpeedKmh": 310,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Bentley",
+    "model": "Blower 4-1/2 Litre Supercharged",
+    "pi": 207,
+    "topSpeedKmh": 166.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Bentley",
+    "model": "Continental GT Convertible",
+    "pi": 759,
+    "topSpeedKmh": 338.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Bentley",
+    "model": "Continental Supersports",
+    "pi": 769,
+    "topSpeedKmh": 338.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Bentley",
+    "model": "Flying Spur",
+    "pi": 719,
+    "topSpeedKmh": 333.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Bentley",
+    "model": "Turbo R",
+    "pi": 543,
+    "topSpeedKmh": 238.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Brabham",
+    "model": "BT62",
+    "pi": 974,
+    "topSpeedKmh": 322.4,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Bugatti",
+    "model": "Chiron",
+    "pi": 927,
+    "topSpeedKmh": 438.1,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Bugatti",
+    "model": "Divo",
+    "pi": 958,
+    "topSpeedKmh": 422.1,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Bugatti",
+    "model": "EB110 Super Sport",
+    "pi": 805,
+    "topSpeedKmh": 366.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Bugatti",
+    "model": "Type 35 C",
+    "pi": 285,
+    "topSpeedKmh": 179.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Bugatti",
+    "model": "Veyron Super Sport",
+    "pi": 913,
+    "topSpeedKmh": 431.5,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Buick",
+    "model": "GSX",
+    "pi": 558,
+    "topSpeedKmh": 226.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Buick",
+    "model": "Regal GNX",
+    "pi": 564,
+    "topSpeedKmh": 254.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "CUPRA",
+    "model": "Formentor VZ5",
+    "pi": 740,
+    "topSpeedKmh": 282.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "CUPRA",
+    "model": "Tavascan Concept",
+    "pi": 677,
+    "topSpeedKmh": 179.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "CUPRA",
+    "model": "UrbanRebel Concept",
+    "pi": 854,
+    "topSpeedKmh": 262.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Cadillac",
+    "model": "#3 Cadillac Racing ATS-V.R",
+    "pi": 890,
+    "topSpeedKmh": 307.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Cadillac",
+    "model": "ATS-V",
+    "pi": 716,
+    "topSpeedKmh": 297.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Cadillac",
+    "model": "CT4-V Blackwing",
+    "pi": 760,
+    "topSpeedKmh": 309.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Cadillac",
+    "model": "CT5-V Blackwing",
+    "pi": 799,
+    "topSpeedKmh": 317.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Cadillac",
+    "model": "CTS-V Sedan",
+    "pi": 761,
+    "topSpeedKmh": 320.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Cadillac",
+    "model": "CTS-V Sport Wagon",
+    "pi": 724,
+    "topSpeedKmh": 303.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Cadillac",
+    "model": "XTS Limousine",
+    "pi": 492,
+    "topSpeedKmh": 231.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Can-Am",
+    "model": "Maverick X RS Turbo R",
+    "pi": 670,
+    "topSpeedKmh": 179.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Casey",
+    "model": "Currie Motorsports #4402 Ultra 4 'Trophy Jeep'",
+    "pi": 745,
+    "topSpeedKmh": 225.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Caterham",
+    "model": "Superlight R500",
+    "pi": 786,
+    "topSpeedKmh": 250.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "#3 Corvette Racing C8.R",
+    "pi": 910,
+    "topSpeedKmh": 317.7,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "'Barbie Movie' Corvette EV",
+    "pi": 658,
+    "topSpeedKmh": 200.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "150 Utility Sedan",
+    "pi": 360,
+    "topSpeedKmh": 198.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Bel Air",
+    "pi": 432,
+    "topSpeedKmh": 210,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Camaro Jordan Luka 3 Forza Edition",
+    "pi": 800,
+    "topSpeedKmh": 285,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Camaro Super Sport Coupe",
+    "pi": 585,
+    "topSpeedKmh": 224.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Camaro Z/28",
+    "pi": 797,
+    "topSpeedKmh": 293.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Camaro Z28",
+    "pi": 466,
+    "topSpeedKmh": 205.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Camaro ZL1",
+    "pi": 821,
+    "topSpeedKmh": 327,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Camaro ZL1 1LE",
+    "pi": 824,
+    "topSpeedKmh": 309.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Chevelle Super Sport 454",
+    "pi": 531,
+    "topSpeedKmh": 208.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Colorado ZR2",
+    "pi": 530,
+    "topSpeedKmh": 237.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Corvette",
+    "pi": 541,
+    "topSpeedKmh": 238.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Corvette E-Ray",
+    "pi": 834,
+    "topSpeedKmh": 322.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Corvette Forza Edition",
+    "pi": 800,
+    "topSpeedKmh": 288.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Corvette Stingray 427",
+    "pi": 623,
+    "topSpeedKmh": 245.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Corvette Stingray Coupe",
+    "pi": 806,
+    "topSpeedKmh": 318.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Corvette Z06",
+    "pi": 855,
+    "topSpeedKmh": 312.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Corvette ZR-1",
+    "pi": 693,
+    "topSpeedKmh": 289.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Corvette ZR1",
+    "pi": 871,
+    "topSpeedKmh": 344.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "El Camino Super Sport 454",
+    "pi": 544,
+    "topSpeedKmh": 258.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Hot Wheels COPO Camaro",
+    "pi": 867,
+    "topSpeedKmh": 310.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Impala Super Sport",
+    "pi": 509,
+    "topSpeedKmh": 223.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Impala Super Sport 409",
+    "pi": 544,
+    "topSpeedKmh": 241.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "K10 Custom",
+    "pi": 369,
+    "topSpeedKmh": 162.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Monte Carlo Super Sport",
+    "pi": 396,
+    "topSpeedKmh": 219.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Nova Super Sport",
+    "pi": 554,
+    "topSpeedKmh": 239.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Nova Super Sport 396",
+    "pi": 545,
+    "topSpeedKmh": 239,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Silverado LT Trail Boss",
+    "pi": 561,
+    "topSpeedKmh": 238.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Chevrolet",
+    "model": "Summit Racing Pro Stock Camaro",
+    "pi": 919,
+    "topSpeedKmh": 338.1,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Citroën",
+    "model": "BX4TC",
+    "pi": 567,
+    "topSpeedKmh": 229.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Czinger",
+    "model": "21C",
+    "pi": 998,
+    "topSpeedKmh": 369.8,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "DS",
+    "model": "Automobiles DS 23",
+    "pi": 330,
+    "topSpeedKmh": 179.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Datsun",
+    "model": "510",
+    "pi": 264,
+    "topSpeedKmh": 167.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "DeBerti",
+    "model": "Chevrolet C10 ‘Slayer’",
+    "pi": 802,
+    "topSpeedKmh": 282.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "DeBerti",
+    "model": "Chevrolet Silverado 1500 Drift Truck",
+    "pi": 798,
+    "topSpeedKmh": 288.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "DeBerti",
+    "model": "F-150 Prerunner Truck",
+    "pi": 691,
+    "topSpeedKmh": 252.7,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "DeBerti",
+    "model": "Ford Econoline 'Shop Rod'",
+    "pi": 799,
+    "topSpeedKmh": 267,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "DeBerti",
+    "model": "Ford Mustang GT",
+    "pi": 824,
+    "topSpeedKmh": 337.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "DeBerti",
+    "model": "Ford Super Duty F-250 Lariat 'Transformer'",
+    "pi": 665,
+    "topSpeedKmh": 249.9,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "DeBerti",
+    "model": "Toyota Tacoma TRD The Performance Truck",
+    "pi": 836,
+    "topSpeedKmh": 283.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "DeBerti",
+    "model": "Wrangler Unlimited",
+    "pi": 749,
+    "topSpeedKmh": 213.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "DeLorean",
+    "model": "DMC-12",
+    "pi": 464,
+    "topSpeedKmh": 190.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Challenger R/T",
+    "pi": 551,
+    "topSpeedKmh": 240.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Challenger SRT Demon",
+    "pi": 786,
+    "topSpeedKmh": 334.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Challenger SRT Hellcat",
+    "pi": 755,
+    "topSpeedKmh": 332.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Challenger SRT Super Stock",
+    "pi": 802,
+    "topSpeedKmh": 330.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Charger Daytona HEMI",
+    "pi": 595,
+    "topSpeedKmh": 223.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Charger R/T",
+    "pi": 548,
+    "topSpeedKmh": 226.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Charger R/T Forza Edition",
+    "pi": 900,
+    "topSpeedKmh": 296.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Charger SRT Hellcat",
+    "pi": 762,
+    "topSpeedKmh": 339.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Coronet Super Bee",
+    "pi": 566,
+    "topSpeedKmh": 254.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Dart HEMI Super Stock",
+    "pi": 650,
+    "topSpeedKmh": 197.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Durango SRT",
+    "pi": 666,
+    "topSpeedKmh": 278.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Durango SRT Hellcat",
+    "pi": 744,
+    "topSpeedKmh": 299.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Magnum SRT8",
+    "pi": 669,
+    "topSpeedKmh": 283.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "SRT Viper GTS",
+    "pi": 813,
+    "topSpeedKmh": 334.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "SRT Viper GTS Anniversary Edition",
+    "pi": 900,
+    "topSpeedKmh": 345.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Viper ACR",
+    "pi": 873,
+    "topSpeedKmh": 297.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Viper GTS ACR",
+    "pi": 717,
+    "topSpeedKmh": 305.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Dodge",
+    "model": "Viper SRT10 ACR",
+    "pi": 844,
+    "topSpeedKmh": 316.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Donkervoort",
+    "model": "D8 GTO",
+    "pi": 814,
+    "topSpeedKmh": 276.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Eagle",
+    "model": "Speedster",
+    "pi": 723,
+    "topSpeedKmh": 271.5,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Elemental",
+    "model": "RP1",
+    "pi": 867,
+    "topSpeedKmh": 241.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Exomotive",
+    "model": "Exocet Off-Road",
+    "pi": 682,
+    "topSpeedKmh": 199.7,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Exomotive",
+    "model": "Exocet Off-Road Forza Edition",
+    "pi": 800,
+    "topSpeedKmh": 204.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Extreme",
+    "model": "E #125 ABT Cupra XE",
+    "pi": 748,
+    "topSpeedKmh": 210.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Extreme",
+    "model": "E #22 JBXE",
+    "pi": 748,
+    "topSpeedKmh": 210.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Extreme",
+    "model": "E #23 Genesys Andretti United",
+    "pi": 748,
+    "topSpeedKmh": 210.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Extreme",
+    "model": "E #42 XITE Racing Team",
+    "pi": 748,
+    "topSpeedKmh": 210.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Extreme",
+    "model": "E #44 X44",
+    "pi": 748,
+    "topSpeedKmh": 210.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Extreme",
+    "model": "E #5 Veloce Racing",
+    "pi": 748,
+    "topSpeedKmh": 210.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Extreme",
+    "model": "E #55 ACCIONA / Sainz XE Team",
+    "pi": 748,
+    "topSpeedKmh": 210.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Extreme",
+    "model": "E #58 McLaren Racing",
+    "pi": 748,
+    "topSpeedKmh": 210.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Extreme",
+    "model": "E #6 Rosberg X Racing",
+    "pi": 748,
+    "topSpeedKmh": 210.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Extreme",
+    "model": "E #99 Chip Ganassi Racing GMC Hummer EV",
+    "pi": 748,
+    "topSpeedKmh": 210.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "FIAT",
+    "model": "124 Sport Spider",
+    "pi": 288,
+    "topSpeedKmh": 175.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "FIAT",
+    "model": "Dino 2.4 Coupe",
+    "pi": 498,
+    "topSpeedKmh": 213.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Fast",
+    "model": "and Furious Chevrolet Impala Super Sport 'Fast X'",
+    "pi": 836,
+    "topSpeedKmh": 261.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Fast",
+    "model": "and Furious Datsun 240Z 'Fast X'",
+    "pi": 838,
+    "topSpeedKmh": 343.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Fast",
+    "model": "and Furious Dodge Charger 'Fast X'",
+    "pi": 855,
+    "topSpeedKmh": 355.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Fast",
+    "model": "and Furious Dodge Charger SRT Hellcat Redeye Widebody 'Fast X'",
+    "pi": 831,
+    "topSpeedKmh": 370.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Fast",
+    "model": "and Furious Flip Car 2.0 'Fast X'",
+    "pi": 815,
+    "topSpeedKmh": 258.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "#24 Ferrari Spa 330 P4",
+    "pi": 780,
+    "topSpeedKmh": 319,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "#25 Corse Clienti 488 Challenge",
+    "pi": 911,
+    "topSpeedKmh": 329.6,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "#62 Risi Competitizione 488 GTE",
+    "pi": 910,
+    "topSpeedKmh": 315.4,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "250 California",
+    "pi": 564,
+    "topSpeedKmh": 240.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "250 GT Berlinetta Lusso",
+    "pi": 590,
+    "topSpeedKmh": 242.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "250 GTO",
+    "pi": 612,
+    "topSpeedKmh": 281.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "250 Testa Rossa",
+    "pi": 691,
+    "topSpeedKmh": 276.2,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "288 GTO",
+    "pi": 750,
+    "topSpeedKmh": 326.5,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "296 GTB",
+    "pi": 892,
+    "topSpeedKmh": 359,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "360 Challenge Stradale",
+    "pi": 773,
+    "topSpeedKmh": 308.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "365 GTB/4",
+    "pi": 637,
+    "topSpeedKmh": 305,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "430 Scuderia",
+    "pi": 810,
+    "topSpeedKmh": 335.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "458 Italia",
+    "pi": 823,
+    "topSpeedKmh": 353.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "458 Speciale",
+    "pi": 865,
+    "topSpeedKmh": 343.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "488 GTB",
+    "pi": 863,
+    "topSpeedKmh": 359,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "488 Pista",
+    "pi": 889,
+    "topSpeedKmh": 338.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "512 S",
+    "pi": 861,
+    "topSpeedKmh": 351.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "512 TR",
+    "pi": 733,
+    "topSpeedKmh": 301.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "575M Maranello",
+    "pi": 747,
+    "topSpeedKmh": 330.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "599 GTO",
+    "pi": 828,
+    "topSpeedKmh": 349.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "599XX",
+    "pi": 924,
+    "topSpeedKmh": 366.6,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "599XX Evoluzione",
+    "pi": 952,
+    "topSpeedKmh": 356,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "812 Superfast",
+    "pi": 878,
+    "topSpeedKmh": 352.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "California T",
+    "pi": 784,
+    "topSpeedKmh": 319.5,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "Dino 246 GT",
+    "pi": 535,
+    "topSpeedKmh": 232.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "Enzo Ferrari",
+    "pi": 857,
+    "topSpeedKmh": 354.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "F12tdf",
+    "pi": 884,
+    "topSpeedKmh": 387.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "F355 Berlinetta",
+    "pi": 717,
+    "topSpeedKmh": 300.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "F40",
+    "pi": 784,
+    "topSpeedKmh": 321.5,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "F40 Competizione",
+    "pi": 947,
+    "topSpeedKmh": 367.4,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "F50",
+    "pi": 789,
+    "topSpeedKmh": 325.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "F50 GT",
+    "pi": 976,
+    "topSpeedKmh": 363.4,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "F8 Tributo",
+    "pi": 891,
+    "topSpeedKmh": 371.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "FXX",
+    "pi": 956,
+    "topSpeedKmh": 372.4,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "FXX K",
+    "pi": 979,
+    "topSpeedKmh": 352.9,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "FXX-K EVO",
+    "pi": 998,
+    "topSpeedKmh": 354.7,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "GTC4Lusso",
+    "pi": 816,
+    "topSpeedKmh": 335.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "J50",
+    "pi": 857,
+    "topSpeedKmh": 372.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "LaFerrari",
+    "pi": 934,
+    "topSpeedKmh": 413.8,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "Monza SP2",
+    "pi": 867,
+    "topSpeedKmh": 381.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "Portofino",
+    "pi": 814,
+    "topSpeedKmh": 342.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "Roma",
+    "pi": 830,
+    "topSpeedKmh": 327.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ferrari",
+    "model": "SF90 Stradale",
+    "pi": 915,
+    "topSpeedKmh": 392.7,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "#11 Rockstar F-150 Trophy Truck",
+    "pi": 731,
+    "topSpeedKmh": 244.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "#14 Rahal Letterman Lanigan Racing GRC Fiesta",
+    "pi": 860,
+    "topSpeedKmh": 225,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "#2 GT40 MkII",
+    "pi": 771,
+    "topSpeedKmh": 331,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "#2069 Ford Performance Bronco R",
+    "pi": 544,
+    "topSpeedKmh": 189.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "#2069 Ford Performance Bronco R 'Welcome Pack'",
+    "pi": 800,
+    "topSpeedKmh": 273.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "#25 'Brocky' Ultra4 Bronco RTR",
+    "pi": 748,
+    "topSpeedKmh": 213.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "#25 Mustang RTR",
+    "pi": 834,
+    "topSpeedKmh": 257.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "#4 Ford Focus RS",
+    "pi": 749,
+    "topSpeedKmh": 223.5,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "#5 Escort RS1800 MkII",
+    "pi": 662,
+    "topSpeedKmh": 197.9,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "#66 Ford Racing GTLM Le Mans",
+    "pi": 910,
+    "topSpeedKmh": 295,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "#88 Mustang RTR",
+    "pi": 834,
+    "topSpeedKmh": 257.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Anglia 105E",
+    "pi": 100,
+    "topSpeedKmh": 120.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Bronco",
+    "pi": 560,
+    "topSpeedKmh": 218.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Bronco Raptor",
+    "pi": 588,
+    "topSpeedKmh": 227.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Capri RS3100",
+    "pi": 497,
+    "topSpeedKmh": 210,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Crown Victoria Police Interceptor",
+    "pi": 462,
+    "topSpeedKmh": 226.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "De Luxe Coupe",
+    "pi": 130,
+    "topSpeedKmh": 145.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "De Luxe Five-Window Coupe",
+    "pi": 126,
+    "topSpeedKmh": 144.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "De Luxe Five-Window Coupe Forza Edition",
+    "pi": 800,
+    "topSpeedKmh": 280.5,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Escort RS Cosworth",
+    "pi": 565,
+    "topSpeedKmh": 230,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Escort RS Turbo",
+    "pi": 516,
+    "topSpeedKmh": 205,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Escort RS1600",
+    "pi": 476,
+    "topSpeedKmh": 189.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Escort RS1800",
+    "pi": 477,
+    "topSpeedKmh": 191,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "F-100",
+    "pi": 302,
+    "topSpeedKmh": 170.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "F-150 Lightning Platinum",
+    "pi": 607,
+    "topSpeedKmh": 178.3,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "F-150 Raptor",
+    "pi": 559,
+    "topSpeedKmh": 218.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "F-150 Raptor R",
+    "pi": 659,
+    "topSpeedKmh": 264.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "F-150 SVT Lightning",
+    "pi": 585,
+    "topSpeedKmh": 234.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "F-150 SVT Raptor",
+    "pi": 518,
+    "topSpeedKmh": 235.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "F-150 XLT Lariat",
+    "pi": 357,
+    "topSpeedKmh": 157.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "FPV Limited Edition Pursuit Ute",
+    "pi": 685,
+    "topSpeedKmh": 282.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Falcon GT F 351",
+    "pi": 718,
+    "topSpeedKmh": 303.5,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Falcon XA GT-HO",
+    "pi": 624,
+    "topSpeedKmh": 280.2,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Fiesta ST",
+    "pi": 615,
+    "topSpeedKmh": 234.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Fiesta XR2",
+    "pi": 369,
+    "topSpeedKmh": 172,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Focus RS",
+    "pi": 702,
+    "topSpeedKmh": 262,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Focus ST",
+    "pi": 707,
+    "topSpeedKmh": 268,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "GT",
+    "pi": 863,
+    "topSpeedKmh": 362.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "GT 'OPI Edition'",
+    "pi": 900,
+    "topSpeedKmh": 378,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "GT40 Mk I",
+    "pi": 754,
+    "topSpeedKmh": 305.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "GT70",
+    "pi": 671,
+    "topSpeedKmh": 231.3,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Lotus Cortina",
+    "pi": 389,
+    "topSpeedKmh": 181.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "M-Sport Fiesta RS",
+    "pi": 808,
+    "topSpeedKmh": 231.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Mustang Boss 302",
+    "pi": 581,
+    "topSpeedKmh": 241.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Mustang Dark Horse",
+    "pi": 772,
+    "topSpeedKmh": 296.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Mustang GT",
+    "pi": 739,
+    "topSpeedKmh": 296.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Mustang GT 2+2 Fastback",
+    "pi": 498,
+    "topSpeedKmh": 243.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Mustang GT Coupe",
+    "pi": 499,
+    "topSpeedKmh": 227.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Mustang Mach 1",
+    "pi": 546,
+    "topSpeedKmh": 214.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Mustang Mach-E 1400",
+    "pi": 900,
+    "topSpeedKmh": 256.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Mustang RTR Spec 5",
+    "pi": 757,
+    "topSpeedKmh": 288.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Mustang SVO",
+    "pi": 525,
+    "topSpeedKmh": 226.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Mustang SVT Cobra",
+    "pi": 639,
+    "topSpeedKmh": 283.7,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Mustang SVT Cobra R",
+    "pi": 648,
+    "topSpeedKmh": 293.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Mustang Shelby GT500",
+    "pi": 836,
+    "topSpeedKmh": 337.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "RS200 Evolution",
+    "pi": 808,
+    "topSpeedKmh": 246.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Racing Escort Mk1",
+    "pi": 636,
+    "topSpeedKmh": 202.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Racing Puma",
+    "pi": 514,
+    "topSpeedKmh": 216.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Racing Puma Forza Edition",
+    "pi": 900,
+    "topSpeedKmh": 255.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Ranger Raptor",
+    "pi": 451,
+    "topSpeedKmh": 199.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Ranger T6 Rally Raid",
+    "pi": 643,
+    "topSpeedKmh": 201.2,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "SVT Cobra R",
+    "pi": 648,
+    "topSpeedKmh": 293.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Shelby GT350R",
+    "pi": 815,
+    "topSpeedKmh": 303.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Shelby GT500",
+    "pi": 756,
+    "topSpeedKmh": 327,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Sierra Cosworth RS500",
+    "pi": 604,
+    "topSpeedKmh": 249.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Super Deluxe Station Wagon",
+    "pi": 124,
+    "topSpeedKmh": 151.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Super Duty F-450 DRW Platinum",
+    "pi": 466,
+    "topSpeedKmh": 205,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Supervan 3",
+    "pi": 820,
+    "topSpeedKmh": 235,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Supervan 3 'Donut Media Edition'",
+    "pi": 900,
+    "topSpeedKmh": 273.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Supervan 4",
+    "pi": 953,
+    "topSpeedKmh": 355.5,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Transit",
+    "pi": 100,
+    "topSpeedKmh": 113,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "Transit SuperSportVan",
+    "pi": 347,
+    "topSpeedKmh": 196.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ford",
+    "model": "XB Falcon GT",
+    "pi": 532,
+    "topSpeedKmh": 227.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #117 599 GTB Fiorano",
+    "pi": 852,
+    "topSpeedKmh": 294.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #13 Ford Mustang",
+    "pi": 825,
+    "topSpeedKmh": 254.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #151 Toyota GR Supra",
+    "pi": 863,
+    "topSpeedKmh": 271.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #34 Toyota Supra MKIV",
+    "pi": 845,
+    "topSpeedKmh": 334.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #357 Chevrolet Corvette Z06",
+    "pi": 835,
+    "topSpeedKmh": 382.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #411 Toyota Corolla Hatchback",
+    "pi": 840,
+    "topSpeedKmh": 302.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #43 Dodge Viper SRT10",
+    "pi": 826,
+    "topSpeedKmh": 311.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #51 Donut Media Nissan 240SX",
+    "pi": 822,
+    "topSpeedKmh": 265.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #530 HSV Maloo Gen-F",
+    "pi": 808,
+    "topSpeedKmh": 322.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #64 Forsberg Racing Nissan Z",
+    "pi": 854,
+    "topSpeedKmh": 309,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #64 Nissan 370Z",
+    "pi": 843,
+    "topSpeedKmh": 318.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #777 Chevrolet Corvette",
+    "pi": 848,
+    "topSpeedKmh": 278.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #777 Nissan 240SX",
+    "pi": 826,
+    "topSpeedKmh": 291.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #91 BMW M2",
+    "pi": 839,
+    "topSpeedKmh": 290.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #98 BMW 325i",
+    "pi": 813,
+    "topSpeedKmh": 301.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Formula",
+    "model": "Drift #99 Mazda RX-8",
+    "pi": 829,
+    "topSpeedKmh": 289.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Forsberg",
+    "model": "Racing Nissan 'Altimaniac'",
+    "pi": 881,
+    "topSpeedKmh": 319.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Forsberg",
+    "model": "Racing Nissan 'SafariZ' 370Z Safari Rally Tribute",
+    "pi": 720,
+    "topSpeedKmh": 266.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Forsberg",
+    "model": "Racing Nissan Gold Leader Datsun 280Z",
+    "pi": 791,
+    "topSpeedKmh": 299.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Forsberg",
+    "model": "Racing Toyota Gumout 2JZ Camry Stock Car",
+    "pi": 900,
+    "topSpeedKmh": 367.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Funco",
+    "model": "Motorsports F9",
+    "pi": 821,
+    "topSpeedKmh": 224,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "GMC",
+    "model": "'Barbie Movie' HUMMER EV PICKUP",
+    "pi": 718,
+    "topSpeedKmh": 171.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "GMC",
+    "model": "HUMMER EV Pickup",
+    "pi": 718,
+    "topSpeedKmh": 171.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "GMC",
+    "model": "Jimmy",
+    "pi": 521,
+    "topSpeedKmh": 196.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "GMC",
+    "model": "Syclone",
+    "pi": 548,
+    "topSpeedKmh": 238,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "GMC",
+    "model": "Typhoon",
+    "pi": 538,
+    "topSpeedKmh": 233.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "GMC",
+    "model": "Vandura G-1500",
+    "pi": 226,
+    "topSpeedKmh": 162.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ginetta",
+    "model": "G10 RM",
+    "pi": 769,
+    "topSpeedKmh": 316.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Gordon",
+    "model": "Murray Automotive T.50",
+    "pi": 936,
+    "topSpeedKmh": 353.7,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "HDT",
+    "model": "VK Commodore Group A",
+    "pi": 550,
+    "topSpeedKmh": 228.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "HSV",
+    "model": "GEN-F GTS",
+    "pi": 721,
+    "topSpeedKmh": 303,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "HSV",
+    "model": "Limited Edition Gen-F GTS Maloo",
+    "pi": 742,
+    "topSpeedKmh": 289.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "HUMMER",
+    "model": "H1 Alpha",
+    "pi": 354,
+    "topSpeedKmh": 193.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hennessey",
+    "model": "Camaro Exorcist",
+    "pi": 857,
+    "topSpeedKmh": 348.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hennessey",
+    "model": "Mammoth 6x6",
+    "pi": 697,
+    "topSpeedKmh": 287.9,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hennessey",
+    "model": "VelociRaptor 6x6",
+    "pi": 634,
+    "topSpeedKmh": 231.9,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hennessey",
+    "model": "Venom F5",
+    "pi": 964,
+    "topSpeedKmh": 488.9,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hennessey",
+    "model": "Venom GT",
+    "pi": 911,
+    "topSpeedKmh": 430.2,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Holden",
+    "model": "HQ Monaro GTS 350",
+    "pi": 525,
+    "topSpeedKmh": 214,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Holden",
+    "model": "Sandman HQ panel van",
+    "pi": 501,
+    "topSpeedKmh": 208.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Holden",
+    "model": "Torana A9X",
+    "pi": 517,
+    "topSpeedKmh": 217.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Honda",
+    "model": "CR-X SiR",
+    "pi": 534,
+    "topSpeedKmh": 228.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Honda",
+    "model": "Civic CRX Mugen",
+    "pi": 499,
+    "topSpeedKmh": 216.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Honda",
+    "model": "Civic Coupe",
+    "pi": 861,
+    "topSpeedKmh": 224.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Honda",
+    "model": "Civic RS",
+    "pi": 368,
+    "topSpeedKmh": 175.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Honda",
+    "model": "Civic Type R",
+    "pi": 727,
+    "topSpeedKmh": 298,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Honda",
+    "model": "Civic Type-R",
+    "pi": 727,
+    "topSpeedKmh": 298,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Honda",
+    "model": "NSX-R",
+    "pi": 691,
+    "topSpeedKmh": 282.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Honda",
+    "model": "NSX-R GT",
+    "pi": 725,
+    "topSpeedKmh": 284.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Honda",
+    "model": "Prelude Si",
+    "pi": 521,
+    "topSpeedKmh": 220.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Honda",
+    "model": "Ridgeline Baja Trophy Truck",
+    "pi": 703,
+    "topSpeedKmh": 229.5,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Honda",
+    "model": "S2000",
+    "pi": 630,
+    "topSpeedKmh": 263.9,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Honda",
+    "model": "S2000 CR",
+    "pi": 635,
+    "topSpeedKmh": 252.3,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Chevrolet Bel Air",
+    "pi": 621,
+    "topSpeedKmh": 254,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Chevrolet Napalm Nova",
+    "pi": 731,
+    "topSpeedKmh": 298.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Ford Escort RS Cosworth WRC 'Cossie V2'",
+    "pi": 783,
+    "topSpeedKmh": 246.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Ford Escort RS1800",
+    "pi": 820,
+    "topSpeedKmh": 276,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Ford Hoonicorn Mustang",
+    "pi": 951,
+    "topSpeedKmh": 408.5,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Ford RS200 Evolution",
+    "pi": 904,
+    "topSpeedKmh": 342.3,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Gymkhana 10 Ford Escort Cosworth Group A",
+    "pi": 862,
+    "topSpeedKmh": 344.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Gymkhana 10 Ford F-150 'Hoonitruck'",
+    "pi": 896,
+    "topSpeedKmh": 277.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Gymkhana 10 Ford Focus RS RX",
+    "pi": 864,
+    "topSpeedKmh": 229.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Gymkhana 10 Ford Hoonicorn Mustang",
+    "pi": 952,
+    "topSpeedKmh": 424.1,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Gymkhana 9 Ford Focus RS RX",
+    "pi": 864,
+    "topSpeedKmh": 229.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Mazda RX-7 Twerkstallion",
+    "pi": 799,
+    "topSpeedKmh": 363.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Rauh-Welt Begriff Porsche 911 Turbo",
+    "pi": 811,
+    "topSpeedKmh": 301.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hoonigan",
+    "model": "Volkswagen Baja Beetle Class 5/1600 'Scumbug'",
+    "pi": 524,
+    "topSpeedKmh": 165.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hot",
+    "model": "Wheels 2JetZ",
+    "pi": 854,
+    "topSpeedKmh": 296.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hot",
+    "model": "Wheels Bad to the Blade",
+    "pi": 998,
+    "topSpeedKmh": 303.5,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hot",
+    "model": "Wheels Baja Bone Shaker",
+    "pi": 700,
+    "topSpeedKmh": 269.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hot",
+    "model": "Wheels Bone Shaker",
+    "pi": 790,
+    "topSpeedKmh": 266.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hot",
+    "model": "Wheels Deora II",
+    "pi": 800,
+    "topSpeedKmh": 292.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hot",
+    "model": "Wheels Ford F-5 Dually Custom Hot Rod",
+    "pi": 630,
+    "topSpeedKmh": 208.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hot",
+    "model": "Wheels Ford Mustang",
+    "pi": 819,
+    "topSpeedKmh": 297.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hot",
+    "model": "Wheels Nash Metropolitan Custom",
+    "pi": 631,
+    "topSpeedKmh": 246.7,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hot",
+    "model": "Wheels Pontiac Firebird Trans Am Custom",
+    "pi": 894,
+    "topSpeedKmh": 282,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hot",
+    "model": "Wheels Rip Rod",
+    "pi": 715,
+    "topSpeedKmh": 238.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hot",
+    "model": "Wheels Twin Mill",
+    "pi": 798,
+    "topSpeedKmh": 373.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hyundai",
+    "model": "#98 Bryan Herta Autosport Elantra N",
+    "pi": 800,
+    "topSpeedKmh": 243.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Hyundai",
+    "model": "I30 N",
+    "pi": 670,
+    "topSpeedKmh": 238.7,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Hyundai",
+    "model": "IONIQ 5 N",
+    "pi": 756,
+    "topSpeedKmh": 262.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hyundai",
+    "model": "IONIQ 6",
+    "pi": 686,
+    "topSpeedKmh": 202.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Hyundai",
+    "model": "Kona N",
+    "pi": 684,
+    "topSpeedKmh": 267.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Hyundai",
+    "model": "N Vision 74",
+    "pi": 799,
+    "topSpeedKmh": 249.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Hyundai",
+    "model": "Veloster N",
+    "pi": 645,
+    "topSpeedKmh": 266.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Infiniti",
+    "model": "Q60 Concept",
+    "pi": 735,
+    "topSpeedKmh": 301.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "International",
+    "model": "Scout 800A",
+    "pi": 384,
+    "topSpeedKmh": 186.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Italdesign",
+    "model": "DaVinci Concept",
+    "pi": 809,
+    "topSpeedKmh": 323.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Italdesign",
+    "model": "Zerouno",
+    "pi": 869,
+    "topSpeedKmh": 339.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "C-Type",
+    "pi": 599,
+    "topSpeedKmh": 248.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "C-X75",
+    "pi": 880,
+    "topSpeedKmh": 359.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "D-Type",
+    "pi": 630,
+    "topSpeedKmh": 248.3,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "E-type",
+    "pi": 525,
+    "topSpeedKmh": 232.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "F-PACE S",
+    "pi": 674,
+    "topSpeedKmh": 264.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "F-TYPE Project 7",
+    "pi": 786,
+    "topSpeedKmh": 306.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "F-TYPE R Coupé",
+    "pi": 777,
+    "topSpeedKmh": 330.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "F-Type SVR",
+    "pi": 806,
+    "topSpeedKmh": 324.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "I-PACE",
+    "pi": 705,
+    "topSpeedKmh": 210.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "Lightweight E-Type",
+    "pi": 688,
+    "topSpeedKmh": 280.3,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "Mk II 3.8",
+    "pi": 448,
+    "topSpeedKmh": 199.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "Sport XJR-15",
+    "pi": 828,
+    "topSpeedKmh": 334.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "XE SV Project 8",
+    "pi": 830,
+    "topSpeedKmh": 297.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "XE-S",
+    "pi": 671,
+    "topSpeedKmh": 295.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "XFR-S",
+    "pi": 728,
+    "topSpeedKmh": 329.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "XJ13",
+    "pi": 779,
+    "topSpeedKmh": 337.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "XJ220",
+    "pi": 786,
+    "topSpeedKmh": 335.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "XJ220S TWR",
+    "pi": 848,
+    "topSpeedKmh": 361.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "XKR-S",
+    "pi": 756,
+    "topSpeedKmh": 329.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jaguar",
+    "model": "XKR-S GT",
+    "pi": 778,
+    "topSpeedKmh": 315.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jeep",
+    "model": "CJ5 Renegade",
+    "pi": 431,
+    "topSpeedKmh": 167.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Jeep",
+    "model": "Gladiator Rubicon",
+    "pi": 456,
+    "topSpeedKmh": 207,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Jeep",
+    "model": "Grand Cherokee SRT",
+    "pi": 680,
+    "topSpeedKmh": 266.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Jeep",
+    "model": "Grand Cherokee Trackhawk",
+    "pi": 749,
+    "topSpeedKmh": 295,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Jeep",
+    "model": "Trailcat",
+    "pi": 744,
+    "topSpeedKmh": 274.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Jeep",
+    "model": "Wrangler Rubicon",
+    "pi": 463,
+    "topSpeedKmh": 204.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Jimco",
+    "model": "#179 Hammerhead Class 1",
+    "pi": 763,
+    "topSpeedKmh": 244.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Jimco",
+    "model": "#240 Fastball Racing Spec Trophy Truck",
+    "pi": 623,
+    "topSpeedKmh": 239.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "KIA",
+    "model": "EV6 GT",
+    "pi": 719,
+    "topSpeedKmh": 259.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "KTM",
+    "model": "X-Bow GT2",
+    "pi": 931,
+    "topSpeedKmh": 300.6,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "KTM",
+    "model": "X-Bow GT4",
+    "pi": 845,
+    "topSpeedKmh": 244.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "KTM",
+    "model": "X-Bow R",
+    "pi": 802,
+    "topSpeedKmh": 232.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Koenigsegg",
+    "model": "Agera",
+    "pi": 894,
+    "topSpeedKmh": 420.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Koenigsegg",
+    "model": "Agera RS",
+    "pi": 980,
+    "topSpeedKmh": 443.2,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Koenigsegg",
+    "model": "CC8S",
+    "pi": 846,
+    "topSpeedKmh": 384.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Koenigsegg",
+    "model": "CCGT",
+    "pi": 965,
+    "topSpeedKmh": 344.2,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Koenigsegg",
+    "model": "CCX",
+    "pi": 870,
+    "topSpeedKmh": 390.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Koenigsegg",
+    "model": "Jesko",
+    "pi": 971,
+    "topSpeedKmh": 457.7,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Koenigsegg",
+    "model": "One:1",
+    "pi": 983,
+    "topSpeedKmh": 442.9,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Koenigsegg",
+    "model": "Regera",
+    "pi": 966,
+    "topSpeedKmh": 398.2,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "#63 Squadra Corse Huracán Super Trofeo Evo",
+    "pi": 906,
+    "topSpeedKmh": 299.3,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Aventador J",
+    "pi": 839,
+    "topSpeedKmh": 347.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Aventador LP 780-4 Ultimae",
+    "pi": 878,
+    "topSpeedKmh": 358.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Aventador LP700-4",
+    "pi": 847,
+    "topSpeedKmh": 395.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Aventador SVJ",
+    "pi": 889,
+    "topSpeedKmh": 358.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Aventador Superveloce",
+    "pi": 872,
+    "topSpeedKmh": 381.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Centenario LP 770-4",
+    "pi": 884,
+    "topSpeedKmh": 367.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Countach LP5000 QV",
+    "pi": 735,
+    "topSpeedKmh": 299.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Countach LPI 800-4",
+    "pi": 865,
+    "topSpeedKmh": 326.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Diablo GTR",
+    "pi": 881,
+    "topSpeedKmh": 343.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Diablo SV",
+    "pi": 763,
+    "topSpeedKmh": 339.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Espada 400 GT",
+    "pi": 597,
+    "topSpeedKmh": 256.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Essenza SCV12",
+    "pi": 967,
+    "topSpeedKmh": 334.3,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Gallardo LP 570-4 Spyder Performante",
+    "pi": 797,
+    "topSpeedKmh": 315.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Gallardo LP 570-4 Superleggera",
+    "pi": 814,
+    "topSpeedKmh": 338.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Huracán EVO",
+    "pi": 851,
+    "topSpeedKmh": 327.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Huracán LP 610-4",
+    "pi": 838,
+    "topSpeedKmh": 341.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Huracán Performante",
+    "pi": 874,
+    "topSpeedKmh": 336.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Huracán STO",
+    "pi": 883,
+    "topSpeedKmh": 317.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Huracán Sterrato",
+    "pi": 836,
+    "topSpeedKmh": 338.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Huracán Tecnica",
+    "pi": 850,
+    "topSpeedKmh": 324.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "LM 002",
+    "pi": 562,
+    "topSpeedKmh": 228.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Miura P400",
+    "pi": 625,
+    "topSpeedKmh": 264.3,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Murcielago LP 670-4 SV",
+    "pi": 818,
+    "topSpeedKmh": 345.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Reventon",
+    "pi": 817,
+    "topSpeedKmh": 352.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Revuelto",
+    "pi": 902,
+    "topSpeedKmh": 382.1,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "SC20",
+    "pi": 884,
+    "topSpeedKmh": 338.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Sesto Elemento",
+    "pi": 936,
+    "topSpeedKmh": 345.5,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Sesto Elemento Forza Edition",
+    "pi": 998,
+    "topSpeedKmh": 368.9,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Sián Roadster",
+    "pi": 881,
+    "topSpeedKmh": 388.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Urus",
+    "pi": 767,
+    "topSpeedKmh": 316.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lamborghini",
+    "model": "Veneno",
+    "pi": 910,
+    "topSpeedKmh": 360.7,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lancia",
+    "model": "037 Stradale",
+    "pi": 647,
+    "topSpeedKmh": 233.7,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lancia",
+    "model": "Delta HF Integrale EVO",
+    "pi": 602,
+    "topSpeedKmh": 219.2,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lancia",
+    "model": "Delta S4",
+    "pi": 682,
+    "topSpeedKmh": 226.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lancia",
+    "model": "Fulvia Coupe Rallye 1.6 HF",
+    "pi": 526,
+    "topSpeedKmh": 200.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Lancia",
+    "model": "Stratos HF Stradale",
+    "pi": 590,
+    "topSpeedKmh": 233.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Land",
+    "model": "Rover Defender 110 X",
+    "pi": 534,
+    "topSpeedKmh": 242,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Land",
+    "model": "Rover Defender 90",
+    "pi": 366,
+    "topSpeedKmh": 170.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Land",
+    "model": "Rover Range Rover",
+    "pi": 274,
+    "topSpeedKmh": 152.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Land",
+    "model": "Rover Range Rover Sport SVR",
+    "pi": 722,
+    "topSpeedKmh": 286.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Land",
+    "model": "Rover Range Rover Velar First Edition",
+    "pi": 638,
+    "topSpeedKmh": 262.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Land",
+    "model": "Rover Series III",
+    "pi": 100,
+    "topSpeedKmh": 122.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lexus",
+    "model": "#14 VASSER SULLIVAN RC F GT3",
+    "pi": 890,
+    "topSpeedKmh": 311.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lexus",
+    "model": "LC 500",
+    "pi": 719,
+    "topSpeedKmh": 307.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lexus",
+    "model": "LFA",
+    "pi": 810,
+    "topSpeedKmh": 327,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lexus",
+    "model": "RC F",
+    "pi": 741,
+    "topSpeedKmh": 294.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lexus",
+    "model": "RC F Track Edition",
+    "pi": 777,
+    "topSpeedKmh": 310.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lexus",
+    "model": "SC300",
+    "pi": 555,
+    "topSpeedKmh": 245.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lincoln",
+    "model": "Continental",
+    "pi": 381,
+    "topSpeedKmh": 227.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Local",
+    "model": "Motors Rally Fighter",
+    "pi": 716,
+    "topSpeedKmh": 262.5,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lola",
+    "model": "#6 Penske Sunoco T70 MkIIIB",
+    "pi": 818,
+    "topSpeedKmh": 310.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lotus",
+    "model": "2-Eleven",
+    "pi": 799,
+    "topSpeedKmh": 264.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lotus",
+    "model": "3-Eleven",
+    "pi": 839,
+    "topSpeedKmh": 292.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lotus",
+    "model": "340R",
+    "pi": 700,
+    "topSpeedKmh": 212,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lotus",
+    "model": "Elan Sprint",
+    "pi": 443,
+    "topSpeedKmh": 203.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lotus",
+    "model": "Elise GT1",
+    "pi": 794,
+    "topSpeedKmh": 282.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lotus",
+    "model": "Elise Series 1 Sport 190",
+    "pi": 711,
+    "topSpeedKmh": 239.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lotus",
+    "model": "Emira",
+    "pi": 767,
+    "topSpeedKmh": 287.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lotus",
+    "model": "Esprit Turbo",
+    "pi": 538,
+    "topSpeedKmh": 234.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lotus",
+    "model": "Esprit V8",
+    "pi": 731,
+    "topSpeedKmh": 299.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lotus",
+    "model": "Evija",
+    "pi": 994,
+    "topSpeedKmh": 355.5,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lotus",
+    "model": "Exige Cup 430",
+    "pi": 833,
+    "topSpeedKmh": 303,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lotus",
+    "model": "Exige S",
+    "pi": 754,
+    "topSpeedKmh": 284.5,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Lucid",
+    "model": "Air Sapphire",
+    "pi": 884,
+    "topSpeedKmh": 330.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lynk",
+    "model": "& Co #100 Cyan Racing 03",
+    "pi": 800,
+    "topSpeedKmh": 246.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Lynk",
+    "model": "& Co 02 Hatchback",
+    "pi": 637,
+    "topSpeedKmh": 247.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Lynk",
+    "model": "& Co 03+",
+    "pi": 679,
+    "topSpeedKmh": 262.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Lynk",
+    "model": "& Co 05+",
+    "pi": 622,
+    "topSpeedKmh": 260.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "MG",
+    "model": "#20 MG6 XPower",
+    "pi": 800,
+    "topSpeedKmh": 242.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "MG",
+    "model": "Cyberster",
+    "pi": 767,
+    "topSpeedKmh": 274.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "MG",
+    "model": "MG3",
+    "pi": 444,
+    "topSpeedKmh": 180.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "MG",
+    "model": "MG6 XPower",
+    "pi": 716,
+    "topSpeedKmh": 270.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "MG",
+    "model": "MG7",
+    "pi": 636,
+    "topSpeedKmh": 267.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "MG",
+    "model": "Metro 6R4",
+    "pi": 811,
+    "topSpeedKmh": 214.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "MG",
+    "model": "XPower SV-R",
+    "pi": 694,
+    "topSpeedKmh": 277.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "MINI",
+    "model": "Cooper S",
+    "pi": 281,
+    "topSpeedKmh": 159.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "MINI",
+    "model": "Cooper S Forza Edition",
+    "pi": 800,
+    "topSpeedKmh": 241.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "MINI",
+    "model": "John Cooper Works",
+    "pi": 598,
+    "topSpeedKmh": 240.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "MINI",
+    "model": "John Cooper Works Countryman ALL4",
+    "pi": 537,
+    "topSpeedKmh": 226.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "MINI",
+    "model": "John Cooper Works GP",
+    "pi": 719,
+    "topSpeedKmh": 261.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "MINI",
+    "model": "X-Raid ALL4 Racing Countryman",
+    "pi": 632,
+    "topSpeedKmh": 153.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "MINI",
+    "model": "X-Raid John Cooper Works Buggy",
+    "pi": 632,
+    "topSpeedKmh": 201.2,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Maserati",
+    "model": "8CTF",
+    "pi": 657,
+    "topSpeedKmh": 287.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Maserati",
+    "model": "Gran Turismo S",
+    "pi": 702,
+    "topSpeedKmh": 302.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Maserati",
+    "model": "Gran Turismo S Forza Edition",
+    "pi": 900,
+    "topSpeedKmh": 345.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Maserati",
+    "model": "Levante S",
+    "pi": 696,
+    "topSpeedKmh": 290.2,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Maserati",
+    "model": "MC12 Versione Corsa",
+    "pi": 961,
+    "topSpeedKmh": 338.3,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mazda",
+    "model": "323 GT-R",
+    "pi": 589,
+    "topSpeedKmh": 232.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mazda",
+    "model": "MX-5",
+    "pi": 620,
+    "topSpeedKmh": 239.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mazda",
+    "model": "MX-5 Miata",
+    "pi": 445,
+    "topSpeedKmh": 202.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mazda",
+    "model": "MX-5 Miata RF",
+    "pi": 626,
+    "topSpeedKmh": 235.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mazda",
+    "model": "Mazdaspeed MX-5",
+    "pi": 587,
+    "topSpeedKmh": 225.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mazda",
+    "model": "RX-7",
+    "pi": 645,
+    "topSpeedKmh": 288.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mazda",
+    "model": "RX-7 Spirit R Type-A",
+    "pi": 687,
+    "topSpeedKmh": 287.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mazda",
+    "model": "RX-8 R3",
+    "pi": 624,
+    "topSpeedKmh": 250.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mazda",
+    "model": "Savanna RX-7",
+    "pi": 558,
+    "topSpeedKmh": 251.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "12C Coupé",
+    "pi": 832,
+    "topSpeedKmh": 337.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "570S Coupe",
+    "pi": 824,
+    "topSpeedKmh": 324.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "600LT Coupe",
+    "pi": 868,
+    "topSpeedKmh": 324.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "620R",
+    "pi": 864,
+    "topSpeedKmh": 320.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "650S Coupe",
+    "pi": 859,
+    "topSpeedKmh": 340.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "650S Spider",
+    "pi": 856,
+    "topSpeedKmh": 331.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "720S Coupe",
+    "pi": 899,
+    "topSpeedKmh": 363.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "720S Spider",
+    "pi": 887,
+    "topSpeedKmh": 329.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "765LT",
+    "pi": 913,
+    "topSpeedKmh": 352.8,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "Artura",
+    "pi": 860,
+    "topSpeedKmh": 358.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "F1",
+    "pi": 817,
+    "topSpeedKmh": 391.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "F1 GT",
+    "pi": 866,
+    "topSpeedKmh": 365,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "GT",
+    "pi": 823,
+    "topSpeedKmh": 331.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "P1",
+    "pi": 928,
+    "topSpeedKmh": 407.2,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "Sabre",
+    "pi": 887,
+    "topSpeedKmh": 336.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "Senna",
+    "pi": 934,
+    "topSpeedKmh": 358.4,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "McLaren",
+    "model": "Speedtail",
+    "pi": 910,
+    "topSpeedKmh": 422.9,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-AMG",
+    "model": "C 63 S Coupe",
+    "pi": 755,
+    "topSpeedKmh": 308.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-AMG",
+    "model": "E 63 S",
+    "pi": 778,
+    "topSpeedKmh": 335.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mercedes-AMG",
+    "model": "GT 4-Door Coupe",
+    "pi": 768,
+    "topSpeedKmh": 350,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mercedes-AMG",
+    "model": "GT Black Series",
+    "pi": 884,
+    "topSpeedKmh": 328.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-AMG",
+    "model": "GT R",
+    "pi": 837,
+    "topSpeedKmh": 323.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-AMG",
+    "model": "GT S",
+    "pi": 797,
+    "topSpeedKmh": 310.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-AMG",
+    "model": "GT3",
+    "pi": 890,
+    "topSpeedKmh": 303.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-AMG",
+    "model": "Mercedes-AMG ONE",
+    "pi": 927,
+    "topSpeedKmh": 343,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mercedes-AMG",
+    "model": "SL 63",
+    "pi": 789,
+    "topSpeedKmh": 327.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "#24 Tankpool24 Racing Truck",
+    "pi": 702,
+    "topSpeedKmh": 230.8,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "#24 Tankpool24 Racing Truck Forza Edition",
+    "pi": 800,
+    "topSpeedKmh": 274.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "190E 2.5-16 Evolution II",
+    "pi": 579,
+    "topSpeedKmh": 271,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "280 SL",
+    "pi": 478,
+    "topSpeedKmh": 207.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "300 SL Coupe",
+    "pi": 498,
+    "topSpeedKmh": 232.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "300 SLR",
+    "pi": 714,
+    "topSpeedKmh": 303.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "500 E",
+    "pi": 616,
+    "topSpeedKmh": 277.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "A 45 AMG",
+    "pi": 707,
+    "topSpeedKmh": 296,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "AMG CLK GTR",
+    "pi": 829,
+    "topSpeedKmh": 334.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "AMG CLK GTR Forza Edition",
+    "pi": 998,
+    "topSpeedKmh": 350.2,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "AMG Hammer Coupe",
+    "pi": 681,
+    "topSpeedKmh": 314.9,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "AMG Hammer Wagon",
+    "pi": 675,
+    "topSpeedKmh": 308.7,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "C 63 AMG Coupe Black Series",
+    "pi": 768,
+    "topSpeedKmh": 332.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "E 55 AMG Wagon",
+    "pi": 698,
+    "topSpeedKmh": 319.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "E 63 AMG",
+    "pi": 751,
+    "topSpeedKmh": 339.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "G 63 AMG 6x6",
+    "pi": 606,
+    "topSpeedKmh": 248.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "G 65 AMG",
+    "pi": 639,
+    "topSpeedKmh": 264.7,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "SL 65 AMG Black Series",
+    "pi": 800,
+    "topSpeedKmh": 347.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "SLK 55 AMG",
+    "pi": 740,
+    "topSpeedKmh": 319,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "SLS AMG",
+    "pi": 804,
+    "topSpeedKmh": 338,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "SSK",
+    "pi": 256,
+    "topSpeedKmh": 183.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "Unimog U5023",
+    "pi": 103,
+    "topSpeedKmh": 125,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "W154",
+    "pi": 672,
+    "topSpeedKmh": 346.7,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mercedes-Benz",
+    "model": "X-Class",
+    "pi": 368,
+    "topSpeedKmh": 186.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mercury",
+    "model": "Cyclone Spoiler",
+    "pi": 491,
+    "topSpeedKmh": 254.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Meyers",
+    "model": "Manx",
+    "pi": 291,
+    "topSpeedKmh": 143.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Meyers",
+    "model": "Manx 2.0 EV",
+    "pi": 649,
+    "topSpeedKmh": 199.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Meyers",
+    "model": "Manx Forza Edition",
+    "pi": 800,
+    "topSpeedKmh": 235.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mitsubishi",
+    "model": "#1 Sierra Sierra Enterprises Lancer Evolution Time Attack",
+    "pi": 967,
+    "topSpeedKmh": 293.1,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mitsubishi",
+    "model": "Eclipse GSX",
+    "pi": 543,
+    "topSpeedKmh": 254.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mitsubishi",
+    "model": "FTO GP Version R",
+    "pi": 585,
+    "topSpeedKmh": 250.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Mitsubishi",
+    "model": "GTO",
+    "pi": 610,
+    "topSpeedKmh": 268.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mitsubishi",
+    "model": "Galant VR-4",
+    "pi": 540,
+    "topSpeedKmh": 238.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mitsubishi",
+    "model": "Lancer Evolution III GSR",
+    "pi": 632,
+    "topSpeedKmh": 252.7,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mitsubishi",
+    "model": "Lancer Evolution IX MR",
+    "pi": 632,
+    "topSpeedKmh": 261.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mitsubishi",
+    "model": "Lancer Evolution VI GSR",
+    "pi": 659,
+    "topSpeedKmh": 248.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mitsubishi",
+    "model": "Lancer Evolution VIII MR",
+    "pi": 664,
+    "topSpeedKmh": 271.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mitsubishi",
+    "model": "Lancer Evolution X GSR",
+    "pi": 649,
+    "topSpeedKmh": 252.3,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mitsubishi",
+    "model": "Lancer Evolution X GSR 'Welcome Pack'",
+    "pi": 800,
+    "topSpeedKmh": 319.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mitsubishi",
+    "model": "Montero Evolution",
+    "pi": 457,
+    "topSpeedKmh": 203.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Mitsubishi",
+    "model": "Starion ESI-R",
+    "pi": 549,
+    "topSpeedKmh": 228.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Morgan",
+    "model": "3 Wheeler",
+    "pi": 488,
+    "topSpeedKmh": 182.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Morgan",
+    "model": "Aero GT",
+    "pi": 784,
+    "topSpeedKmh": 294.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Morris",
+    "model": "Mini-Traveller",
+    "pi": 100,
+    "topSpeedKmh": 110.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Morris",
+    "model": "Minor 1000",
+    "pi": 100,
+    "topSpeedKmh": 125.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Morris",
+    "model": "Minor 1000 Forza Edition",
+    "pi": 800,
+    "topSpeedKmh": 221.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Morris",
+    "model": "Minor Series II Traveler",
+    "pi": 100,
+    "topSpeedKmh": 99,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mosler",
+    "model": "MT900 GT3",
+    "pi": 910,
+    "topSpeedKmh": 296.9,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Mosler",
+    "model": "MT900S",
+    "pi": 919,
+    "topSpeedKmh": 359,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "NIO",
+    "model": "EP9",
+    "pi": 998,
+    "topSpeedKmh": 314.3,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Napier",
+    "model": "Napier-Railton",
+    "pi": 603,
+    "topSpeedKmh": 287.7,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "240SX SE",
+    "pi": 445,
+    "topSpeedKmh": 221.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "370Z",
+    "pi": 688,
+    "topSpeedKmh": 289.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "370Z NISMO",
+    "pi": 718,
+    "topSpeedKmh": 288.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Be-1",
+    "pi": 257,
+    "topSpeedKmh": 139,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Donut Media 350Z 'Hi Car'",
+    "pi": 792,
+    "topSpeedKmh": 291.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Donut Media 350Z 'Low Car'",
+    "pi": 733,
+    "topSpeedKmh": 269.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Fairlady Z",
+    "pi": 650,
+    "topSpeedKmh": 283.2,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Fairlady Z 432",
+    "pi": 482,
+    "topSpeedKmh": 198.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Fairlady Z Forza Edition",
+    "pi": 800,
+    "topSpeedKmh": 218.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Fairlady Z Version S Twin Turbo",
+    "pi": 607,
+    "topSpeedKmh": 264.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Figaro",
+    "pi": 324,
+    "topSpeedKmh": 155.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "GT-R (R35)",
+    "pi": 814,
+    "topSpeedKmh": 336.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "GT-R Black Edition (R35)",
+    "pi": 810,
+    "topSpeedKmh": 341.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "GT-R NISMO (R35)",
+    "pi": 846,
+    "topSpeedKmh": 336.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "NISMO GT-R LM",
+    "pi": 658,
+    "topSpeedKmh": 261.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Pao",
+    "pi": 228,
+    "topSpeedKmh": 136.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Pickup #23 Rally Raid",
+    "pi": 577,
+    "topSpeedKmh": 196.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Pulsar GTi-R",
+    "pi": 594,
+    "topSpeedKmh": 243,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "R390 (GT1)",
+    "pi": 859,
+    "topSpeedKmh": 319.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "S-Cargo",
+    "pi": 222,
+    "topSpeedKmh": 138.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Safari Turbo",
+    "pi": 230,
+    "topSpeedKmh": 148.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Sentra NISMO",
+    "pi": 591,
+    "topSpeedKmh": 217.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Silvia CLUB K's",
+    "pi": 537,
+    "topSpeedKmh": 241.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Silvia K's",
+    "pi": 617,
+    "topSpeedKmh": 255.7,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Silvia K's Aero",
+    "pi": 609,
+    "topSpeedKmh": 251.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Silvia Spec-R",
+    "pi": 632,
+    "topSpeedKmh": 251.9,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Skyline 2000GT-R",
+    "pi": 493,
+    "topSpeedKmh": 212.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Skyline GT-R V-Spec",
+    "pi": 635,
+    "topSpeedKmh": 268.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Skyline GT-R V-Spec II",
+    "pi": 657,
+    "topSpeedKmh": 268,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Skyline GTS-R (HR31)",
+    "pi": 543,
+    "topSpeedKmh": 246.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Skyline H/T 2000GT-R",
+    "pi": 518,
+    "topSpeedKmh": 208.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Stagea Four V",
+    "pi": 547,
+    "topSpeedKmh": 236.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Titan Warrior Concept",
+    "pi": 486,
+    "topSpeedKmh": 210.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Tsuru",
+    "pi": 444,
+    "topSpeedKmh": 198.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Z",
+    "pi": 736,
+    "topSpeedKmh": 307.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Nissan",
+    "model": "Z NISMO",
+    "pi": 765,
+    "topSpeedKmh": 290.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Noble",
+    "model": "M400",
+    "pi": 829,
+    "topSpeedKmh": 304.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Noble",
+    "model": "M600",
+    "pi": 877,
+    "topSpeedKmh": 379.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Oldsmobile",
+    "model": "Toronado",
+    "pi": 403,
+    "topSpeedKmh": 238.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Opel",
+    "model": "Manta 400",
+    "pi": 691,
+    "topSpeedKmh": 257.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Pagani",
+    "model": "Huayra BC",
+    "pi": 929,
+    "topSpeedKmh": 370.8,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Pagani",
+    "model": "Huayra BC Forza Edition",
+    "pi": 998,
+    "topSpeedKmh": 356.1,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Pagani",
+    "model": "Huayra Coupe",
+    "pi": 900,
+    "topSpeedKmh": 374.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Pagani",
+    "model": "Huayra R",
+    "pi": 985,
+    "topSpeedKmh": 362.9,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Pagani",
+    "model": "Zonda Cinque Roadster",
+    "pi": 896,
+    "topSpeedKmh": 328.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Pagani",
+    "model": "Zonda Cinque Roadster 'Oreo Edition'",
+    "pi": 900,
+    "topSpeedKmh": 328.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Pagani",
+    "model": "Zonda R",
+    "pi": 959,
+    "topSpeedKmh": 356.6,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Peel",
+    "model": "P50",
+    "pi": 100,
+    "topSpeedKmh": 61.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Peel",
+    "model": "Trident",
+    "pi": 100,
+    "topSpeedKmh": 66.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Penhall",
+    "model": "The Cholla",
+    "pi": 655,
+    "topSpeedKmh": 183.9,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Peugeot",
+    "model": "205 Rallye",
+    "pi": 462,
+    "topSpeedKmh": 193.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Peugeot",
+    "model": "205 Turbo 16",
+    "pi": 616,
+    "topSpeedKmh": 224,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Peugeot",
+    "model": "207 Super 2000",
+    "pi": 755,
+    "topSpeedKmh": 241.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Plymouth",
+    "model": "Barracuda Formula-S",
+    "pi": 550,
+    "topSpeedKmh": 230.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Plymouth",
+    "model": "Belvedere",
+    "pi": 529,
+    "topSpeedKmh": 249.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Plymouth",
+    "model": "Cuda 426 Hemi",
+    "pi": 547,
+    "topSpeedKmh": 249.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Plymouth",
+    "model": "Fury",
+    "pi": 477,
+    "topSpeedKmh": 231.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Polaris",
+    "model": "RZR Pro XP Factory Racing Limited Edition",
+    "pi": 516,
+    "topSpeedKmh": 147.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Polaris",
+    "model": "RZR Pro XP Ultimate",
+    "pi": 593,
+    "topSpeedKmh": 146.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Polaris",
+    "model": "RZR XP 1000 EPS",
+    "pi": 501,
+    "topSpeedKmh": 158.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Pontiac",
+    "model": "Firebird",
+    "pi": 533,
+    "topSpeedKmh": 226,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Pontiac",
+    "model": "Firebird Trans Am",
+    "pi": 418,
+    "topSpeedKmh": 219,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Pontiac",
+    "model": "Firebird Trans Am GTA",
+    "pi": 485,
+    "topSpeedKmh": 238.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Pontiac",
+    "model": "Firebird Trans Am GTA Forza Edition",
+    "pi": 900,
+    "topSpeedKmh": 308.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Pontiac",
+    "model": "Firebird Trans Am SD-455",
+    "pi": 551,
+    "topSpeedKmh": 244.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Pontiac",
+    "model": "GTO",
+    "pi": 484,
+    "topSpeedKmh": 205.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Pontiac",
+    "model": "GTO Judge",
+    "pi": 545,
+    "topSpeedKmh": 216.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "#185 959 Prodrive Rally Raid",
+    "pi": 742,
+    "topSpeedKmh": 279.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "#23 917/20",
+    "pi": 849,
+    "topSpeedKmh": 365.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "#3 917 LH",
+    "pi": 856,
+    "topSpeedKmh": 357.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "#46 356 SL Gmünd Coupe",
+    "pi": 242,
+    "topSpeedKmh": 158.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "#65 Rothsport Racing 911 'Desert Flyer'",
+    "pi": 694,
+    "topSpeedKmh": 214,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "#70 Porsche Motorsport 935",
+    "pi": 932,
+    "topSpeedKmh": 337.6,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "#92 Porsche GT Team 911 RSR",
+    "pi": 910,
+    "topSpeedKmh": 297.4,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "356 A 1600 Super",
+    "pi": 241,
+    "topSpeedKmh": 170.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "356 C Cabriolet Emory Special",
+    "pi": 651,
+    "topSpeedKmh": 239.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "550A Spyder",
+    "pi": 513,
+    "topSpeedKmh": 227.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "718 Cayman GT4 RS",
+    "pi": 850,
+    "topSpeedKmh": 336.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "718 Cayman GTS",
+    "pi": 785,
+    "topSpeedKmh": 289.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "906 Carrera 6",
+    "pi": 732,
+    "topSpeedKmh": 272.9,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 Carrera 2 by Gunther Werks",
+    "pi": 804,
+    "topSpeedKmh": 294.3,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 Carrera RS",
+    "pi": 601,
+    "topSpeedKmh": 234.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 Carrera S",
+    "pi": 819,
+    "topSpeedKmh": 326.9,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 GT1 Strassenversion",
+    "pi": 840,
+    "topSpeedKmh": 318,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 GT2",
+    "pi": 753,
+    "topSpeedKmh": 290.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 GT2 RS",
+    "pi": 888,
+    "topSpeedKmh": 352.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 GT3",
+    "pi": 858,
+    "topSpeedKmh": 326.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 GT3 R",
+    "pi": 890,
+    "topSpeedKmh": 305.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 GT3 RS",
+    "pi": 867,
+    "topSpeedKmh": 309.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 GT3 RS 4.0",
+    "pi": 825,
+    "topSpeedKmh": 325.4,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 GT3 RS Forza Edition",
+    "pi": 900,
+    "topSpeedKmh": 328,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 Rallye",
+    "pi": 800,
+    "topSpeedKmh": 311.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 Reimagined by Singer - DLS",
+    "pi": 830,
+    "topSpeedKmh": 336.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 Speedster",
+    "pi": 813,
+    "topSpeedKmh": 330.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 Sport Classic",
+    "pi": 756,
+    "topSpeedKmh": 308,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 Turbo 3.3",
+    "pi": 666,
+    "topSpeedKmh": 251.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "911 Turbo S",
+    "pi": 857,
+    "topSpeedKmh": 340.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "914/6",
+    "pi": 427,
+    "topSpeedKmh": 196.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "918 Spyder",
+    "pi": 920,
+    "topSpeedKmh": 390.3,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "944 Turbo",
+    "pi": 651,
+    "topSpeedKmh": 259.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "959",
+    "pi": 764,
+    "topSpeedKmh": 322.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "968 Turbo S",
+    "pi": 701,
+    "topSpeedKmh": 273.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "Carrera GT",
+    "pi": 845,
+    "topSpeedKmh": 337.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "Cayenne Turbo",
+    "pi": 744,
+    "topSpeedKmh": 293.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "Cayman GT4",
+    "pi": 819,
+    "topSpeedKmh": 311.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "Cayman GTS",
+    "pi": 767,
+    "topSpeedKmh": 290.5,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "Macan LPR Rally Raid",
+    "pi": 637,
+    "topSpeedKmh": 227.2,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "Macan Turbo",
+    "pi": 695,
+    "topSpeedKmh": 277,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "Mission R",
+    "pi": 925,
+    "topSpeedKmh": 295.6,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "Panamera Turbo",
+    "pi": 767,
+    "topSpeedKmh": 332.7,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "Taycan Cross Turismo Turbo S",
+    "pi": 800,
+    "topSpeedKmh": 276.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "Taycan Turbo S",
+    "pi": 807,
+    "topSpeedKmh": 275.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Porsche",
+    "model": "Taycan Turbo S 'Welcome Pack'",
+    "pi": 900,
+    "topSpeedKmh": 431.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "RAESR",
+    "model": "Tachyon Speed",
+    "pi": 983,
+    "topSpeedKmh": 390.3,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "RJ",
+    "model": "Anderson #37 Polaris RZR Pro 4 Truck",
+    "pi": 776,
+    "topSpeedKmh": 239.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "RJ",
+    "model": "Anderson #37 Polaris RZR-Rockstar Energy Pro 2 Truck",
+    "pi": 776,
+    "topSpeedKmh": 244.6,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Radical",
+    "model": "RXC Turbo",
+    "pi": 928,
+    "topSpeedKmh": 313.7,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Ram",
+    "model": "2500 Power Wagon",
+    "pi": 467,
+    "topSpeedKmh": 229.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Reliant",
+    "model": "Supervan III",
+    "pi": 100,
+    "topSpeedKmh": 122,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Renault",
+    "model": "4L Export",
+    "pi": 100,
+    "topSpeedKmh": 104,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Renault",
+    "model": "5 Turbo",
+    "pi": 521,
+    "topSpeedKmh": 205.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Renault",
+    "model": "8 Gordini",
+    "pi": 435,
+    "topSpeedKmh": 180.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Renault",
+    "model": "Clio R.S.",
+    "pi": 592,
+    "topSpeedKmh": 225,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Renault",
+    "model": "Clio R.S. 16 Concept",
+    "pi": 686,
+    "topSpeedKmh": 249,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Renault",
+    "model": "Clio R.S. 200 EDC",
+    "pi": 595,
+    "topSpeedKmh": 225.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Renault",
+    "model": "Clio Williams",
+    "pi": 511,
+    "topSpeedKmh": 213.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Renault",
+    "model": "Megane R.S.",
+    "pi": 670,
+    "topSpeedKmh": 254.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Renault",
+    "model": "Megane R.S. 250",
+    "pi": 657,
+    "topSpeedKmh": 248.2,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Renault",
+    "model": "Mégane R26.R",
+    "pi": 678,
+    "topSpeedKmh": 243.2,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Rimac",
+    "model": "Concept Two",
+    "pi": 963,
+    "topSpeedKmh": 420.5,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Rimac",
+    "model": "Nevera",
+    "pi": 968,
+    "topSpeedKmh": 416.3,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Rivian",
+    "model": "R1S",
+    "pi": 726,
+    "topSpeedKmh": 197.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Rivian",
+    "model": "R1T",
+    "pi": 718,
+    "topSpeedKmh": 204.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Rossion",
+    "model": "Q1",
+    "pi": 840,
+    "topSpeedKmh": 313.7,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "SIERRA",
+    "model": "Cars #23 Yokohama ALPHA",
+    "pi": 986,
+    "topSpeedKmh": 277.3,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "SIERRA",
+    "model": "Cars 700R",
+    "pi": 737,
+    "topSpeedKmh": 126.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "SIERRA",
+    "model": "Cars RX3",
+    "pi": 737,
+    "topSpeedKmh": 194.2,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "SUBARU",
+    "model": "BRAT GL",
+    "pi": 273,
+    "topSpeedKmh": 161.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "SUBARU",
+    "model": "BRZ",
+    "pi": 673,
+    "topSpeedKmh": 236.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "SUBARU",
+    "model": "Impreza 22B-STI Version",
+    "pi": 640,
+    "topSpeedKmh": 246.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "SUBARU",
+    "model": "Impreza WRX STI",
+    "pi": 649,
+    "topSpeedKmh": 252.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "SUBARU",
+    "model": "Legacy RS",
+    "pi": 514,
+    "topSpeedKmh": 233.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "SUBARU",
+    "model": "STI S209",
+    "pi": 689,
+    "topSpeedKmh": 265.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "SUBARU",
+    "model": "SVX",
+    "pi": 574,
+    "topSpeedKmh": 252,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "SUBARU",
+    "model": "WRX",
+    "pi": 663,
+    "topSpeedKmh": 263.3,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "SUBARU",
+    "model": "WRX STI",
+    "pi": 675,
+    "topSpeedKmh": 266.3,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "SUBARU",
+    "model": "WRX STI ARX Supercar",
+    "pi": 849,
+    "topSpeedKmh": 242.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Saleen",
+    "model": "S1",
+    "pi": 821,
+    "topSpeedKmh": 289.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Saleen",
+    "model": "S7",
+    "pi": 855,
+    "topSpeedKmh": 350,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Saleen",
+    "model": "S7 LM",
+    "pi": 918,
+    "topSpeedKmh": 391.6,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Saleen",
+    "model": "Sportruck XR Black Label",
+    "pi": 666,
+    "topSpeedKmh": 251.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Schuppan",
+    "model": "962CR",
+    "pi": 869,
+    "topSpeedKmh": 358.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Shelby",
+    "model": "Cobra 427 S/C",
+    "pi": 694,
+    "topSpeedKmh": 256.9,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Shelby",
+    "model": "Cobra Daytona Coupe",
+    "pi": 637,
+    "topSpeedKmh": 296.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Shelby",
+    "model": "GT 500",
+    "pi": 577,
+    "topSpeedKmh": 246.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Spania",
+    "model": "GTA GTA Spano",
+    "pi": 915,
+    "topSpeedKmh": 398.2,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "TVR",
+    "model": "Cerbera Speed 12",
+    "pi": 861,
+    "topSpeedKmh": 385.6,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "TVR",
+    "model": "Griffith",
+    "pi": 825,
+    "topSpeedKmh": 319.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "TVR",
+    "model": "Sagaris",
+    "pi": 779,
+    "topSpeedKmh": 296.3,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "#1 T100 Baja Truck",
+    "pi": 693,
+    "topSpeedKmh": 210,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "2000GT",
+    "pi": 487,
+    "topSpeedKmh": 227.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "4Runner TRD Pro",
+    "pi": 531,
+    "topSpeedKmh": 224,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "86",
+    "pi": 579,
+    "topSpeedKmh": 237.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Camry TRD",
+    "pi": 643,
+    "topSpeedKmh": 275.5,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Celica GT",
+    "pi": 315,
+    "topSpeedKmh": 179.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Celica GT-Four RC ST185",
+    "pi": 544,
+    "topSpeedKmh": 254.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Celica GT-Four ST205",
+    "pi": 590,
+    "topSpeedKmh": 266.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Celica Sport Specialty II",
+    "pi": 557,
+    "topSpeedKmh": 237.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Chaser GT Twin Turbo",
+    "pi": 597,
+    "topSpeedKmh": 256.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "FJ40",
+    "pi": 269,
+    "topSpeedKmh": 153.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "GR Supra",
+    "pi": 731,
+    "topSpeedKmh": 271,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "GR Yaris",
+    "pi": 672,
+    "topSpeedKmh": 234.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "GR86",
+    "pi": 676,
+    "topSpeedKmh": 239.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Hilux Arctic Trucks AT38",
+    "pi": 457,
+    "topSpeedKmh": 177.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Land Cruiser Arctic Trucks AT37",
+    "pi": 404,
+    "topSpeedKmh": 178,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "MR2 GT",
+    "pi": 632,
+    "topSpeedKmh": 267,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "MR2 SC",
+    "pi": 502,
+    "topSpeedKmh": 225.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Sera",
+    "pi": 447,
+    "topSpeedKmh": 192.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Soarer 2.5 GT-T",
+    "pi": 601,
+    "topSpeedKmh": 271.3,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Sports 800",
+    "pi": 246,
+    "topSpeedKmh": 143.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Sprinter Trueno GT Apex",
+    "pi": 480,
+    "topSpeedKmh": 201.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Supra 2.0 GT",
+    "pi": 558,
+    "topSpeedKmh": 239.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Supra RZ",
+    "pi": 646,
+    "topSpeedKmh": 282.8,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Supra RZ 'Welcome Pack'",
+    "pi": 800,
+    "topSpeedKmh": 333.5,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Tacoma TRD Pro",
+    "pi": 518,
+    "topSpeedKmh": 214.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Toyota",
+    "model": "Tundra TRD Pro",
+    "pi": 562,
+    "topSpeedKmh": 232.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Ultima",
+    "model": "Evolution Coupe 1020",
+    "pi": 961,
+    "topSpeedKmh": 393.2,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Universal",
+    "model": "Studios Back to the Future Time Machine 1",
+    "pi": 455,
+    "topSpeedKmh": 182.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Universal",
+    "model": "Studios Back to the Future Time Machine 2",
+    "pi": 435,
+    "topSpeedKmh": 180.9,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Universal",
+    "model": "Studios Back to the Future Time Machine 3",
+    "pi": 335,
+    "topSpeedKmh": 174.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Universal",
+    "model": "Studios Jeep Wrangler Sahara 'Jurassic Park'",
+    "pi": 344,
+    "topSpeedKmh": 155.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Universal",
+    "model": "Studios K.I.T.T.",
+    "pi": 743,
+    "topSpeedKmh": 333.1,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "VUHL",
+    "model": "05RR",
+    "pi": 886,
+    "topSpeedKmh": 302.2,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Vauxhall",
+    "model": "Corsa VXR",
+    "pi": 584,
+    "topSpeedKmh": 227.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Vauxhall",
+    "model": "Lotus Carlton",
+    "pi": 635,
+    "topSpeedKmh": 288.7,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Vauxhall",
+    "model": "Monaro VXR",
+    "pi": 696,
+    "topSpeedKmh": 300,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "#1107 Desert Dingo Racing Stock Bug",
+    "pi": 371,
+    "topSpeedKmh": 169.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "#34 Volkswagen Andretti Rallycross Beetle",
+    "pi": 851,
+    "topSpeedKmh": 219.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Beetle",
+    "pi": 100,
+    "topSpeedKmh": 132.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Beetle Forza Edition",
+    "pi": 900,
+    "topSpeedKmh": 140.8,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Class 5/1600 Baja Bug",
+    "pi": 349,
+    "topSpeedKmh": 158.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Corrado VR6",
+    "pi": 533,
+    "topSpeedKmh": 238.5,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Double Cab Pick-Up",
+    "pi": 100,
+    "topSpeedKmh": 116.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Golf GTI",
+    "pi": 428,
+    "topSpeedKmh": 189.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Golf Gti 16v Mk2",
+    "pi": 429,
+    "topSpeedKmh": 206.2,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Golf R",
+    "pi": 672,
+    "topSpeedKmh": 268.6,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Golf R32",
+    "pi": 618,
+    "topSpeedKmh": 250.1,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Gti VR6 Mk3",
+    "pi": 510,
+    "topSpeedKmh": 227.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "ID.4",
+    "pi": 527,
+    "topSpeedKmh": 164.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Pickup LX",
+    "pi": 100,
+    "topSpeedKmh": 122.6,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "SP-2",
+    "pi": 252,
+    "topSpeedKmh": 164,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Santana",
+    "pi": 340,
+    "topSpeedKmh": 167.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Scirocco R",
+    "pi": 663,
+    "topSpeedKmh": 259.4,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Scirocco S",
+    "pi": 293,
+    "topSpeedKmh": 168.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Thing",
+    "pi": 100,
+    "topSpeedKmh": 118.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Volkswagen",
+    "model": "Type 2 De Luxe",
+    "pi": 100,
+    "topSpeedKmh": 118.1,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Volvo",
+    "model": "242 Turbo Evolution",
+    "pi": 548,
+    "topSpeedKmh": 224.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Volvo",
+    "model": "850 R",
+    "pi": 511,
+    "topSpeedKmh": 249.8,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Volvo",
+    "model": "C30 Polestar",
+    "pi": 626,
+    "topSpeedKmh": 258.3,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "FWD"
+  },
+  {
+    "brand": "Volvo",
+    "model": "V60 Polestar",
+    "pi": 662,
+    "topSpeedKmh": 270.9,
+    "differential": "Sport Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "W",
+    "model": "Motors Lykan HyperSport",
+    "pi": 877,
+    "topSpeedKmh": 379.5,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Willys",
+    "model": "MB Jeep",
+    "pi": 198,
+    "topSpeedKmh": 124.4,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Wuling",
+    "model": "Hongguang Mini EV Macaron",
+    "pi": 136,
+    "topSpeedKmh": 101.7,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Wuling",
+    "model": "Sunshine S",
+    "pi": 207,
+    "topSpeedKmh": 137.3,
+    "differential": "Street Differential",
+    "tireType": "Street",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Xpeng",
+    "model": "P7",
+    "pi": 722,
+    "topSpeedKmh": 191.4,
+    "differential": "Sport Differential",
+    "tireType": "Sport",
+    "driveType": "AWD"
+  },
+  {
+    "brand": "Zenvo",
+    "model": "ST1",
+    "pi": 883,
+    "topSpeedKmh": 382.1,
+    "differential": "Race Differential",
+    "tireType": "Semi-Slick",
+    "driveType": "RWD"
+  },
+  {
+    "brand": "Zenvo",
+    "model": "TSR-S",
+    "pi": 927,
+    "topSpeedKmh": 398,
+    "differential": "Race Differential",
+    "tireType": "Slick",
+    "driveType": "RWD"
+  }
+]

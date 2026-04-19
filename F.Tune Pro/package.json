@@ -1,0 +1,47 @@
+{
+  "name": "f-tune-pro",
+  "productName": "F.Tuning Pro Beta",
+  "description": "Advanced Performance Engineering Suite for macOS and Windows",
+  "version": "1.0.2",
+  "main": "main.js",
+  "author": "MrBeoHP",
+  "scripts": {
+    "start": "node scripts/run-local-bin.js electronmon .",
+    "start:raw": "node scripts/run-local-bin.js electron .",
+    "sync:fh5-specs": "node scripts/sync-fh5-specs.js",
+    "sync:fh6-cars": "node scripts/sync-fh6-cars.js",
+    "build": "electron-builder --win portable",
+    "build:log": "powershell -NoProfile -ExecutionPolicy Bypass -Command \"if (!(Test-Path 'dist')) { New-Item -ItemType Directory -Path 'dist' | Out-Null }; $log=\\\"dist/build.log\\\"; npm run build 2>&1 | Tee-Object -FilePath $log; $code=$LASTEXITCODE; Write-Host ('BUILD_LOG_PATH='+$log); if ($code -ne 0) { exit $code }; Start-Process notepad.exe $log\"",
+    "dist": "npm run build && powershell -Command \"Get-ChildItem -Path 'dist\\*.exe' -Recurse | ForEach-Object { if (Test-Path 'upx.exe') { .\\upx.exe --ultra-brute --lzma $_.FullName } }\""
+  },
+  "build": {
+    "appId": "com.ftune.pro",
+    "asar": true,
+    "artifactName": "${productName} ${version}.${ext}",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "portable",
+      "icon": "icon.ico",
+      "publisherName": "MrBeoHP"
+    },
+    "files": [
+      "index.html",
+      "style.css",
+      "renderer.js",
+      "main.js",
+      "overlay.html",
+      "preload.js",
+      "FH5_cars.json",
+      "icon.ico",
+      "assets/**/*",
+      "node_modules/**/*"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^28.2.0",
+    "electron-builder": "^24.13.3",
+    "electronmon": "^2.0.4"
+  }
+}

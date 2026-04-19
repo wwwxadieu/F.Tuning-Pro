@@ -1,0 +1,36 @@
+{
+  "models": {
+    "ferrari fxx-k": "#d71a21",
+    "lamborghini aventador lp700-4": "#e0b300",
+    "lamborghini huracan performante": "#f0c419",
+    "porsche 911 gt3 rs": "#4fa3ff",
+    "nissan gtr black edition (r35)": "#9aa3ad",
+    "bugatti chiron": "#2468b3",
+    "mclaren p1": "#f28c00",
+    "koenigsegg jesko": "#2dbdc4",
+    "ford mustang shelby gt500": "#2f6bcf",
+    "toyota supra rz": "#f39200"
+  },
+  "brands": {
+    "ferrari": "#cc1f2f",
+    "lamborghini": "#d8b322",
+    "porsche": "#4a7fc9",
+    "nissan": "#8f98a4",
+    "bugatti": "#2b65a9",
+    "mclaren": "#f18f01",
+    "koenigsegg": "#37b8be",
+    "ford": "#2c61b7",
+    "toyota": "#d53c2f",
+    "chevrolet": "#d0aa2a",
+    "bmw": "#3d7ccd",
+    "audi": "#cf3a2d",
+    "mercedes-amg": "#27a3a8",
+    "honda": "#d63e3a",
+    "mazda": "#c54634",
+    "subaru": "#2f67ad",
+    "dodge": "#d13b32",
+    "aston martin": "#1e7e63",
+    "pagani": "#8a6f44",
+    "jaguar": "#377a95"
+  }
+}

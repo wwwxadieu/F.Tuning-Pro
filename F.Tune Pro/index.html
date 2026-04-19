@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>F.Tuning Pro</title>
+    <link rel="preconnect" href="https://forza.fandom.com" crossorigin>
+    <link rel="preconnect" href="https://static.wikia.nocookie.net" crossorigin>
+    <link rel="preconnect" href="https://cdn.forza.net" crossorigin>
+    <link rel="dns-prefetch" href="https://forza.fandom.com">
+    <link rel="dns-prefetch" href="https://static.wikia.nocookie.net">
+    <link rel="dns-prefetch" href="https://cdn.forza.net">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,400,0,0" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="text-zinc-900 font-['Varela_Round'] overflow-hidden startup-pending preview-style-motorsport">
+    <video id="custom-bg-video" class="custom-bg-video" autoplay muted loop playsinline></video>
+
+    <header class="titlebar bg-white border-b border-zinc-200 h-[35px] flex items-center justify-between">
+        <div class="pl-4 text-[10px] font-black tracking-widest uppercase app-name">F.Tuning Pro</div>
+        <div class="flex h-full no-drag"> 
+            <div id="min-btn" class="px-4 flex items-center hover:bg-zinc-100 cursor-pointer transition-colors">
+                <span class="material-symbols-outlined text-[18px]">remove</span>
+            </div>
+            <div id="max-btn" class="px-4 flex items-center hover:bg-zinc-100 cursor-pointer transition-colors">
+                <span id="max-btn-icon" class="material-symbols-outlined text-[18px]">fullscreen</span>
+            </div>
+            <div id="close-btn" class="px-4 flex items-center hover:bg-red-500 hover:text-white cursor-pointer transition-colors">
+                <span class="material-symbols-outlined text-[18px]">close</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="h-[calc(100vh-67px)] flex flex-col items-center justify-start p-12 overflow-auto">
+        <!-- DASHBOARD PAGE -->
+        <div id="page-dashboard" class="w-full max-w-6xl my-auto animated-panel is-open">
+            <div class="text-center mb-16">
+                <h1 class="dashboard-hero-title text-7xl font-black italic tracking-tighter uppercase leading-none">F.Tuning Pro</h1>
+                <p id="dashboard-hero-subtitle" class="dashboard-hero-subtitle text-[10px] tracking-[0.6em] font-bold uppercase mt-4">Advanced Performance Engineering Suite</p>
+            </div>
+
+            <div class="dashboard-cards flex gap-8">
+                <div class="card-container">
+                    <div id="btn-dashboard-create" class="dashboard-card group no-drag cursor-pointer">
+                        <div class="absolute inset-0">
+                            <img src="https://images.unsplash.com/photo-1623000411680-3c560fe286c2?q=80&w=1744&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" class="card-img">
+                            <div class="card-overlay"></div>
+                            <div class="glass-sheen"></div>
+                        </div>
+                        <div class="card-content">
+                            <span class="material-symbols-outlined card-icon">rebase_edit</span>
+                            <h2 id="dashboard-card-create-title" class="card-title">Create Tune</h2>
+                            <p id="dashboard-card-create-subtitle" class="card-subtitle">Initialize New ECU Map</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-container">
+                    <div id="btn-dashboard-garage" class="dashboard-card group no-drag cursor-pointer">
+                        <div class="absolute inset-0">
+                            <img src="https://images.unsplash.com/photo-1767714454928-887853926d7c?q=80&w=2064" class="card-img">
+                            <div class="card-overlay"></div>
+                            <div class="glass-sheen"></div>
+                        </div>
+                        <div class="card-content">
+                            <span class="material-symbols-outlined card-icon">settings_input_component</span>
+                            <h2 id="dashboard-card-garage-title" class="card-title">My Garage</h2>
+                            <p id="dashboard-card-garage-subtitle" class="card-subtitle">Manage Saved Profiles</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-container">
+                    <div id="btn-settings" class="dashboard-card group no-drag cursor-pointer">
+                        <div class="absolute inset-0">
+                            <img src="https://images.unsplash.com/photo-1692303574072-74ad9095fc35?q=80&w=1740" class="card-img">
+                            <div class="card-overlay"></div>
+                            <div class="glass-sheen"></div>
+                        </div>
+                        <div class="card-content">
+                            <span class="material-symbols-outlined card-icon">tune</span>
+                            <h2 id="dashboard-card-settings-title" class="card-title">Settings</h2>
+                            <p id="dashboard-card-settings-subtitle" class="card-subtitle">System Preferences</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CREATE TUNE PAGE -->
+        <div id="page-create-tune" class="hidden w-full create-tune-page animated-panel">
+            <div class="create-tune-header">
+                <button id="btn-create-back" class="create-back-btn no-drag">
+                    <span class="material-symbols-outlined back-icon" aria-hidden="true">chevron_left</span>
+                </button>
+                <h1 id="create-main-title">Create New Tune</h1>
+                <div id="create-unit-group" class="create-unit-switch capsule-segment js-capsule-group no-drag" aria-label="Unit system">
+                    <button class="capsule-option is-active no-drag" type="button" data-unit-system="metric" data-segment-key="metric">Metric</button>
+                    <button class="capsule-option no-drag" type="button" data-unit-system="imperial" data-segment-key="imperial">Imperial</button>
+                </div>
+            </div>
+
+            <div class="create-tune-grid">
+                <section class="create-card create-card-vehicle">
+                    <h2 id="create-section-vehicle-title" class="create-section-title"><span id="create-section-vehicle-title-text">1. Select Vehicle</span><span id="selected-vehicle-inline" class="selected-vehicle-inline" aria-live="polite"></span></h2>
+
+                    <div id="vehicle-filter-row" class="vehicle-filter-row">
+                        <button id="vehicle-model-back" class="vehicle-inline-back vehicle-filter-back no-drag" type="button" aria-label="Back to brands" title="Back to brands">
+                            <span class="material-symbols-outlined back-icon" aria-hidden="true">chevron_left</span>
+                        </button>
+                        <div class="vehicle-filter-input-wrap">
+                            <span class="material-symbols-outlined vehicle-filter-icon" aria-hidden="true">search</span>
+                            <input id="vehicle-filter-input" class="capsule-input vehicle-filter-input no-drag" type="text" placeholder="Filter brand or model..." />
+                            <button id="vehicle-sort-trigger" class="vehicle-sort-trigger no-drag" type="button" aria-label="Sort vehicles" aria-haspopup="menu" aria-expanded="false" title="Sort: Name A-Z">
+                                <span class="vehicle-sort-trigger-icon" aria-hidden="true"></span>
+                            </button>
+                            <div id="vehicle-sort-menu" class="vehicle-sort-menu" role="menu" aria-label="Vehicle sort options">
+                                <button id="vehicle-sort-item-name" class="vehicle-sort-item is-active no-drag" type="button" role="menuitemradio" aria-checked="true" data-sort-mode="name">Name A-Z</button>
+                                <button id="vehicle-sort-item-speed" class="vehicle-sort-item no-drag" type="button" role="menuitemradio" aria-checked="false" data-sort-mode="topSpeed">Top Speed</button>
+                                <button id="vehicle-sort-item-pi" class="vehicle-sort-item no-drag" type="button" role="menuitemradio" aria-checked="false" data-sort-mode="pi">PI</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="vehicle-preview-wrap" class="vehicle-preview-wrap">
+                        <div class="vehicle-preview-media">
+                            <img id="vehicle-preview-image" class="vehicle-preview-image" alt="Vehicle preview" loading="lazy" />
+                            <p id="vehicle-preview-placeholder" class="vehicle-preview-placeholder">Select a model to preview</p>
+                            <div id="vehicle-preview-caption" class="vehicle-preview-caption">
+                                <span id="vehicle-preview-caption-logo" class="vehicle-preview-caption-logo is-fallback" aria-hidden="true">
+                                    <img id="vehicle-preview-caption-logo-img" class="vehicle-preview-caption-logo-img" alt="" loading="lazy" referrerpolicy="no-referrer" />
+                                    <span id="vehicle-preview-caption-logo-fallback" class="vehicle-preview-caption-logo-fallback">--</span>
+                                </span>
+                                <span id="vehicle-preview-caption-text" class="vehicle-preview-caption-text"></span>
+                            </div>
+                            <div id="vehicle-preview-specs" class="vehicle-preview-specs" aria-live="polite">
+                                <span id="vehicle-preview-drive" class="vehicle-preview-spec-icon" role="img" aria-label="Drive Type: --" title="Drive Type: --">
+                                    <span class="vehicle-preview-spec-glyph" aria-hidden="true"></span>
+                                    <span class="vehicle-preview-spec-code" aria-hidden="true">--</span>
+                                </span>
+                                <span id="vehicle-preview-tire" class="vehicle-preview-spec-icon" role="img" aria-label="Tire Type: --" title="Tire Type: --">
+                                    <span class="vehicle-preview-spec-glyph" aria-hidden="true"></span>
+                                    <span class="vehicle-preview-spec-code" aria-hidden="true">--</span>
+                                </span>
+                            </div>
+                            <span id="vehicle-preview-pi-badge" class="vehicle-preview-pi-badge">PI --</span>
+                        </div>
+                    </div>
+
+                    <div class="vehicle-pages-wrap">
+                        <div id="vehicle-pages-slider" class="vehicle-pages-slider mode-brand">
+                            <div id="vehicle-brand-page" class="vehicle-page">
+                                <div id="vehicle-brand-list" class="vehicle-list"></div>
+                            </div>
+
+                            <div id="vehicle-model-page" class="vehicle-page">
+                                <div id="vehicle-model-list" class="vehicle-list"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="create-card create-card-model-info">
+                    <h2 id="create-section-model-info-title" class="create-section-title">Model Info</h2>
+                    <div id="create-model-preset-bar" class="create-model-preset-bar no-drag" role="toolbar" aria-label="Model handling presets">
+                        <span id="create-model-preset-label" class="create-model-preset-label">Presets:</span>
+                        <div class="create-model-preset-actions">
+                            <button id="create-model-preset-max-grip" class="create-model-preset-btn no-drag" type="button" data-model-preset="maxGrip">Max Grip</button>
+                            <button id="create-model-preset-oversteer" class="create-model-preset-btn no-drag" type="button" data-model-preset="oversteer">Oversteer</button>
+                            <button id="create-model-preset-understeer" class="create-model-preset-btn no-drag" type="button" data-model-preset="understeer">Understeer</button>
+                            <button id="create-model-preset-comfort" class="create-model-preset-btn no-drag" type="button" data-model-preset="comfort">Comfort</button>
+                        </div>
+                    </div>
+                    <div id="vehicle-model-info" class="vehicle-model-info" aria-live="polite">
+                        <div id="vehicle-model-stats" class="vehicle-model-stats"></div>
+                        <div id="vehicle-model-metrics" class="vehicle-model-metrics"></div>
+                    </div>
+                </section>
+
+                <section class="create-card create-card-performance">
+                    <h2 id="create-section-performance-title" class="create-section-title">2. Performance Data</h2>
+                    <div class="field-grid two-cols">
+                        <div>
+                            <label id="create-weight-label" class="create-label">Weight (kg)</label>
+                            <input id="create-weight-input" class="capsule-input no-drag" type="number" placeholder="Enter weight (kg)" />
+                        </div>
+                        <div>
+                            <label id="create-front-distribution-label" class="create-label">F. Distribution (%)</label>
+                            <input id="create-front-distribution-input" class="capsule-input no-drag" type="number" placeholder="Enter front distribution (%)" />
+                        </div>
+                    </div>
+
+                    <div class="field-grid">
+                        <div>
+                            <label id="create-current-pi-label" class="create-label">Current PI</label>
+                            <div class="pi-field-row">
+                                <input id="create-current-pi-input" class="capsule-input pi-field-input no-drag" type="number" placeholder="Enter current PI" />
+                                <span id="create-current-pi-badge" class="pi-badge">PI --</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="create-card create-card-config">
+                    <h2 id="create-section-config-title" class="create-section-title">4. Configuration</h2>
+
+                    <label id="create-drive-type-label" class="create-label">Drive Type</label>
+                    <div id="create-drive-type-group" class="capsule-segment js-capsule-group">
+                        <button class="capsule-option is-active no-drag" type="button" data-segment-key="fwd">FWD</button>
+                        <button class="capsule-option no-drag" type="button" data-segment-key="awd">AWD</button>
+                        <button class="capsule-option no-drag" type="button" data-segment-key="rwd">RWD</button>
+                    </div>
+
+                    <label id="create-game-version-label" class="create-label">Game Version</label>
+                    <div id="create-game-version-group" class="capsule-segment js-capsule-group">
+                        <button class="capsule-option is-active no-drag" type="button" data-create-game-version="fh5">FH5</button>
+                        <button class="capsule-option no-drag" type="button" data-create-game-version="fh6">FH6</button>
+                    </div>
+                </section>
+
+                <section class="create-card create-card-advanced">
+                    <h2 id="create-section-advanced-title" class="create-section-title">3. Advanced Specs</h2>
+
+                    <div class="field-grid two-cols">
+                        <div>
+                            <label id="create-power-band-label" class="create-label">Power Band</label>
+                            <button id="create-power-band-trigger" class="capsule-input power-band-trigger no-drag" type="button" aria-haspopup="dialog">
+                                <span class="material-symbols-outlined power-band-trigger-icon" aria-hidden="true">speed</span>
+                                <span id="create-power-band-display">Set power band</span>
+                            </button>
+                            <input id="create-power-band-value" type="hidden" value="" />
+                        </div>
+                        <div>
+                            <label id="create-max-torque-label" class="create-label">Max Torque (N-M)</label>
+                            <input id="create-max-torque-rpm-input" class="capsule-input no-drag" type="number" placeholder="Enter max torque from game" />
+                        </div>
+                    </div>
+
+                    <div class="field-grid two-cols">
+                        <div>
+                            <label id="create-gears-label" class="create-label">Gears</label>
+                            <select id="create-gears-select" class="capsule-input capsule-select gear-select no-drag">
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                                <option>5</option>
+                                <option selected>6</option>
+                                <option>7</option>
+                                <option>8</option>
+                                <option>9</option>
+                                <option>10</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label id="create-top-speed-label" class="create-label">Top Speed (km/h)</label>
+                            <input id="create-top-speed-input" class="capsule-input no-drag" type="number" placeholder="Enter top speed (km/h)" />
+                        </div>
+                    </div>
+
+                    <div class="field-grid">
+                        <label id="create-tire-size-label" class="create-label">Drive Tire Size (Width / Aspect / R Rim)</label>
+                        <div class="tire-size-row">
+                            <input id="create-tire-width-input" class="capsule-input no-drag" type="number" placeholder="Width" />
+                            <span>/</span>
+                            <input id="create-tire-aspect-input" class="capsule-input no-drag" type="number" placeholder="Aspect" />
+                            <span>R</span>
+                            <input id="create-tire-rim-input" class="capsule-input no-drag" type="number" placeholder="Rim" />
+                        </div>
+                    </div>
+                </section>
+
+                <section class="create-card create-card-environment">
+                    <h2 id="create-section-environment-title" class="create-section-title">5. Environment &amp; Purpose</h2>
+
+                    <div id="create-driving-surface-group" class="capsule-grid js-capsule-group">
+                        <button class="capsule-option is-active no-drag" type="button" data-segment-key="street">Street</button>
+                        <button class="capsule-option no-drag" type="button" data-segment-key="dirt">Dirt</button>
+                        <button class="capsule-option no-drag" type="button" data-segment-key="cross">Cross</button>
+                        <button class="capsule-option no-drag" type="button" data-segment-key="offroad">Off-road</button>
+                    </div>
+
+                    <label id="create-tune-type-label" class="create-label">Tune Type</label>
+                    <div id="create-tune-type-group" class="capsule-grid js-capsule-group">
+                        <button class="capsule-option is-active no-drag" type="button" data-segment-key="race">Race</button>
+                        <button class="capsule-option no-drag" type="button" data-segment-key="drag">Drag</button>
+                    </div>
+                </section>
+            </div>
+
+            <div class="create-tune-footer">
+                <p id="create-verify-text">Verify all parameters before continuing</p>
+                <button id="btn-create-calc" class="create-calc-btn is-incomplete no-drag" type="button" disabled>
+                    <span id="create-calc-btn-text">Calculation</span>
+                    <span class="material-symbols-outlined">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="page-garage" class="hidden w-full garage-page animated-panel">
+            <div class="garage-header">
+                <button id="btn-garage-back" class="create-back-btn no-drag" type="button" aria-label="Back to dashboard">
+                    <span class="material-symbols-outlined back-icon" aria-hidden="true">chevron_left</span>
+                </button>
+                <h1 id="garage-main-title">My Garage</h1>
+                <div class="garage-toolbar">
+                    <label class="garage-page-size-control no-drag" for="garage-page-size-select">
+                        <span id="garage-rows-label">Rows</span>
+                        <select id="garage-page-size-select" class="garage-page-size-select no-drag" aria-label="Rows per page">
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="40">40</option>
+                        </select>
+                    </label>
+                    <button id="garage-import-btn" class="garage-action-btn no-drag" type="button">
+                        <span class="material-symbols-outlined" aria-hidden="true">upload</span>
+                        <span id="garage-import-label">Import</span>
+                    </button>
+                    <button id="garage-export-btn" class="garage-action-btn no-drag" type="button">
+                        <span class="material-symbols-outlined" aria-hidden="true">download</span>
+                        <span id="garage-export-label">Export</span>
+                    </button>
+                    <button id="garage-select-all-btn" class="garage-action-btn garage-action-select-all garage-toolbar-action-transition no-drag" type="button" disabled>
+                        <span class="material-symbols-outlined" aria-hidden="true">select_all</span>
+                        <span id="garage-select-all-label" class="garage-select-all-label">Select All</span>
+                    </button>
+                    <button id="garage-delete-selected-btn" class="garage-action-btn garage-action-delete-selected garage-toolbar-action-transition no-drag" type="button" disabled>
+                        <span class="material-symbols-outlined" aria-hidden="true">delete_sweep</span>
+                        <span id="garage-delete-selected-label" class="garage-delete-selected-label">Delete Marked</span>
+                    </button>
+                </div>
+                <input id="garage-import-input" class="hidden" type="file" accept=".tune" />
+            </div>
+            <div class="garage-body">
+                <p id="garage-empty" class="garage-empty">No saved tunes yet. Save a tune from Tune Results to see it here.</p>
+                <div id="garage-list" class="garage-list"></div>
+            </div>
+        </div>
+
+        <div id="power-band-modal" class="power-band-modal hidden" aria-hidden="true">
+            <div id="power-band-modal-backdrop" class="power-band-modal-backdrop no-drag"></div>
+            <div class="power-band-modal-panel no-drag" role="dialog" aria-modal="true" aria-labelledby="power-band-modal-title">
+                <div class="power-band-modal-header">
+                    <h2 id="power-band-modal-title" class="power-band-modal-title">Power Band Setup</h2>
+                    <button id="power-band-close-btn" class="power-band-close-btn no-drag" type="button" aria-label="Close RPM setup">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+
+                <div class="power-band-priority-layout">
+                    <div class="power-band-slider-stack">
+                        <section class="power-band-section">
+                            <div class="power-band-section-head">
+                                <p id="power-band-redline-title" class="power-band-section-title">Redline RPM</p>
+                                <span id="power-band-redline-value" class="power-band-value-chip">10000</span>
+                            </div>
+                            <input id="power-band-redline-slider" class="power-band-range-slider no-drag" type="range" min="3000" max="10000" step="50" value="10000" />
+                            <div class="power-band-range-marks">
+                                <span>0</span>
+                                <span id="power-band-redline-mid">5000</span>
+                                <span id="power-band-redline-max">10000</span>
+                            </div>
+                        </section>
+
+                        <section class="power-band-section">
+                            <div class="power-band-section-head">
+                                <p id="power-band-max-torque-title" class="power-band-section-title">Max Torque RPM</p>
+                                <span id="power-band-torque-value" class="power-band-value-chip">6800</span>
+                            </div>
+                            <input id="power-band-torque-slider" class="power-band-range-slider no-drag" type="range" min="1500" max="10000" step="50" value="6800" />
+                            <div id="power-band-torque-marks" class="power-band-range-marks">
+                                <span>0</span>
+                                <span id="power-band-torque-mid">5000</span>
+                                <span id="power-band-torque-max">10000</span>
+                            </div>
+                        </section>
+                    </div>
+
+                    <section class="power-band-section power-band-scale-section">
+                        <div class="power-band-section-head">
+                            <p id="power-band-scale-title" class="power-band-section-title">RPM Scale</p>
+                            <span id="power-band-scale-value" class="power-band-value-chip">10K</span>
+                        </div>
+                        <div id="power-band-scale-grid" class="power-band-scale-grid">
+                            <button class="power-band-scale-option no-drag" type="button" data-rpm-scale="8000">
+                                <span class="power-band-scale-graph" aria-hidden="true"></span>
+                                <span class="power-band-scale-label">0 / 4 / 8</span>
+                            </button>
+                            <button class="power-band-scale-option is-active no-drag" type="button" data-rpm-scale="10000">
+                                <span class="power-band-scale-graph" aria-hidden="true"></span>
+                                <span class="power-band-scale-label">0 / 5 / 10</span>
+                            </button>
+                            <button class="power-band-scale-option no-drag" type="button" data-rpm-scale="12000">
+                                <span class="power-band-scale-graph" aria-hidden="true"></span>
+                                <span class="power-band-scale-label">0 / 6 / 12</span>
+                            </button>
+                            <button class="power-band-scale-option no-drag" type="button" data-rpm-scale="custom">
+                                <span class="power-band-scale-graph" aria-hidden="true"></span>
+                                <span class="power-band-scale-label">Custom</span>
+                            </button>
+                        </div>
+                        <div id="power-band-custom-scale-row" class="power-band-custom-scale-row hidden">
+                            <span id="power-band-custom-label" class="power-band-custom-label">Custom Max RPM</span>
+                            <input id="power-band-custom-scale-input" class="power-band-custom-input no-drag" type="number" min="6000" max="20000" step="100" value="14000" />
+                        </div>
+                    </section>
+                </div>
+
+                <section class="power-band-section power-band-chart-section">
+                    <div class="power-band-section-head">
+                        <p id="power-band-graph-title" class="power-band-section-title">Performance Graph</p>
+                        <div class="power-band-chart-legend" aria-label="Graph legend">
+                            <span id="power-band-legend-torque" class="power-band-legend-chip power-band-legend-chip-torque">Torque</span>
+                            <span id="power-band-legend-power" class="power-band-legend-chip power-band-legend-chip-power">Power</span>
+                        </div>
+                    </div>
+                    <div class="power-band-chart-shell">
+                        <div class="power-band-chart-y-axis">
+                            <span id="power-band-chart-y-max">4000</span>
+                            <span id="power-band-chart-y-mid">2000</span>
+                            <span id="power-band-chart-y-min">0</span>
+                        </div>
+                        <div class="power-band-chart-plot">
+                            <svg id="power-band-chart-svg" class="power-band-chart-svg" viewBox="0 0 100 56" preserveAspectRatio="none" role="img" aria-label="Power band performance chart">
+                                <path id="power-band-chart-torque" class="power-band-chart-line power-band-chart-line-torque" d="" />
+                                <path id="power-band-chart-power" class="power-band-chart-line power-band-chart-line-power" d="" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="power-band-chart-x-axis">
+                        <span>RPM (x1000)</span>
+                        <span id="power-band-chart-x-mid">5</span>
+                        <span id="power-band-chart-x-max">10</span>
+                    </div>
+                </section>
+
+                <div class="power-band-modal-footer">
+                    <button id="power-band-cancel-btn" class="power-band-btn power-band-btn-cancel no-drag" type="button">Cancel</button>
+                    <button id="power-band-apply-btn" class="power-band-btn power-band-btn-apply no-drag" type="button">Apply</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tune-calc-modal" class="tune-calc-modal hidden" aria-hidden="true">
+            <div id="tune-calc-modal-backdrop" class="tune-calc-modal-backdrop no-drag"></div>
+            <div class="tune-calc-modal-panel no-drag" role="dialog" aria-modal="true" aria-labelledby="tune-calc-modal-title">
+                <div class="tune-calc-modal-header">
+                    <h2 id="tune-calc-modal-title" class="tune-calc-modal-title">Tune Results</h2>
+                    <div class="tune-calc-modal-actions">
+                        <button id="tune-calc-layout-btn" class="tune-calc-layout-btn no-drag" type="button" aria-label="Switch to expanded view" title="Switch to expanded view">
+                            <span id="tune-calc-layout-icon" class="material-symbols-outlined">view_agenda</span>
+                        </button>
+                        <button id="tune-calc-overlay-btn" class="tune-calc-overlay-btn no-drag" type="button" aria-label="Turn overlay on" title="Turn overlay on">
+                            <span id="tune-calc-overlay-icon" class="material-symbols-outlined">picture_in_picture_alt</span>
+                        </button>
+                        <button id="tune-calc-close-btn" class="tune-calc-close-btn no-drag" type="button" aria-label="Close tune results">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </div>
+                </div>
+                <p id="tune-calc-subtitle" class="tune-calc-subtitle">Thông số chỉ mang tính chất tham khảo.</p>
+                <div class="tune-calc-save-form">
+                    <input id="tune-save-name-input" class="tune-calc-save-input no-drag" type="text" maxlength="64" placeholder="Tune name" />
+                    <input id="tune-save-share-input" class="tune-calc-save-input no-drag" type="text" maxlength="11" placeholder="Share code (000 000 000)" />
+                </div>
+                <div id="tune-calc-list" class="tune-calc-list"></div>
+                <div class="tune-calc-modal-footer">
+                    <button id="tune-calc-save-btn" class="tune-calc-btn tune-calc-btn-save no-drag" type="button">Save</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tune-gearing-graph-modal" class="tune-gearing-graph-modal hidden" aria-hidden="true">
+            <div id="tune-gearing-graph-backdrop" class="tune-gearing-graph-backdrop no-drag"></div>
+            <div class="tune-gearing-graph-panel no-drag" role="dialog" aria-modal="true" aria-labelledby="tune-gearing-graph-title">
+                <div class="tune-gearing-graph-header">
+                    <h3 id="tune-gearing-graph-title" class="tune-gearing-graph-title">Gearing Chart</h3>
+                    <button id="tune-gearing-graph-close" class="tune-gearing-graph-close no-drag" type="button" aria-label="Close gearing chart">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <div class="tune-gearing-graph-meta">
+                    <span id="tune-gearing-graph-meta-final" class="tune-gearing-graph-meta-chip">FD --</span>
+                    <span id="tune-gearing-graph-meta-gears" class="tune-gearing-graph-meta-chip">-- Gears</span>
+                </div>
+                <div class="tune-gearing-graph-stage">
+                    <span id="tune-gearing-graph-y-label" class="tune-gearing-graph-y-label">RPM (x1000)</span>
+                    <div class="tune-gearing-graph-y-axis">
+                        <span id="tune-gearing-graph-y-max">10</span>
+                        <span id="tune-gearing-graph-y-mid">5</span>
+                        <span id="tune-gearing-graph-y-min">0</span>
+                    </div>
+                    <div class="tune-gearing-graph-plot">
+                        <svg id="tune-gearing-graph-svg" viewBox="0 0 100 56" preserveAspectRatio="none" role="img" aria-label="Gearing graph"></svg>
+                    </div>
+                </div>
+                <div class="tune-gearing-graph-x-axis">
+                    <span id="tune-gearing-graph-x-min">0</span>
+                    <span id="tune-gearing-graph-x-mid">0</span>
+                    <span id="tune-gearing-graph-x-max">0</span>
+                </div>
+                <p id="tune-gearing-graph-x-label" class="tune-gearing-graph-x-label">Speed (km/h)</p>
+                <div id="tune-gearing-graph-legend" class="tune-gearing-graph-legend"></div>
+            </div>
+        </div>
+
+        <div id="garage-view-modal" class="garage-view-modal hidden" aria-hidden="true">
+            <div id="garage-view-modal-backdrop" class="garage-view-modal-backdrop no-drag"></div>
+            <div class="garage-view-modal-panel no-drag" role="dialog" aria-modal="true" aria-labelledby="garage-view-modal-title">
+                <div class="garage-view-modal-header">
+                    <h2 id="garage-view-modal-title" class="garage-view-modal-title">Tune Details</h2>
+                    <button id="garage-view-close-btn" class="garage-view-close-btn no-drag" type="button" aria-label="Close tune details">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <p id="garage-view-subtitle" class="garage-view-subtitle">Detailed tune profile from My Garage.</p>
+                <div class="garage-view-top">
+                    <div class="garage-view-preview-shell">
+                        <div class="garage-view-preview-media">
+                            <img id="garage-view-preview-image" class="garage-view-preview-image" alt="" />
+                            <p id="garage-view-preview-placeholder" class="garage-view-preview-placeholder">Loading vehicle image...</p>
+                        </div>
+                    </div>
+                    <div class="garage-view-summary">
+                        <div class="garage-view-name-row">
+                            <span id="garage-view-brand-logo-slot" class="garage-view-brand-logo-slot"></span>
+                            <div class="garage-view-name-stack">
+                                <p id="garage-view-name" class="garage-view-name">Untitled Tune</p>
+                                <p id="garage-view-car" class="garage-view-car">Unknown Vehicle</p>
+                            </div>
+                        </div>
+                        <div id="garage-view-chips" class="garage-view-chips"></div>
+                        <div class="garage-view-meta-grid">
+                            <div class="garage-view-meta-item">
+                                <span id="garage-view-meta-pi-label">PI</span>
+                                <strong id="garage-view-pi">--</strong>
+                            </div>
+                            <div class="garage-view-meta-item">
+                                <span id="garage-view-meta-speed-label">Top Speed</span>
+                                <strong id="garage-view-speed">--</strong>
+                            </div>
+                            <div class="garage-view-meta-item">
+                                <span id="garage-view-meta-weight-label">Weight</span>
+                                <strong id="garage-view-weight">--</strong>
+                            </div>
+                            <div class="garage-view-meta-item">
+                                <span id="garage-view-meta-drive-label">Drive</span>
+                                <strong id="garage-view-drive">--</strong>
+                            </div>
+                            <div class="garage-view-meta-item">
+                                <span id="garage-view-meta-share-label">Share Code</span>
+                                <strong id="garage-view-share">--</strong>
+                            </div>
+                            <div class="garage-view-meta-item">
+                                <span id="garage-view-meta-rpm-label">RPM</span>
+                                <strong id="garage-view-saved">--</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS PAGE -->
+        <div id="page-settings" class="hidden w-full max-w-7xl animated-panel">
+            <div class="settings-header">
+                <button id="btn-settings-back" class="settings-back-btn no-drag">
+                    <span class="material-symbols-outlined back-icon" aria-hidden="true">chevron_left</span>
+                </button>
+                <div class="settings-header-copy">
+                    <h1 id="settings-main-title" class="settings-main-title">General Settings</h1>
+                    <p id="settings-main-subtitle" class="settings-main-subtitle">Configure your application workspace preferences.</p>
+                </div>
+            </div>
+
+            <!-- APP PREFERENCES SECTION -->
+            <div class="settings-section settings-section--preferences">
+                <h2 id="settings-app-preferences-title" class="settings-section-title">APP PREFERENCES</h2>
+
+                <div class="settings-item">
+                    <div class="settings-item-content">
+                        <h3 id="settings-language-title" class="settings-item-title">Language</h3>
+                        <p id="settings-language-description" class="settings-item-description">Choose your preferred app language</p>
+                    </div>
+                    <div class="settings-item-control">
+                        <select id="settings-language-select" class="settings-language-select no-drag" aria-label="Language">
+                            <option value="en">English</option>
+                            <option value="vi">Tiếng Việt</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div id="settings-theme-mode-item" class="settings-item">
+                    <div class="settings-item-content">
+                        <h3 id="settings-theme-mode-title" class="settings-item-title">Theme Mode</h3>
+                        <p id="settings-theme-mode-description" class="settings-item-description">Choose light, dark, or follow system appearance</p>
+                    </div>
+                    <div class="settings-item-control">
+                        <select id="settings-theme-mode-select" class="settings-language-select no-drag" aria-label="Theme mode">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="system">System</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="settings-item">
+                    <div class="settings-item-content">
+                        <h3 id="settings-autosave-title" class="settings-item-title">Auto-save</h3>
+                        <p id="settings-autosave-description" class="settings-item-description">Automatically save tuning profiles on change</p>
+                    </div>
+                    <div class="settings-item-control">
+                        <input type="checkbox" id="toggle-autosave" class="toggle-switch" checked>
+                        <label for="toggle-autosave" class="toggle-label"></label>
+                    </div>
+                </div>
+
+                <div class="settings-item">
+                    <div class="settings-item-content">
+                        <h3 id="settings-overlay-mode-title" class="settings-item-title">Overlay Mode</h3>
+                        <p id="settings-overlay-mode-description" class="settings-item-description">Open tune overlay in a separate floating window</p>
+                    </div>
+                    <div class="settings-item-control">
+                        <input type="checkbox" id="toggle-overlay-mode" class="toggle-switch">
+                        <label for="toggle-overlay-mode" class="toggle-label"></label>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- CUSTOM BACKGROUND SECTION -->
+            <div class="settings-section settings-section--background">
+                <div class="settings-section-head">
+                    <h2 id="settings-custom-background-title" class="settings-section-title">CUSTOM BACKGROUND</h2>
+                    <button id="btn-reset-settings" class="settings-reset-icon-btn no-drag" type="button" aria-label="Reset settings to default" title="Reset settings">
+                        <span class="material-symbols-outlined" aria-hidden="true">restart_alt</span>
+                    </button>
+                </div>
+                
+                <div class="settings-upload-area" id="background-upload-area">
+                    <input type="file" id="background-file-input" class="hidden" accept="image/png,image/jpeg,image/jpg,image/webp,video/mp4,video/webm,video/ogg,video/quicktime" />
+                    <span id="background-upload-icon" class="material-symbols-outlined settings-upload-icon">perm_media</span>
+                    <p id="background-upload-text" class="settings-upload-text">Drag and drop an image or video here or click to browse</p>
+                    <p id="background-upload-subtext" class="settings-upload-subtext">Supports PNG, JPG, WEBP, MP4, WEBM, OGG, MOV (Image max 5MB, Video max 25MB)</p>
+                </div>
+                <div class="settings-donate-row">
+                    <button id="btn-open-donate" class="settings-donate-btn no-drag" type="button">
+                        <span class="material-symbols-outlined" aria-hidden="true">volunteer_activism</span>
+                        <span id="settings-donate-btn-label">Donate</span>
+                    </button>
+                    <button id="btn-open-feedback" class="settings-feedback-btn no-drag" type="button">
+                        <span class="material-symbols-outlined" aria-hidden="true">rate_review</span>
+                        <span id="settings-feedback-btn-label">Feedback</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+        <div id="donate-modal" class="donate-modal hidden" aria-hidden="true">
+            <div id="donate-modal-backdrop" class="donate-modal-backdrop no-drag"></div>
+            <div class="donate-modal-panel no-drag" role="dialog" aria-modal="true" aria-labelledby="donate-modal-title">
+                <div class="donate-modal-header">
+                    <h2 id="donate-modal-title" class="donate-modal-title">Support F.Tuning Pro</h2>
+                    <button id="btn-donate-close" class="donate-modal-close no-drag" type="button" aria-label="Close donate">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <p id="donate-modal-subtitle" class="donate-modal-subtitle">Scan QR to donate for app development</p>
+                <img
+                    id="donate-qr-image"
+                    class="donate-modal-image"
+                    src="./assets/donate-qr.png"
+                    alt="Donation QR code"
+                    loading="lazy"
+                    onerror="this.onerror=null;this.src='https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&data=MoMo%20-%20NGUYEN%20VIET%20ANH%20-%20PSG26081173000000003';"
+                />
+            </div>
+        </div>
+
+        <div id="feedback-modal" class="feedback-modal hidden" aria-hidden="true">
+            <div id="feedback-modal-backdrop" class="feedback-modal-backdrop no-drag"></div>
+            <div class="feedback-modal-panel no-drag" role="dialog" aria-modal="true" aria-labelledby="feedback-modal-title">
+                <div class="feedback-modal-header">
+                    <h2 id="feedback-modal-title" class="feedback-modal-title">Send Feedback</h2>
+                    <button id="btn-feedback-close" class="feedback-modal-close no-drag" type="button" aria-label="Close feedback modal">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <p id="feedback-modal-subtitle" class="feedback-modal-subtitle">Share your feedback directly from the app.</p>
+                <input id="feedback-title-input" class="feedback-title-input no-drag" type="text" maxlength="140" placeholder="Feedback title" />
+                <div class="feedback-contact-row">
+                    <input id="feedback-name-input" class="feedback-name-input no-drag" type="text" maxlength="80" placeholder="Your name (optional)" />
+                    <input id="feedback-email-input" class="feedback-email-input no-drag" type="email" maxlength="160" placeholder="Your email (required)" />
+                </div>
+                <textarea id="feedback-message-input" class="feedback-message-input no-drag" rows="7" maxlength="2000" placeholder="Type your feedback..."></textarea>
+                <div class="feedback-modal-actions">
+                    <button id="btn-feedback-cancel" class="feedback-modal-btn feedback-modal-btn-cancel no-drag" type="button">Cancel</button>
+                    <button id="btn-feedback-send" class="feedback-modal-btn feedback-modal-btn-send no-drag" type="button">
+                        <span class="material-symbols-outlined" aria-hidden="true">send</span>
+                        <span id="feedback-send-label">Send</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="update-log-modal" class="feedback-modal hidden" aria-hidden="true">
+            <div id="update-log-modal-backdrop" class="feedback-modal-backdrop no-drag"></div>
+            <div class="feedback-modal-panel update-log-modal-panel no-drag" role="dialog" aria-modal="true" aria-labelledby="update-log-modal-title">
+                <div class="feedback-modal-header">
+                    <h2 id="update-log-modal-title" class="feedback-modal-title">Update Log</h2>
+                    <button id="btn-update-log-close" class="feedback-modal-close no-drag" type="button" aria-label="Close update log modal">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                </div>
+                <p id="update-log-modal-subtitle" class="feedback-modal-subtitle">Latest improvements in this version</p>
+                <p id="update-log-version" class="feedback-modal-subtitle">Version: Beta 1.0</p>
+                <ul class="update-log-list">
+                    <li id="update-log-item-main-ui">Updated main screen interface layout for cleaner navigation.</li>
+                    <li id="update-log-item-text-fix">Fixed text rendering issues in multiple UI sections.</li>
+                    <li id="update-log-item-ui-optimize">Optimized responsive layout and overall UI spacing.</li>
+                </ul>
+                <div class="feedback-modal-actions">
+                    <button id="btn-update-log-done" class="feedback-modal-btn feedback-modal-btn-send no-drag" type="button">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="garage-delete-modal" class="garage-delete-modal hidden" aria-hidden="true">
+            <div id="garage-delete-modal-backdrop" class="garage-delete-modal-backdrop no-drag"></div>
+            <div class="garage-delete-modal-panel no-drag" role="dialog" aria-modal="true" aria-labelledby="garage-delete-modal-title">
+                <h3 id="garage-delete-modal-title" class="garage-delete-modal-title">Delete Marked Tunes?</h3>
+                <p id="garage-delete-modal-message" class="garage-delete-modal-message">This action cannot be undone.</p>
+                <div class="garage-delete-modal-actions">
+                    <button id="btn-garage-delete-no" class="garage-delete-choice garage-delete-choice-no no-drag" type="button">No</button>
+                    <button id="btn-garage-delete-yes" class="garage-delete-choice garage-delete-choice-yes no-drag" type="button">Yes</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="welcome-modal" class="welcome-modal hidden" aria-hidden="true">
+            <div class="welcome-modal-backdrop no-drag"></div>
+            <div class="welcome-modal-panel no-drag" role="dialog" aria-modal="true" aria-labelledby="welcome-title">
+                <div class="welcome-modal-head">
+                    <div class="welcome-modal-copy">
+                        <h2 id="welcome-title" class="welcome-modal-title">Welcome to F.Tuning Pro</h2>
+                        <p id="welcome-subtitle" class="welcome-modal-subtitle">Quick tour of the main features</p>
+                    </div>
+                    <div id="welcome-dots" class="welcome-dots" aria-label="Welcome progress">
+                        <span class="welcome-dot is-active"></span>
+                        <span class="welcome-dot"></span>
+                        <span class="welcome-dot"></span>
+                        <span class="welcome-dot"></span>
+                    </div>
+                </div>
+
+                <div id="welcome-setup-screen" class="welcome-setup-screen">
+                    <p id="welcome-setup-title" class="welcome-setup-title">Choose your preferences before the tour</p>
+                    <div class="welcome-setup-grid">
+                        <div class="welcome-setup-field">
+                            <p id="welcome-setup-language-label" class="welcome-setup-label">Language</p>
+                            <div id="welcome-setup-language-group" class="welcome-setup-choice-group no-drag" role="group" aria-label="Welcome language selection">
+                                <button class="welcome-setup-choice is-active no-drag" type="button" data-welcome-language="en">English</button>
+                                <button class="welcome-setup-choice no-drag" type="button" data-welcome-language="vi">Tiếng Việt</button>
+                            </div>
+                        </div>
+                        <div class="welcome-setup-field">
+                            <p id="welcome-setup-unit-label" class="welcome-setup-label">Measurement</p>
+                            <div id="welcome-setup-unit-group" class="welcome-setup-choice-group no-drag" role="group" aria-label="Welcome unit selection">
+                                <button class="welcome-setup-choice is-active no-drag" type="button" data-welcome-unit="metric">Metric</button>
+                                <button class="welcome-setup-choice no-drag" type="button" data-welcome-unit="imperial">Imperial</button>
+                            </div>
+                        </div>
+                        <div class="welcome-setup-field">
+                            <p id="welcome-setup-theme-label" class="welcome-setup-label">Theme</p>
+                            <div id="welcome-setup-theme-group" class="welcome-setup-choice-group no-drag" role="group" aria-label="Welcome theme selection">
+                                <button class="welcome-setup-choice is-active no-drag" type="button" data-welcome-theme="light">Light</button>
+                                <button class="welcome-setup-choice no-drag" type="button" data-welcome-theme="dark">Dark</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="welcome-slides-viewport">
+                    <div id="welcome-slides-track" class="welcome-slides-track">
+                        <section class="welcome-slide">
+                            <div class="welcome-slide-media">
+                                <img id="welcome-slide-image-create" src="./assets/welcome-placeholder.svg" alt="Create Tune feature preview" loading="lazy" />
+                            </div>
+                            <p id="welcome-slide-title-create" class="welcome-slide-title">Create New Tune</p>
+                            <p id="welcome-slide-text-create" class="welcome-slide-text">Build complete tune profiles with vehicle selection, setup inputs, and power band calibration.</p>
+                        </section>
+                        <section class="welcome-slide">
+                            <div class="welcome-slide-media">
+                                <img id="welcome-slide-image-calc" src="./assets/welcome-placeholder.svg" alt="Tune Results feature preview" loading="lazy" />
+                            </div>
+                            <p id="welcome-slide-title-calc" class="welcome-slide-title">Calculate Tune</p>
+                            <p id="welcome-slide-text-calc" class="welcome-slide-text">Open Tune Results to review every generated setup value before saving your tune.</p>
+                        </section>
+                        <section class="welcome-slide">
+                            <div class="welcome-slide-media">
+                                <img id="welcome-slide-image-garage" src="./assets/welcome-placeholder.svg" alt="My Garage feature preview" loading="lazy" />
+                            </div>
+                            <p id="welcome-slide-title-garage" class="welcome-slide-title">My Garage</p>
+                            <p id="welcome-slide-text-garage" class="welcome-slide-text">Manage saved tunes in table view, sort quickly, and open overlay for in-game reference.</p>
+                        </section>
+                        <section class="welcome-slide">
+                            <div class="welcome-slide-media">
+                                <img id="welcome-slide-image-overlay" src="./assets/welcome-placeholder.svg" alt="Overlay feature preview" loading="lazy" />
+                            </div>
+                            <p id="welcome-slide-title-overlay" class="welcome-slide-title">Overlay</p>
+                            <p id="welcome-slide-text-overlay" class="welcome-slide-text">Track tune values in a floating overlay while driving in-game.</p>
+                        </section>
+                    </div>
+                </div>
+
+                <div id="welcome-final-optin" class="welcome-final-optin" aria-hidden="true">
+                    <label class="welcome-check-row no-drag">
+                        <input id="welcome-dont-show-checkbox" class="welcome-check-input" type="checkbox" />
+                        <span class="welcome-check-mark">
+                            <span class="material-symbols-outlined" aria-hidden="true">done</span>
+                        </span>
+                        <span id="welcome-check-text" class="welcome-check-text">Do not show again next time</span>
+                    </label>
+                </div>
+
+                <div class="welcome-modal-actions">
+                    <button id="welcome-next-btn" class="welcome-next-btn no-drag" type="button" aria-label="Next page">
+                        <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+                    </button>
+                    <button id="welcome-close-btn" class="welcome-close-btn no-drag" type="button" disabled>
+                        <span id="welcome-close-label">Close</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tune-overlay" class="tune-overlay hidden no-drag" aria-live="polite">
+            <div class="tune-overlay-head">
+                <div class="tune-overlay-title-wrap">
+                    <p id="tune-overlay-title" class="tune-overlay-title">No tune selected</p>
+                    <p id="tune-overlay-subtitle" class="tune-overlay-subtitle"></p>
+                </div>
+                <button id="tune-overlay-close" class="tune-overlay-close no-drag" type="button" aria-label="Close overlay">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div id="tune-overlay-lines" class="tune-overlay-lines"></div>
+        </div>
+
+        <div id="app-toast" class="app-toast hidden" role="status" aria-live="polite" aria-atomic="true">
+            <span id="app-toast-icon" class="material-symbols-outlined" aria-hidden="true">info</span>
+            <span id="app-toast-message" class="app-toast-message"></span>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-status">
+            <span id="footer-online-label" class="footer-online animate-pulse">Online</span>
+            <span class="footer-separator"></span>
+            <span id="footer-build-version" class="footer-version">Beta 1.0</span>
+        </div>
+
+        <div id="discord-link" class="discord-link no-drag" role="button" tabindex="0" aria-label="Open FVGC Discord server">
+            <img src="assets/fvgc-logo.png" class="discord-link-logo" alt="FVGC" />
+            <span class="discord-link-cta">
+                <span class="material-symbols-outlined" aria-hidden="true">north_east</span>
+                <span>Join Discord</span>
+            </span>
+        </div>
+    </footer>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

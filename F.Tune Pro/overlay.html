@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tune Overlay</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Varela+Round&display=swap" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20,500,0,0" />
+    <style>
+        :root {
+            --overlay-bg: rgba(7, 12, 22, 0.62);
+            --overlay-border: rgba(255, 255, 255, 0.16);
+            --overlay-text: #ffffff;
+            --overlay-muted: rgba(255, 255, 255, 0.76);
+            --overlay-accent: #A6051A;
+            --overlay-text-scale: 1;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html, body {
+            margin: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: transparent;
+            font-family: 'Varela Round', sans-serif;
+            color: var(--overlay-text);
+        }
+
+        body {
+            padding: 10px;
+        }
+
+        .overlay-shell {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            border-radius: 16px;
+            border: 1px solid var(--overlay-border);
+            background:
+                radial-gradient(120% 80% at 0% 0%, rgba(166, 5, 26, 0.28) 0%, rgba(166, 5, 26, 0) 42%),
+                var(--overlay-bg);
+            box-shadow:
+                0 14px 30px rgba(0, 0, 0, 0.2),
+                0 4px 12px rgba(0, 0, 0, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(5px) saturate(1.05);
+            -webkit-backdrop-filter: blur(5px) saturate(1.05);
+            overflow: hidden;
+        }
+
+        .overlay-head {
+            height: 42px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 8px 0 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            -webkit-app-region: drag;
+        }
+
+        .overlay-head.is-locked {
+            -webkit-app-region: no-drag;
+        }
+
+        .overlay-head-title {
+            margin: 0;
+            font-size: calc(12px * var(--overlay-text-scale));
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--overlay-muted);
+        }
+
+        .overlay-head-actions {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            -webkit-app-region: no-drag;
+        }
+
+        .overlay-icon-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--overlay-text);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            -webkit-app-region: no-drag;
+        }
+
+        .overlay-icon-btn:hover {
+            border-color: rgba(166, 5, 26, 0.8);
+            background: rgba(166, 5, 26, 0.26);
+        }
+
+        .overlay-icon-btn .material-symbols-outlined {
+            font-size: 17px;
+            line-height: 1;
+        }
+
+        .overlay-pin-btn.is-active {
+            border-color: rgba(255, 235, 0, 0.9);
+            background: rgba(255, 235, 0, 0.24);
+            color: #ffeb00;
+        }
+
+        .overlay-settings-btn.is-active {
+            border-color: rgba(255, 235, 0, 0.9);
+            background: rgba(255, 235, 0, 0.24);
+            color: #ffeb00;
+        }
+
+        .overlay-controls-panel {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 10px 12px;
+            display: grid;
+            gap: 8px;
+            background: rgba(4, 10, 20, 0.45);
+            -webkit-app-region: no-drag;
+        }
+
+        .overlay-controls-panel.hidden {
+            display: none;
+        }
+
+        .overlay-controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            min-height: 24px;
+        }
+
+        .overlay-controls-row-layout {
+            align-items: flex-start;
+        }
+
+        .overlay-controls-label {
+            font-size: calc(11px * var(--overlay-text-scale));
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--overlay-muted);
+        }
+
+        .overlay-control-value {
+            font-size: calc(11px * var(--overlay-text-scale));
+            font-weight: 700;
+            color: var(--overlay-text);
+        }
+
+        .overlay-layout-group {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+
+        .overlay-layout-btn {
+            min-width: 62px;
+            height: 24px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--overlay-muted);
+            font-size: calc(10px * var(--overlay-text-scale));
+            font-weight: 700;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+
+        .overlay-layout-btn:hover {
+            border-color: rgba(166, 5, 26, 0.78);
+            color: var(--overlay-text);
+            background: rgba(166, 5, 26, 0.26);
+        }
+
+        .overlay-layout-btn.is-active {
+            border-color: rgba(255, 235, 0, 0.9);
+            color: #ffeb00;
+            background: rgba(255, 235, 0, 0.2);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.24);
+        }
+
+        .overlay-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overlay-switch input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .overlay-switch-track {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.16);
+            transition: all 0.2s ease;
+        }
+
+        .overlay-switch-track::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.92);
+            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.26);
+            transition: transform 0.2s ease;
+        }
+
+        .overlay-switch input:checked + .overlay-switch-track {
+            border-color: rgba(166, 5, 26, 0.78);
+            background: rgba(166, 5, 26, 0.5);
+        }
+
+        .overlay-switch input:checked + .overlay-switch-track::after {
+            transform: translateX(20px);
+        }
+
+        .overlay-opacity-slider {
+            width: 100%;
+            appearance: none;
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            outline: none;
+            cursor: pointer;
+        }
+
+        .overlay-opacity-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid rgba(166, 5, 26, 0.72);
+            background: #ffffff;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.34);
+        }
+
+        .overlay-opacity-slider::-moz-range-thumb {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 1px solid rgba(166, 5, 26, 0.72);
+            background: #ffffff;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.34);
+        }
+
+        .overlay-content {
+            padding: 10px 10px 10px;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .overlay-title {
+            margin: 0;
+            font-size: calc(15px * var(--overlay-text-scale));
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .overlay-subtitle {
+            margin: 4px 0 10px;
+            font-size: calc(11px * var(--overlay-text-scale));
+            color: var(--overlay-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .overlay-lines {
+            min-height: 0;
+            overflow: auto;
+            display: grid;
+            gap: 7px;
+            padding-right: 4px;
+            grid-template-columns: 1fr;
+            align-items: start;
+        }
+
+        .overlay-line {
+            border-radius: 11px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(11, 17, 29, 0.74);
+            padding: 8px 10px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+            align-self: start;
+            height: max-content;
+        }
+
+        .overlay-line.is-collapsible {
+            padding: 6px 10px;
+        }
+
+        .overlay-line-toggle {
+            width: 100%;
+            border: none;
+            background: transparent;
+            color: inherit;
+            cursor: pointer;
+            padding: 2px 0;
+            text-align: left;
+            font: inherit;
+        }
+
+        .overlay-line-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .overlay-line-value-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 8px;
+        }
+
+        .overlay-line-title {
+            font-size: calc(11px * var(--overlay-text-scale));
+            color: var(--overlay-muted);
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            flex: 0 0 auto;
+        }
+
+        .overlay-line-value {
+            font-size: calc(12px * var(--overlay-text-scale));
+            font-weight: 700;
+            text-align: right;
+            word-break: break-word;
+        }
+
+        .overlay-line-detail-wrap {
+            margin: 0;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.22s ease, opacity 0.2s ease, margin-top 0.2s ease;
+        }
+
+        .overlay-line-detail {
+            font-size: calc(11px * var(--overlay-text-scale));
+            line-height: 1.35;
+            color: rgba(255, 255, 255, 0.86);
+            word-break: break-word;
+            white-space: pre-line;
+        }
+
+        .overlay-line.is-expanded .overlay-line-detail-wrap {
+            margin-top: 6px;
+            max-height: 260px;
+            opacity: 1;
+        }
+
+        .overlay-line-detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px 8px;
+        }
+
+        .overlay-line-detail-item {
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 6px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .overlay-line-detail-item-label {
+            font-size: calc(10px * var(--overlay-text-scale));
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--overlay-muted);
+        }
+
+        .overlay-line-detail-item-value {
+            font-size: calc(11px * var(--overlay-text-scale));
+            font-weight: 700;
+            color: var(--overlay-text);
+        }
+
+        .overlay-line-expand {
+            font-size: 16px;
+            line-height: 1;
+            color: rgba(255, 255, 255, 0.72);
+            transition: transform 0.22s ease;
+        }
+
+        .overlay-line.is-expanded .overlay-line-expand {
+            transform: rotate(180deg);
+        }
+
+        .overlay-lines::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        .overlay-lines::-webkit-scrollbar-track {
+            border-radius: 999px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.14) 100%);
+        }
+
+        .overlay-lines::-webkit-scrollbar-thumb {
+            border-radius: 999px;
+            border: 2px solid transparent;
+            background-image:
+                linear-gradient(180deg, rgba(166, 5, 26, 0.84) 0%, rgba(166, 5, 26, 0.62) 100%),
+                linear-gradient(145deg, #2f3643 0%, #1a202a 100%);
+            background-clip: padding-box;
+        }
+
+        .overlay-lines::-webkit-scrollbar-thumb:hover {
+            background-image:
+                linear-gradient(180deg, rgba(166, 5, 26, 0.96) 0%, rgba(166, 5, 26, 0.74) 100%),
+                linear-gradient(145deg, #394252 0%, #222a36 100%);
+        }
+
+        .overlay-lines::-webkit-scrollbar-corner {
+            background: transparent;
+        }
+
+        .overlay-lines {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(166, 5, 26, 0.74) rgba(255, 255, 255, 0.12);
+        }
+
+        body[data-overlay-layout="grid"] .overlay-lines {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        body[data-overlay-layout="grid"] .overlay-line {
+            padding: 7px 8px;
+        }
+
+        body[data-overlay-layout="grid"] .overlay-line.is-expanded.is-collapsible {
+            grid-column: 1 / -1;
+        }
+
+        body[data-overlay-layout="grid"] .overlay-line-detail-grid {
+            grid-template-columns: 1fr;
+        }
+
+        body[data-overlay-layout="compact"] .overlay-content {
+            padding: 8px 8px 9px;
+        }
+
+        body[data-overlay-layout="compact"] .overlay-title {
+            font-size: calc(13px * var(--overlay-text-scale));
+        }
+
+        body[data-overlay-layout="compact"] .overlay-subtitle {
+            display: none;
+        }
+
+        body[data-overlay-layout="compact"] .overlay-lines {
+            gap: 5px;
+        }
+
+        body[data-overlay-layout="compact"] .overlay-line {
+            border-radius: 10px;
+            padding: 6px 8px;
+        }
+
+        body[data-overlay-layout="compact"] .overlay-line-title {
+            font-size: calc(10px * var(--overlay-text-scale));
+        }
+
+        body[data-overlay-layout="compact"] .overlay-line-value {
+            font-size: calc(11px * var(--overlay-text-scale));
+        }
+
+        body[data-overlay-layout="compact"] .overlay-line.is-collapsible {
+            padding: 6px 8px;
+        }
+
+        body[data-overlay-layout="compact"] .overlay-line-toggle {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        body[data-overlay-layout="compact"] .overlay-line-expand,
+        body[data-overlay-layout="compact"] .overlay-line-detail-wrap {
+            display: none;
+        }
+
+        @media (max-width: 390px) {
+            body[data-overlay-layout="grid"] .overlay-lines {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay-shell">
+        <header class="overlay-head">
+            <p id="overlay-head-title" class="overlay-head-title">Tune Overlay</p>
+            <div class="overlay-head-actions">
+                <button id="overlay-pin-btn" class="overlay-icon-btn overlay-pin-btn" type="button" aria-label="Lock overlay position" aria-pressed="false" title="Lock position">
+                    <span class="material-symbols-outlined">push_pin</span>
+                </button>
+                <button id="overlay-settings-btn" class="overlay-icon-btn overlay-settings-btn" type="button" aria-label="Overlay settings" aria-expanded="false" title="Overlay settings">
+                    <span class="material-symbols-outlined">settings</span>
+                </button>
+                <button id="overlay-close-btn" class="overlay-icon-btn overlay-close-btn" type="button" aria-label="Close overlay">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+        </header>
+
+        <section id="overlay-controls-panel" class="overlay-controls-panel hidden" aria-label="Overlay controls">
+            <div class="overlay-controls-row">
+                <span id="overlay-on-top-label" class="overlay-controls-label">Always On Top</span>
+                <label class="overlay-switch">
+                    <input id="overlay-on-top-toggle" type="checkbox" aria-label="Keep overlay always on top" />
+                    <span class="overlay-switch-track" aria-hidden="true"></span>
+                </label>
+            </div>
+            <div class="overlay-controls-row">
+                <span id="overlay-opacity-label" class="overlay-controls-label">Opacity</span>
+                <span id="overlay-opacity-value" class="overlay-control-value">88%</span>
+            </div>
+            <input id="overlay-opacity-slider" class="overlay-opacity-slider" type="range" min="35" max="100" step="1" value="88" aria-label="Overlay opacity" />
+            <div class="overlay-controls-row">
+                <span id="overlay-text-scale-label" class="overlay-controls-label">Text Size</span>
+                <span id="overlay-text-scale-value" class="overlay-control-value">100%</span>
+            </div>
+            <input id="overlay-text-scale-slider" class="overlay-opacity-slider" type="range" min="80" max="140" step="1" value="100" aria-label="Overlay text size" />
+            <div class="overlay-controls-row overlay-controls-row-layout">
+                <span id="overlay-layout-label" class="overlay-controls-label">Layout</span>
+                <div id="overlay-layout-group" class="overlay-layout-group" role="group" aria-label="Overlay layout">
+                    <button id="overlay-layout-vertical-btn" class="overlay-layout-btn is-active" type="button" data-overlay-layout="vertical" aria-pressed="true">Vertical</button>
+                    <button id="overlay-layout-grid-btn" class="overlay-layout-btn" type="button" data-overlay-layout="grid" aria-pressed="false">Grid</button>
+                    <button id="overlay-layout-compact-btn" class="overlay-layout-btn" type="button" data-overlay-layout="compact" aria-pressed="false">Compact</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="overlay-content">
+            <h1 id="overlay-title" class="overlay-title">No tune selected</h1>
+            <p id="overlay-subtitle" class="overlay-subtitle"></p>
+            <div id="overlay-lines" class="overlay-lines"></div>
+        </section>
+    </div>
+
+    <script>
+        const { ipcRenderer } = require('electron');
+
+        const overlayTitle = document.getElementById('overlay-title');
+        const overlaySubtitle = document.getElementById('overlay-subtitle');
+        const overlayLines = document.getElementById('overlay-lines');
+        const overlayHeadTitle = document.getElementById('overlay-head-title');
+        const overlayCloseBtn = document.getElementById('overlay-close-btn');
+        const overlayHead = document.querySelector('.overlay-head');
+        const overlayPinBtn = document.getElementById('overlay-pin-btn');
+        
+        // Handle window dragging for frameless window
+        let isDragging = false;
+        let dragStart = null;
+
+        if (overlayHead) {
+            overlayHead.addEventListener('mousedown', (e) => {
+                // Only allow dragging when not locked and clicking on the header (not buttons)
+                if (!overlayControlsState.lockPosition && e.target.closest('.overlay-icon-btn') === null) {
+                    isDragging = true;
+                    dragStart = { x: e.screenX, y: e.screenY };
+                    overlayHead.style.cursor = 'grabbing';
+                }
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging && dragStart && !overlayControlsState.lockPosition) {
+                    const deltaX = e.screenX - dragStart.x;
+                    const deltaY = e.screenY - dragStart.y;
+                    ipcRenderer.send('overlay-window-drag', { deltaX, deltaY });
+                    dragStart = { x: e.screenX, y: e.screenY };
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                if (isDragging) {
+                    isDragging = false;
+                    dragStart = null;
+                    overlayHead.style.cursor = '';
+                }
+            });
+        }
+        const overlaySettingsBtn = document.getElementById('overlay-settings-btn');
+        const overlayControlsPanel = document.getElementById('overlay-controls-panel');
+        const overlayOpacityLabel = document.getElementById('overlay-opacity-label');
+        const overlayTextScaleLabel = document.getElementById('overlay-text-scale-label');
+        const overlayOnTopLabel = document.getElementById('overlay-on-top-label');
+        const overlayLayoutLabel = document.getElementById('overlay-layout-label');
+        const overlayLayoutGroup = document.getElementById('overlay-layout-group');
+        const overlayLayoutVerticalBtn = document.getElementById('overlay-layout-vertical-btn');
+        const overlayLayoutGridBtn = document.getElementById('overlay-layout-grid-btn');
+        const overlayLayoutCompactBtn = document.getElementById('overlay-layout-compact-btn');
+        const overlayOnTopToggle = document.getElementById('overlay-on-top-toggle');
+        const overlayOpacitySlider = document.getElementById('overlay-opacity-slider');
+        const overlayOpacityValue = document.getElementById('overlay-opacity-value');
+        const overlayTextScaleSlider = document.getElementById('overlay-text-scale-slider');
+        const overlayTextScaleValue = document.getElementById('overlay-text-scale-value');
+
+        let overlayUiText = {
+            headTitle: 'Tune Overlay',
+            controlsAria: 'Overlay controls',
+            opacityLabel: 'Opacity',
+            textSizeLabel: 'Text Size',
+            onTopLabel: 'Always On Top',
+            layoutLabel: 'Layout',
+            layoutVertical: 'Vertical',
+            layoutGrid: 'Grid',
+            layoutCompact: 'Compact',
+            opacityAria: 'Overlay opacity',
+            textSizeAria: 'Overlay text size',
+            onTopAria: 'Keep overlay always on top',
+            layoutAria: 'Overlay layout',
+            lockTitle: 'Lock position',
+            unlockTitle: 'Unlock position',
+            settingsTitle: 'Overlay settings',
+            closeTitle: 'Close overlay',
+            noData: 'No Data',
+            cardFallback: 'Tune'
+        };
+
+        let overlayControlsState = {
+            opacity: 0.88,
+            textScale: 1,
+            layoutPreset: 'vertical',
+            lockPosition: false,
+            alwaysOnTop: true
+        };
+        document.body.dataset.overlayLayout = overlayControlsState.layoutPreset;
+
+        function clampOpacityValue(nextValue) {
+            const numeric = Number(nextValue);
+            if (!Number.isFinite(numeric)) {
+                return 0.88;
+            }
+            if (numeric > 1) {
+                return Math.min(1, Math.max(0.35, numeric / 100));
+            }
+            return Math.min(1, Math.max(0.35, numeric));
+        }
+
+        function clampTextScaleValue(nextValue) {
+            const numeric = Number(nextValue);
+            if (!Number.isFinite(numeric)) {
+                return 1;
+            }
+            if (numeric > 3) {
+                return Math.min(1.4, Math.max(0.8, numeric / 100));
+            }
+            return Math.min(1.4, Math.max(0.8, numeric));
+        }
+
+        function normalizeLayoutPreset(value) {
+            const normalized = String(value || '').trim().toLowerCase();
+            if (normalized === 'vertical' || normalized === 'grid' || normalized === 'compact') {
+                return normalized;
+            }
+            return 'vertical';
+        }
+
+        function applyOverlayUi(ui) {
+            if (!ui || typeof ui !== 'object') {
+                return;
+            }
+
+            overlayUiText = {
+                ...overlayUiText,
+                ...ui
+            };
+
+            if (overlayHeadTitle) {
+                overlayHeadTitle.textContent = overlayUiText.headTitle;
+            }
+            if (overlayControlsPanel) {
+                overlayControlsPanel.setAttribute('aria-label', overlayUiText.controlsAria);
+            }
+            if (overlayOpacityLabel) {
+                overlayOpacityLabel.textContent = overlayUiText.opacityLabel;
+            }
+            if (overlayTextScaleLabel) {
+                overlayTextScaleLabel.textContent = overlayUiText.textSizeLabel;
+            }
+            if (overlayOnTopLabel) {
+                overlayOnTopLabel.textContent = overlayUiText.onTopLabel;
+            }
+            if (overlayLayoutLabel) {
+                overlayLayoutLabel.textContent = overlayUiText.layoutLabel;
+            }
+            if (overlayOpacitySlider) {
+                overlayOpacitySlider.setAttribute('aria-label', overlayUiText.opacityAria);
+            }
+            if (overlayTextScaleSlider) {
+                overlayTextScaleSlider.setAttribute('aria-label', overlayUiText.textSizeAria);
+            }
+            if (overlayOnTopToggle) {
+                overlayOnTopToggle.setAttribute('aria-label', overlayUiText.onTopAria);
+            }
+            if (overlayLayoutGroup) {
+                overlayLayoutGroup.setAttribute('aria-label', overlayUiText.layoutAria);
+            }
+            if (overlayLayoutVerticalBtn) {
+                overlayLayoutVerticalBtn.textContent = overlayUiText.layoutVertical;
+                overlayLayoutVerticalBtn.setAttribute('title', overlayUiText.layoutVertical);
+            }
+            if (overlayLayoutGridBtn) {
+                overlayLayoutGridBtn.textContent = overlayUiText.layoutGrid;
+                overlayLayoutGridBtn.setAttribute('title', overlayUiText.layoutGrid);
+            }
+            if (overlayLayoutCompactBtn) {
+                overlayLayoutCompactBtn.textContent = overlayUiText.layoutCompact;
+                overlayLayoutCompactBtn.setAttribute('title', overlayUiText.layoutCompact);
+            }
+            if (overlaySettingsBtn) {
+                overlaySettingsBtn.setAttribute('aria-label', overlayUiText.settingsTitle);
+                overlaySettingsBtn.setAttribute('title', overlayUiText.settingsTitle);
+            }
+            if (overlayCloseBtn) {
+                overlayCloseBtn.setAttribute('aria-label', overlayUiText.closeTitle);
+                overlayCloseBtn.setAttribute('title', overlayUiText.closeTitle);
+            }
+            if (overlayPinBtn) {
+                overlayPinBtn.setAttribute('aria-label', overlayControlsState.lockPosition ? overlayUiText.unlockTitle : overlayUiText.lockTitle);
+                overlayPinBtn.setAttribute('title', overlayControlsState.lockPosition ? overlayUiText.unlockTitle : overlayUiText.lockTitle);
+            }
+        }
+
+        function applyOverlayControlsState(payload) {
+            if (!payload || typeof payload !== 'object') {
+                return;
+            }
+
+            const hasOpacity = Object.prototype.hasOwnProperty.call(payload, 'opacity');
+            const hasTextScale = Object.prototype.hasOwnProperty.call(payload, 'textScale');
+            const hasLayoutPreset = Object.prototype.hasOwnProperty.call(payload, 'layoutPreset');
+            const hasLockPosition = Object.prototype.hasOwnProperty.call(payload, 'lockPosition');
+            const hasAlwaysOnTop = Object.prototype.hasOwnProperty.call(payload, 'alwaysOnTop');
+            overlayControlsState = {
+                ...overlayControlsState,
+                opacity: hasOpacity ? clampOpacityValue(payload.opacity) : overlayControlsState.opacity,
+                textScale: hasTextScale ? clampTextScaleValue(payload.textScale) : overlayControlsState.textScale,
+                layoutPreset: hasLayoutPreset ? normalizeLayoutPreset(payload.layoutPreset) : normalizeLayoutPreset(overlayControlsState.layoutPreset),
+                lockPosition: hasLockPosition ? Boolean(payload.lockPosition) : overlayControlsState.lockPosition,
+                alwaysOnTop: hasAlwaysOnTop ? Boolean(payload.alwaysOnTop) : overlayControlsState.alwaysOnTop
+            };
+
+            const opacityPercent = Math.round(overlayControlsState.opacity * 100);
+            if (overlayOpacitySlider) {
+                overlayOpacitySlider.value = String(opacityPercent);
+            }
+            if (overlayOpacityValue) {
+                overlayOpacityValue.textContent = `${opacityPercent}%`;
+            }
+            const textScalePercent = Math.round(overlayControlsState.textScale * 100);
+            if (overlayTextScaleSlider) {
+                overlayTextScaleSlider.value = String(textScalePercent);
+            }
+            if (overlayTextScaleValue) {
+                overlayTextScaleValue.textContent = `${textScalePercent}%`;
+            }
+            if (overlayOnTopToggle) {
+                overlayOnTopToggle.checked = overlayControlsState.alwaysOnTop;
+            }
+            document.body.dataset.overlayLayout = overlayControlsState.layoutPreset;
+            if (overlayLayoutGroup) {
+                const layoutButtons = overlayLayoutGroup.querySelectorAll('[data-overlay-layout]');
+                layoutButtons.forEach((button) => {
+                    const isActive = normalizeLayoutPreset(button.dataset.overlayLayout) === overlayControlsState.layoutPreset;
+                    button.classList.toggle('is-active', isActive);
+                    button.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                });
+            }
+            document.documentElement.style.setProperty('--overlay-text-scale', overlayControlsState.textScale.toFixed(3));
+            if (overlayPinBtn) {
+                overlayPinBtn.classList.toggle('is-active', overlayControlsState.lockPosition);
+                overlayPinBtn.setAttribute('aria-pressed', overlayControlsState.lockPosition ? 'true' : 'false');
+                overlayPinBtn.setAttribute('aria-label', overlayControlsState.lockPosition ? overlayUiText.unlockTitle : overlayUiText.lockTitle);
+                overlayPinBtn.setAttribute('title', overlayControlsState.lockPosition ? overlayUiText.unlockTitle : overlayUiText.lockTitle);
+            }
+            if (overlayHead) {
+                overlayHead.classList.toggle('is-locked', overlayControlsState.lockPosition);
+            }
+        }
+
+        function sendOverlayControlUpdate(partial, commit = false) {
+            if (!partial || typeof partial !== 'object') {
+                return;
+            }
+            ipcRenderer.send('overlay-control-update', {
+                ...partial,
+                commit: Boolean(commit)
+            });
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function renderOverlayData(payload) {
+            const data = payload && typeof payload === 'object' ? payload : {};
+            applyOverlayUi(data.ui);
+            const title = String(data.title || 'No tune selected').trim() || 'No tune selected';
+            const subtitle = String(data.subtitle || '').trim();
+            const lines = Array.isArray(data.lines) ? data.lines : [];
+
+            overlayTitle.textContent = title;
+            overlaySubtitle.textContent = subtitle;
+
+            if (!lines.length) {
+                overlayLines.innerHTML = `<article class="overlay-line"><div class="overlay-line-top"><span class="overlay-line-title">${escapeHtml(overlayUiText.noData)}</span><span class="overlay-line-value">--</span></div></article>`;
+                return;
+            }
+
+            overlayLines.innerHTML = lines.map((line) => `
+                <article class="overlay-line${line.detail ? ' is-collapsible' : ''}">
+                    ${line.detail ? `
+                        <button class="overlay-line-toggle" type="button" aria-expanded="false">
+                            <div class="overlay-line-top">
+                                <span class="overlay-line-title">${escapeHtml(line.title || overlayUiText.cardFallback)}</span>
+                                <span class="overlay-line-value-wrap">
+                                    <span class="overlay-line-value">${escapeHtml(line.value || '--')}</span>
+                                    <span class="material-symbols-outlined overlay-line-expand" aria-hidden="true">expand_more</span>
+                                </span>
+                            </div>
+                        </button>
+                        <div class="overlay-line-detail-wrap">
+                            ${Array.isArray(line.detailItems) && line.detailItems.length ? `
+                                <div class="overlay-line-detail-grid">
+                                    ${line.detailItems.map((item) => `
+                                        <div class="overlay-line-detail-item">
+                                            <span class="overlay-line-detail-item-label">${escapeHtml(item.label || '--')}</span>
+                                            <span class="overlay-line-detail-item-value">${escapeHtml(item.value || '--')}</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            ` : `<p class="overlay-line-detail">${escapeHtml(line.detail)}</p>`}
+                        </div>
+                    ` : `
+                        <div class="overlay-line-top">
+                            <span class="overlay-line-title">${escapeHtml(line.title || overlayUiText.cardFallback)}</span>
+                            <span class="overlay-line-value">${escapeHtml(line.value || '--')}</span>
+                        </div>
+                    `}
+                </article>
+            `).join('');
+        }
+
+        if (overlayCloseBtn) {
+            overlayCloseBtn.addEventListener('click', () => {
+                ipcRenderer.send('overlay-window-close-request');
+            });
+        }
+
+        if (overlaySettingsBtn && overlayControlsPanel) {
+            overlaySettingsBtn.addEventListener('click', () => {
+                const isHidden = overlayControlsPanel.classList.toggle('hidden');
+                overlaySettingsBtn.classList.toggle('is-active', !isHidden);
+                overlaySettingsBtn.setAttribute('aria-expanded', isHidden ? 'false' : 'true');
+            });
+        }
+
+        if (overlayPinBtn) {
+            overlayPinBtn.addEventListener('click', () => {
+                sendOverlayControlUpdate({ toggleLock: true }, true);
+            });
+        }
+
+        if (overlayOpacitySlider) {
+            overlayOpacitySlider.addEventListener('input', () => {
+                const nextOpacity = clampOpacityValue(Number(overlayOpacitySlider.value));
+                applyOverlayControlsState({ opacity: nextOpacity });
+                sendOverlayControlUpdate({ opacity: nextOpacity }, false);
+            });
+
+            overlayOpacitySlider.addEventListener('change', () => {
+                const nextOpacity = clampOpacityValue(Number(overlayOpacitySlider.value));
+                applyOverlayControlsState({ opacity: nextOpacity });
+                sendOverlayControlUpdate({ opacity: nextOpacity }, true);
+            });
+        }
+
+        if (overlayTextScaleSlider) {
+            overlayTextScaleSlider.addEventListener('input', () => {
+                const nextTextScale = clampTextScaleValue(Number(overlayTextScaleSlider.value));
+                applyOverlayControlsState({ textScale: nextTextScale });
+                sendOverlayControlUpdate({ textScale: nextTextScale }, false);
+            });
+
+            overlayTextScaleSlider.addEventListener('change', () => {
+                const nextTextScale = clampTextScaleValue(Number(overlayTextScaleSlider.value));
+                applyOverlayControlsState({ textScale: nextTextScale });
+                sendOverlayControlUpdate({ textScale: nextTextScale }, true);
+            });
+        }
+
+        if (overlayOnTopToggle) {
+            overlayOnTopToggle.addEventListener('change', () => {
+                const nextAlwaysOnTop = Boolean(overlayOnTopToggle.checked);
+                applyOverlayControlsState({ alwaysOnTop: nextAlwaysOnTop });
+                sendOverlayControlUpdate({ alwaysOnTop: nextAlwaysOnTop }, true);
+            });
+        }
+
+        if (overlayLayoutGroup) {
+            overlayLayoutGroup.addEventListener('click', (event) => {
+                const target = event.target.closest('[data-overlay-layout]');
+                if (!target || !overlayLayoutGroup.contains(target)) {
+                    return;
+                }
+
+                const nextLayout = normalizeLayoutPreset(target.dataset.overlayLayout);
+                if (nextLayout === overlayControlsState.layoutPreset) {
+                    return;
+                }
+
+                applyOverlayControlsState({ layoutPreset: nextLayout });
+                sendOverlayControlUpdate({ layoutPreset: nextLayout }, true);
+            });
+        }
+
+        if (overlayLines) {
+            overlayLines.addEventListener('click', (event) => {
+                const toggle = event.target.closest('.overlay-line-toggle');
+                if (!toggle || !overlayLines.contains(toggle)) {
+                    return;
+                }
+
+                const line = toggle.closest('.overlay-line.is-collapsible');
+                if (!line) {
+                    return;
+                }
+
+                const expanded = line.classList.toggle('is-expanded');
+                toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                const icon = toggle.querySelector('.overlay-line-expand');
+                if (icon) {
+                    icon.textContent = expanded ? 'expand_less' : 'expand_more';
+                }
+            });
+        }
+
+        ipcRenderer.on('overlay-data', (event, payload) => {
+            renderOverlayData(payload);
+        });
+
+        ipcRenderer.on('overlay-controls-state', (event, payload) => {
+            applyOverlayControlsState(payload);
+        });
+    </script>
+</body>
+</html>
