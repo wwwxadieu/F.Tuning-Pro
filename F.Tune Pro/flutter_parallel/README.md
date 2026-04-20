@@ -1,44 +1,89 @@
-# F.Tune Pro Flutter Parallel
+# F.Tune Pro
 
-This folder contains a parallel Flutter desktop prototype for `F.Tune Pro`.
-The current Electron app remains untouched and is still the primary app.
+> Ứng dụng tạo tune xe tự động cho Forza Horizon 5 & 6 — chạy trên Windows.
 
-## Current status
+![Platform](https://img.shields.io/badge/platform-Windows-blue)
+![Flutter](https://img.shields.io/badge/Flutter-Desktop-02569B?logo=flutter)
+![License](https://img.shields.io/badge/license-Beta-orange)
 
-- Flutter source scaffold only
-- Reuses existing local data/assets from the Electron project
-- Includes a multi-screen Flutter shell for Dashboard, Create, Garage, and Settings
-- Includes a first-pass Dart tuning calculation service ported from `renderer.js`
-- Includes a Flutter-side tune results preview dialog with calculated setup cards and gearing estimates
-- Flutter SDK is not installed on this machine yet, so this version has not been generated with `flutter create` or run locally
+---
 
-## Planned use
+## Giới thiệu
 
-This parallel app is meant for an incremental migration:
+**F.Tune Pro** là công cụ hỗ trợ người chơi Forza Horizon tạo bộ tune (thiết lập) cho xe một cách nhanh chóng và chính xác. Chỉ cần chọn xe, nhập thông số cơ bản — ứng dụng sẽ tính toán và đưa ra bộ tune hoàn chỉnh bao gồm:
 
-1. keep Electron running as-is
-2. rebuild the Create screen in Flutter
-3. port shared tuning logic into pure modules
-4. compare behavior side-by-side before switching over
+- Lò xo & Giảm chấn (Springs & Damping)
+- Thanh cân bằng (Anti-Roll Bars)
+- Hộp số (Gearing)
+- Căn chỉnh (Alignment)
+- Khí động học (Aero)
+- Phanh (Brakes)
 
-## When Flutter SDK is installed
+## Tính năng
 
-From this folder, run:
+| Tính năng | Mô tả |
+|-----------|-------|
+| 🏎️ **Tạo Tune** | Chọn xe từ database FH5/FH6, nhập thông số → nhận tune hoàn chỉnh |
+| 🏠 **Dashboard** | Giao diện bento grid hiện đại với preview xe và truy cập nhanh |
+| 🗃️ **Garage** | Lưu, ghim, xuất/nhập tune dưới dạng JSON |
+| 🖥️ **Overlay** | Cửa sổ hiển thị tune luôn nằm trên game |
+| 🌐 **Đa ngôn ngữ** | Tiếng Việt & Tiếng Anh |
+| 🎨 **Tùy biến** | Dark/Light theme, accent color, ảnh/video nền |
+| 🔄 **Tự cập nhật** | Kiểm tra & tải bản mới trực tiếp từ GitHub |
+| 👋 **Welcome Tour** | Hướng dẫn người dùng mới qua từng tính năng |
+
+## Cài đặt
+
+### Installer (khuyên dùng)
+Tải file **F.Tune-Pro-Setup.exe** từ [Releases](https://github.com/wwwxadieu/F.Tuning-Pro/releases/latest) và cài đặt bình thường.
+
+### Portable
+Tải file **F.Tune-Pro-Portable.zip**, giải nén và chạy trực tiếp — không cần cài đặt.
+
+## Build từ source
+
+Yêu cầu: [Flutter SDK](https://flutter.dev) ≥ 3.3.0
 
 ```powershell
-./tool/bootstrap_flutter.ps1
-flutter run -d windows
+cd flutter_parallel
+flutter pub get
+flutter run -d windows          # Debug
+flutter build windows --release # Release
 ```
 
-If you only want Windows support:
-
+### Build Installer (cần Inno Setup 6)
 ```powershell
-./tool/bootstrap_flutter.ps1 -Platforms windows
-flutter run -d windows
+.\tool\build_installer.ps1
 ```
 
-## Notes
+### Build Portable
+```powershell
+.\tool\build_portable.ps1
+```
 
-- Assets expected by this scaffold live in `assets/data` and `assets/images`
-- The first pass focuses on the `Create New Tune` screen only
-- Electron files in the project root are intentionally left unchanged
+## Cấu trúc dự án
+
+```
+lib/
+├── main.dart                  # Entry point
+├── app/
+│   ├── ftune_app.dart         # MaterialApp
+│   ├── ftune_shell.dart       # Shell + Welcome Tour + Update Banner
+│   ├── ftune_app_controller.dart  # State management
+│   ├── ftune_storage.dart     # SharedPreferences + file I/O
+│   ├── ftune_update_checker.dart  # Kiểm tra phiên bản mới
+│   └── ftune_updater.dart     # Tải & cài đặt update
+└── features/
+    ├── create/                # Tạo tune mới
+    ├── dashboard/             # Trang chính
+    └── settings/              # Cài đặt & donate
+```
+
+## Ủng hộ
+
+Nếu bạn thấy ứng dụng hữu ích, hãy ủng hộ tác giả qua tính năng **Donate** trong phần Cài đặt của app.
+
+## Liên hệ
+
+- GitHub: [@wwwxadieu](https://github.com/wwwxadieu)
+- Email: contact.vndrift@gmail.com

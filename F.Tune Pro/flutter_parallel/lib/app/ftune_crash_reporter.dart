@@ -68,39 +68,25 @@ class FTuneCrashReporter {
   }
 
   void captureFlutterError(FlutterErrorDetails details) {
+    // Tạm thời không hiển thị dialog trong giai đoạn phát triển
+    // Chỉ log ra console để debug
     final stack = details.stack ?? StackTrace.current;
-    final entry = _CrashLogEntry(
-      source: 'FlutterError',
-      error: details.exceptionAsString(),
-      stackTrace: stack.toString(),
-      library: details.library,
-      context: details.context?.toDescription(),
-      silent: details.silent,
-      timestamp: DateTime.now(),
-    );
-    _enqueue(entry);
+    debugPrint('[CrashReporter] FlutterError: ${details.exceptionAsString()}');
+    debugPrint('[CrashReporter] Stack: ${stack.toString()}');
+    // Đã disable để không làm phiền user trong giai đoạn phát triển
   }
 
   void capturePlatformError(Object error, StackTrace stackTrace) {
-    _enqueue(
-      _CrashLogEntry(
-        source: 'PlatformDispatcher',
-        error: error.toString(),
-        stackTrace: stackTrace.toString(),
-        timestamp: DateTime.now(),
-      ),
-    );
+    // Tạm thời không hiển thị dialog trong giai đoạn phát triển
+    debugPrint('[CrashReporter] PlatformError: $error');
+    debugPrint('[CrashReporter] Stack: ${stackTrace.toString()}');
+    // Đã disable để không làm phiền user trong giai đoạn phát triển
   }
 
   void captureZoneError(Object error, StackTrace stackTrace) {
-    _enqueue(
-      _CrashLogEntry(
-        source: 'runZonedGuarded',
-        error: error.toString(),
-        stackTrace: stackTrace.toString(),
-        timestamp: DateTime.now(),
-      ),
-    );
+    // Tạm thời không hiển thị dialog trong giai đoạn phát triển
+    debugPrint('[CrashReporter] ZoneError: $error');
+    debugPrint('[CrashReporter] Stack: ${stackTrace.toString()}');
   }
 
   void _enqueue(_CrashLogEntry entry) {

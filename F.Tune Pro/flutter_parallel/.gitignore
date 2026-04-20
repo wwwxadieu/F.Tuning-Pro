@@ -3,6 +3,7 @@
 .flutter-plugins-dependencies
 .packages
 build/
+dist/
 pubspec.lock
 windows/
 linux/

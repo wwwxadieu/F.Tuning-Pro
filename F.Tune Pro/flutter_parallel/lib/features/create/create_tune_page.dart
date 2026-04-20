@@ -2888,7 +2888,7 @@ class _CreateTunePageState extends State<CreateTunePage> {
     final palette = FTuneElectronPaletteData.of(context);
     final thumbnailUrl = _thumbnailFor(car);
     return Container(
-      height: 180,
+      height: 140,
       margin: const EdgeInsets.fromLTRB(12, 12, 12, 0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
@@ -2919,6 +2919,7 @@ class _CreateTunePageState extends State<CreateTunePage> {
       thumbnailUrl,
       fit: BoxFit.contain,
       alignment: Alignment.center,
+      cacheWidth: 400,
       errorBuilder: (_, __, ___) => _buildPreviewFallback(car),
     );
   }

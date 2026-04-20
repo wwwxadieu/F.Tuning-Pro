@@ -299,7 +299,7 @@ class _CarPreviewImageState extends State<_CarPreviewImage>
           url,
           fit: BoxFit.contain,
           filterQuality: FilterQuality.high,
-          cacheWidth: 960,
+          cacheWidth: 600,
           errorBuilder: (_, __, ___) {
             if (mounted) setState(() => _error = true);
             return Center(

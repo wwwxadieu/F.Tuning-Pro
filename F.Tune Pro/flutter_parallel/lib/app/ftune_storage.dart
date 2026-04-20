@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -43,7 +44,8 @@ class FTuneStorage {
   Future<SharedPreferences?> _prefsOrNull() async {
     try {
       return await SharedPreferences.getInstance();
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[FTuneStorage] SharedPreferences failed: $e');
       return null;
     }
   }

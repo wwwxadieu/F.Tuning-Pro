@@ -530,25 +530,36 @@ class _WelcomeTourOverlayState extends State<_WelcomeTourOverlay> {
     final activeIndex = isSetup ? 0 : page - 1;
     final activeSlide = slides[activeIndex];
 
-    return Material(
-      color: Colors.transparent,
-      child: TweenAnimationBuilder<double>(
-        tween: Tween<double>(begin: 0, end: 1),
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeOutCubic,
-        builder: (context, value, child) {
-          return Opacity(
-            opacity: value,
-            child: Transform.scale(
-              scale: 0.92 + (0.08 * value),
-              child: child,
-            ),
-          );
-        },
-        child: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            SafeArea(
+    return GestureDetector(
+      onTap: () {},
+      behavior: HitTestBehavior.opaque,
+      child: Material(
+        color: Colors.transparent,
+        child: TweenAnimationBuilder<double>(
+          tween: Tween<double>(begin: 0, end: 1),
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOutCubic,
+          builder: (context, value, child) {
+            return Opacity(
+              opacity: value,
+              child: Transform.scale(
+                scale: 0.92 + (0.08 * value),
+                child: child,
+              ),
+            );
+          },
+          child: Stack(
+            fit: StackFit.expand,
+            children: <Widget>[
+              DecoratedBox(
+                decoration: BoxDecoration(
+                  color: palette.isDark
+                      ? const Color(0xDD000000)
+                      : const Color(0xCC000000),
+                ),
+                child: const SizedBox.expand(),
+              ),
+              SafeArea(
               minimum: const EdgeInsets.all(32),
               child: Center(
                 child: _WelcomeGlassPanel(
@@ -611,6 +622,7 @@ class _WelcomeTourOverlayState extends State<_WelcomeTourOverlay> {
           ],
         ),
       ),
+    ),
     );
   }
 

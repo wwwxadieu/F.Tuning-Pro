@@ -74,7 +74,7 @@ class WikiCarThumbnailRepository {
       'format': 'json',
       'formatversion': '2',
       'prop': 'pageimages',
-      'pithumbsize': '1920',
+      'pithumbsize': '800',
       'titles': title,
       'redirects': '1',
     });

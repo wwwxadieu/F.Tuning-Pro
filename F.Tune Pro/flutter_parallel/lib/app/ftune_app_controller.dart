@@ -36,7 +36,8 @@ class FTuneAppController extends ChangeNotifier {
       ..addAll(await _storage.loadGarage());
     _sortGarage();
     _customBackgroundPath = await _storage.loadCustomBackgroundPath();
-    _showWelcome = !(await _storage.loadWelcomeSeen());
+    final welcomeSeen = await _storage.loadWelcomeSeen();
+    _showWelcome = !welcomeSeen;
     final overlayTuneId = await _storage.loadOverlayTuneId();
     if (overlayTuneId != null) {
       _activeOverlayTune = _garageTunes.cast<SavedTuneRecord?>().firstWhere(

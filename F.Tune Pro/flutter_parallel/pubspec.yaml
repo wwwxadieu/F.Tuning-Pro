@@ -36,6 +36,7 @@ flutter:
     - assets/data/wiki_car_thumbnails.json
     - assets/images/fh5-hero.jpeg
     - assets/images/fh6-hero.jpg
+    - assets/images/fh6-main-bg.jpg
     - assets/images/fvgc-logo.png
     - assets/images/donate-qr.jpg
     - assets/images/welcome/
