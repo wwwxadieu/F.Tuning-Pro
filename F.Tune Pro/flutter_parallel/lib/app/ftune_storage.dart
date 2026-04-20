@@ -15,6 +15,7 @@ class FTuneStorage {
   static const String _welcomeSeenKey = 'ftune.welcomeSeen.v1';
   static const String _customBackgroundKey = 'ftune.customBackground.v1';
   static const String _overlayTuneKey = 'ftune.overlayTuneId.v1';
+  static const String _licenseKeyKey = 'ftune.licenseKey.v1';
   static const String _garageFileName = 'garage_tunes.json';
   static const Set<String> _backgroundExtensions = <String>{
     '.png',
@@ -284,5 +285,25 @@ class FTuneStorage {
       return '.dat';
     }
     return path.substring(dot);
+  }
+
+  // ── License key ───────────────────────────────────────────────────────────
+
+  Future<String?> loadLicenseKey() async {
+    final prefs = await _prefsOrNull();
+    if (prefs == null) return null;
+    final raw = prefs.getString(_licenseKeyKey);
+    if (raw == null || raw.trim().isEmpty) return null;
+    return raw;
+  }
+
+  Future<void> saveLicenseKey(String? key) async {
+    final prefs = await _prefsOrNull();
+    if (prefs == null) return;
+    if (key == null || key.trim().isEmpty) {
+      await prefs.remove(_licenseKeyKey);
+      return;
+    }
+    await prefs.setString(_licenseKeyKey, key.trim());
   }
 }

@@ -89,6 +89,12 @@ class DashboardPage extends StatefulWidget {
     this.onClearBackground,
     this.onDropBackground,
     this.onOpenWelcomeTour,
+    this.isPro = false,
+    this.licenseStatus,
+    this.licenseKey,
+    this.onActivateLicense,
+    this.onDeactivateLicense,
+    this.garageLimit = 15,
   });
 
   final String languageCode;
@@ -128,6 +134,12 @@ class DashboardPage extends StatefulWidget {
   final Future<void> Function()? onClearBackground;
   final Future<bool> Function(String path)? onDropBackground;
   final VoidCallback? onOpenWelcomeTour;
+  final bool isPro;
+  final Object? licenseStatus;
+  final String? licenseKey;
+  final Future<String?> Function(String key)? onActivateLicense;
+  final Future<void> Function()? onDeactivateLicense;
+  final int garageLimit;
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -226,6 +238,8 @@ class _DashboardPageState extends State<DashboardPage> {
                             onOpenOverlayTune: widget.onOpenOverlayTune,
                             onAccentChange: widget.onAccentChange,
                             autoCarThemeEnabled: adaptiveCarTheme,
+                            isPro: widget.isPro,
+                            garageLimit: widget.garageLimit,
                           ),
                         ),
 
@@ -252,6 +266,8 @@ class _DashboardPageState extends State<DashboardPage> {
                               await widget.onSetOverlayTune?.call(record);
                             },
                             onEditInCreate: _editInCreate,
+                            isPro: widget.isPro,
+                            garageLimit: widget.garageLimit,
                           ),
                         ),
 
@@ -280,6 +296,11 @@ class _DashboardPageState extends State<DashboardPage> {
                             },
                             onOpenWelcomeTour:
                                 widget.onOpenWelcomeTour ?? () {},
+                            isPro: widget.isPro,
+                            licenseStatus: widget.licenseStatus,
+                            licenseKey: widget.licenseKey,
+                            onActivateLicense: widget.onActivateLicense,
+                            onDeactivateLicense: widget.onDeactivateLicense,
                           ),
                         ),
                       ],
@@ -532,6 +553,8 @@ class _DashboardHome extends StatefulWidget {
     this.onOpenOverlayTune,
     this.onAccentChange,
     this.autoCarThemeEnabled = false,
+    this.isPro = false,
+    this.garageLimit = 15,
   });
 
   final bool isDarkMode;
@@ -549,6 +572,8 @@ class _DashboardHome extends StatefulWidget {
   final Future<void> Function(SavedTuneRecord? record)? onOpenOverlayTune;
   final ValueChanged<int>? onAccentChange;
   final bool autoCarThemeEnabled;
+  final bool isPro;
+  final int garageLimit;
 
   @override
   State<_DashboardHome> createState() => _DashboardHomeState();
@@ -928,6 +953,18 @@ class _DashboardHomeState extends State<_DashboardHome> {
 
   void _switchCatalog(_DashboardCarCatalog catalog) {
     if (_selectedCatalog == catalog) return;
+    if (catalog == _DashboardCarCatalog.fh6 && !widget.isPro) {
+      ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+        SnackBar(
+          content: Text(
+            widget.languageCode == 'vi'
+                ? 'FH6 chỉ dành cho bản Pro. Kích hoạt trong Cài đặt.'
+                : 'FH6 is Pro only. Activate in Settings.',
+          ),
+        ),
+      );
+      return;
+    }
     _setActiveCatalog(catalog, clearSearch: true);
   }
 
@@ -1875,6 +1912,20 @@ class _DashboardHomeState extends State<_DashboardHome> {
     final car = _selectedCar;
     final result = _result;
     if (car == null || result == null) return;
+
+    // Check garage limit for free users
+    if (!widget.isPro && widget.garageTunes.length >= widget.garageLimit) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            widget.languageCode == 'vi'
+                ? 'Garage đầy (${widget.garageLimit}/${widget.garageLimit}). Nâng cấp Pro để lưu không giới hạn.'
+                : 'Garage full (${widget.garageLimit}/${widget.garageLimit}). Upgrade to Pro for unlimited saves.',
+          ),
+        ),
+      );
+      return;
+    }
 
     final nameCtrl = TextEditingController(text: '${car.brand} ${car.model}');
     final codeCtrl = TextEditingController();

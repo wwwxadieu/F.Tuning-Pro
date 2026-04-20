@@ -3,10 +3,13 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:http/http.dart' as http;
 
+import '../../app/ftune_license.dart';
 import '../../app/ftune_models.dart';
 import '../../app/ftune_ui.dart';
+import '../../features/payment/payment_page.dart';
 import '../dashboard/widgets/bento_glass_container.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -21,6 +24,11 @@ class SettingsPage extends StatefulWidget {
     required this.onClearBackground,
     required this.onDropBackground,
     required this.onOpenWelcomeTour,
+    this.isPro = false,
+    this.licenseStatus,
+    this.licenseKey,
+    this.onActivateLicense,
+    this.onDeactivateLicense,
   });
 
   final String languageCode;
@@ -32,6 +40,11 @@ class SettingsPage extends StatefulWidget {
   final Future<void> Function() onClearBackground;
   final Future<bool> Function(String path) onDropBackground;
   final VoidCallback onOpenWelcomeTour;
+  final bool isPro;
+  final Object? licenseStatus;
+  final String? licenseKey;
+  final Future<String?> Function(String key)? onActivateLicense;
+  final Future<void> Function()? onDeactivateLicense;
 
   @override
   State<SettingsPage> createState() => _SettingsPageState();
@@ -243,6 +256,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 runSpacing: spacing,
                 children: <Widget>[
                   SizedBox(
+                    width: constraints.maxWidth,
+                    child: _licenseCard(copy),
+                  ),
+                  SizedBox(
                     width: cardWidth,
                     child: _settingsCard(
                       title: copy.appearanceTitle,
@@ -445,6 +462,397 @@ class _SettingsPageState extends State<SettingsPage> {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       fillOpacity: palette.isDark ? 0.16 : 0.22,
       child: child,
+    );
+  }
+
+  // ── License / Pro Activation ──────────────────────────────────────────────
+
+  Widget _licenseCard(_SettingsCopy copy) {
+    final palette = FTuneElectronPaletteData.of(context);
+    final isPro = widget.isPro;
+    final isValidating = widget.licenseStatus == LicenseStatus.validating;
+    final licenseTitle =
+        copy.isVietnamese ? 'Phiên bản Pro' : 'Pro License';
+    final licenseSubtitle = copy.isVietnamese
+        ? 'Kích hoạt để mở khóa tính năng cao cấp'
+        : 'Activate to unlock premium features';
+
+    return _settingsCard(
+      title: licenseTitle,
+      icon: isPro ? Icons.verified_rounded : Icons.workspace_premium_rounded,
+      subtitle: licenseSubtitle,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          // Status badge
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: isPro
+                  ? const Color(0xFF4CAF50).withAlpha(24)
+                  : palette.accent.withAlpha(16),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isPro
+                    ? const Color(0xFF4CAF50).withAlpha(80)
+                    : palette.border,
+              ),
+            ),
+            child: Row(
+              children: <Widget>[
+                Icon(
+                  isPro ? Icons.verified_rounded : Icons.lock_outline_rounded,
+                  size: 20,
+                  color: isPro ? const Color(0xFF4CAF50) : palette.muted,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Text(
+                        isPro
+                            ? (copy.isVietnamese ? 'Đã kích hoạt Pro' : 'Pro Activated')
+                            : (copy.isVietnamese ? 'Bản Free' : 'Free Version'),
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          color: isPro ? const Color(0xFF4CAF50) : palette.text,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        isPro
+                            ? (copy.isVietnamese
+                                ? 'Tất cả tính năng đã được mở khóa'
+                                : 'All features unlocked')
+                            : (copy.isVietnamese
+                                ? 'FH6 bị khóa · Garage tối đa 15 tune'
+                                : 'FH6 locked · Garage max 15 tunes'),
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: palette.muted,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          // Pro features list
+          if (!isPro) ...<Widget>[
+            _proFeatureRow(
+              icon: Icons.sports_esports_rounded,
+              label: copy.isVietnamese
+                  ? 'Mở khóa xe Forza Horizon 6'
+                  : 'Unlock Forza Horizon 6 cars',
+              palette: palette,
+            ),
+            const SizedBox(height: 6),
+            _proFeatureRow(
+              icon: Icons.all_inclusive_rounded,
+              label: copy.isVietnamese
+                  ? 'Garage không giới hạn (hiện tại: tối đa 15)'
+                  : 'Unlimited garage (currently: max 15)',
+              palette: palette,
+            ),
+            const SizedBox(height: 12),
+          ],
+          // Action buttons
+          Row(
+            children: <Widget>[
+              if (!isPro) ...<Widget>[
+                Expanded(
+                  child: FilledButton.icon(
+                    onPressed: isValidating
+                        ? null
+                        : () => _openPaymentPage(copy),
+                    icon: const Icon(Icons.shopping_cart_rounded, size: 16),
+                    label: Text(
+                      copy.isVietnamese ? 'Mua Pro' : 'Buy Pro',
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: isValidating
+                        ? null
+                        : () => _showLicenseActivationDialog(copy),
+                    icon: isValidating
+                        ? const SizedBox(
+                            width: 16,
+                            height: 16,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.key_rounded, size: 16),
+                    label: Text(
+                      copy.isVietnamese ? 'Nhập mã' : 'Enter code',
+                    ),
+                  ),
+                ),
+              ],
+              if (isPro)
+                Expanded(
+                  child: OutlinedButton.icon(
+                    onPressed: () => _showDeactivateConfirmDialog(copy),
+                    icon: const Icon(Icons.logout_rounded, size: 16),
+                    label: Text(
+                      copy.isVietnamese ? 'Hủy kích hoạt' : 'Deactivate',
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _proFeatureRow({
+    required IconData icon,
+    required String label,
+    required FTuneElectronPaletteData palette,
+  }) {
+    return Row(
+      children: <Widget>[
+        Icon(icon, size: 14, color: palette.accent),
+        const SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            label,
+            style: TextStyle(fontSize: 12, color: palette.text),
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _openPaymentPage(_SettingsCopy copy) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) => FTunePaymentPage(
+          onLicenseKeyObtained: (key) async {
+            // Quay lại trang settings
+            if (mounted) Navigator.of(context).pop();
+
+            // Chờ animation pop xong
+            await Future<void>.delayed(const Duration(milliseconds: 350));
+            if (!mounted) return;
+
+            // Tự động activate
+            final errorMsg = await widget.onActivateLicense?.call(key);
+            if (!mounted) return;
+
+            final messenger = ScaffoldMessenger.maybeOf(context);
+            if (errorMsg == null) {
+              messenger?.showSnackBar(
+                SnackBar(
+                  content: Text(
+                    copy.isVietnamese
+                        ? 'Kích hoạt Pro thành công! 🎉'
+                        : 'Pro activated successfully! 🎉',
+                  ),
+                ),
+              );
+            } else {
+              messenger?.showSnackBar(
+                SnackBar(
+                  content: Text(errorMsg),
+                  backgroundColor: Colors.red.shade700,
+                ),
+              );
+            }
+          },
+        ),
+      ),
+    );
+  }
+
+  void _showLicenseActivationDialog(_SettingsCopy copy) {
+    final palette = FTuneElectronPaletteData.of(context);
+    final licenseCodeController = TextEditingController();
+
+    showDialog<String>(
+      context: context,
+      builder: (dialogContext) {
+        String? errorText;
+
+        return StatefulBuilder(
+          builder: (context, setModalState) => _buildModalDialog(
+            context,
+            copy,
+            palette,
+            title: copy.isVietnamese
+                ? 'Kích hoạt Pro'
+                : 'Activate Pro',
+            icon: Icons.workspace_premium_rounded,
+            width: 440,
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                Text(
+                  copy.isVietnamese
+                      ? 'Nhập mã kích hoạt Pro bạn đã nhận được sau khi thanh toán.'
+                      : 'Enter the Pro activation code you received after payment.',
+                  style: TextStyle(
+                    fontSize: 12,
+                    height: 1.5,
+                    color: palette.muted,
+                  ),
+                ),
+                const SizedBox(height: 14),
+                TextField(
+                  controller: licenseCodeController,
+                  autofocus: true,
+                  textInputAction: TextInputAction.done,
+                  decoration: InputDecoration(
+                    isDense: true,
+                    hintText: 'XXXXX-XXXXX-XXXXX-XXXXX',
+                    errorText: errorText,
+                    prefixIcon: const Icon(Icons.key_rounded, size: 18),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onChanged: (_) {
+                    if (errorText != null) {
+                      setModalState(() => errorText = null);
+                    }
+                  },
+                  onSubmitted: (_) {
+                    final key = licenseCodeController.text.trim();
+                    if (key.isEmpty) {
+                      setModalState(() {
+                        errorText = copy.isVietnamese
+                            ? 'Vui lòng nhập mã.'
+                            : 'Please enter a code.';
+                      });
+                      return;
+                    }
+                    Navigator.of(dialogContext).pop(key);
+                  },
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(dialogContext).pop(),
+                child: Text(copy.close),
+              ),
+              const SizedBox(width: 8),
+              FilledButton.icon(
+                onPressed: () {
+                  final key = licenseCodeController.text.trim();
+                  if (key.isEmpty) {
+                    setModalState(() {
+                      errorText = copy.isVietnamese
+                          ? 'Vui lòng nhập mã.'
+                          : 'Please enter a code.';
+                    });
+                    return;
+                  }
+                  Navigator.of(dialogContext).pop(key);
+                },
+                icon: const Icon(Icons.check_rounded, size: 16),
+                label: Text(
+                  copy.isVietnamese ? 'Kích hoạt' : 'Activate',
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    ).then((key) async {
+      licenseCodeController.dispose();
+      if (key == null || key.isEmpty || !mounted) return;
+
+      // Chờ dialog exit animation hoàn tất (~300ms) để tránh xung đột
+      // build scope khi activateLicense gọi notifyListeners().
+      await Future<void>.delayed(const Duration(milliseconds: 350));
+      if (!mounted) return;
+
+      final errorMsg = await widget.onActivateLicense?.call(key);
+      if (!mounted) return;
+
+      final messenger = ScaffoldMessenger.maybeOf(context);
+      if (errorMsg == null) {
+        messenger?.showSnackBar(
+          SnackBar(
+            content: Text(
+              copy.isVietnamese
+                  ? 'Kích hoạt Pro thành công! 🎉'
+                  : 'Pro activated successfully! 🎉',
+            ),
+          ),
+        );
+      } else {
+        messenger?.showSnackBar(
+          SnackBar(
+            content: Text(errorMsg),
+            backgroundColor: Colors.red.shade700,
+          ),
+        );
+      }
+    });
+  }
+
+  void _showDeactivateConfirmDialog(_SettingsCopy copy) {
+    final palette = FTuneElectronPaletteData.of(context);
+    showDialog<void>(
+      context: context,
+      builder: (dialogContext) => _buildModalDialog(
+        dialogContext,
+        copy,
+        palette,
+        title: copy.isVietnamese ? 'Hủy kích hoạt Pro' : 'Deactivate Pro',
+        icon: Icons.warning_amber_rounded,
+        width: 400,
+        content: Text(
+          copy.isVietnamese
+              ? 'Bạn có chắc muốn hủy kích hoạt? Bạn sẽ mất quyền truy cập các tính năng Pro.'
+              : 'Are you sure you want to deactivate? You will lose access to Pro features.',
+          style: TextStyle(
+            fontSize: 13,
+            height: 1.5,
+            color: palette.text,
+          ),
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: Text(copy.close),
+          ),
+          const SizedBox(width: 8),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: const Color(0xFFE53935),
+            ),
+            onPressed: () {
+              Navigator.of(dialogContext).pop();
+              // Chờ dialog deactivate xong rồi mới gọi notifyListeners().
+              SchedulerBinding.instance.addPostFrameCallback((_) {
+                widget.onDeactivateLicense?.call();
+                ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      copy.isVietnamese
+                          ? 'Đã hủy kích hoạt Pro.'
+                          : 'Pro deactivated.',
+                    ),
+                  ),
+                );
+              });
+            },
+            child: Text(
+              copy.isVietnamese ? 'Hủy kích hoạt' : 'Deactivate',
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -1148,9 +1556,6 @@ class _SettingsCopy {
   String get tuningCardSubtitle => isVietnamese
       ? 'Các tùy chọn hỗ trợ thao tác và phối màu theo xe.'
       : 'Behavior preferences that support tuning flow and car-driven theming.';
-  String get measurement => isVietnamese ? 'Đơn vị đo' : 'Measurement system';
-  String get metric => 'Metric';
-  String get imperial => 'Imperial';
   String get autoSave => isVietnamese
       ? 'Tự động gợi ý lưu Garage'
       : 'Enable garage autosave helpers';
@@ -1166,44 +1571,16 @@ class _SettingsCopy {
     isVietnamese ? 'Bật overlay cửa sổ riêng' : 'Enable separate overlay window';
   String get overlayOnTop =>
       isVietnamese ? 'Overlay luôn ở trên' : 'Keep overlay always on top';
-  String get overlayLock =>
-      isVietnamese ? 'Khóa overlay' : 'Lock overlay controls';
   String get overlayLayout =>
       isVietnamese ? 'Bố cục overlay' : 'Overlay layout';
   String get vertical => isVietnamese ? 'Dọc' : 'Vertical';
   String get horizontal => isVietnamese ? 'Ngang' : 'Horizontal';
   String get compact => isVietnamese ? 'Gọn' : 'Compact';
-  String get overlayOpacity =>
-      isVietnamese ? 'Độ mờ overlay' : 'Overlay opacity';
-  String get overlayScale =>
-      isVietnamese ? 'Tỉ lệ chữ overlay' : 'Overlay text scale';
-
-  String get backgroundTitle => isVietnamese ? 'Hình nền' : 'Background';
-  String get backgroundCardSubtitle => isVietnamese
-      ? 'Quản lý nguồn ảnh hoặc video cho nền dashboard.'
-      : 'Manage image or video sources for the dashboard background.';
-  String get backgroundHint => isVietnamese
-      ? 'Chọn ảnh hoặc video làm hình nền. Hỗ trợ: PNG, JPG, WEBP, MP4, WEBM, MOV.'
-      : 'Pick an image or video as background. Supports: PNG, JPG, WEBP, MP4, WEBM, MOV.';
-  String get backgroundPlaceholder => isVietnamese
-      ? r'Ví dụ: C:\Images\background.jpg hoặc video.mp4'
-      : r'Example: C:\Images\background.jpg or video.mp4';
-  String get pickBackground => isVietnamese ? 'Chọn file...' : 'Pick file...';
-  String get clearBackground =>
-      isVietnamese ? 'Xóa ảnh nền' : 'Clear background';
-  String get apply => isVietnamese ? 'Áp dụng' : 'Apply';
-  String get backgroundApplied =>
-      isVietnamese ? 'Đã áp dụng ảnh nền.' : 'Background applied.';
-  String get backgroundInvalid => isVietnamese
-      ? 'Không thể áp dụng đường dẫn này.'
-      : 'Could not apply this path.';
 
   String get supportTitle => isVietnamese ? 'Hỗ trợ' : 'Support';
   String get supportCardSubtitle => isVietnamese
       ? 'Tài liệu, phản hồi và các mục hỗ trợ nhanh.'
       : 'Guides, feedback, and quick support actions.';
-  String get openWelcome =>
-      isVietnamese ? 'Mở lại Welcome Tour' : 'Open welcome tour again';
 
   String get feedbackTitle => isVietnamese ? 'Gửi Phản hồi' : 'Send Feedback';
   String get donateTitle => isVietnamese ? 'Ủng hộ' : 'Donate';

@@ -1,14 +1,18 @@
 import 'package:flutter/foundation.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 import '../features/create/domain/tune_models.dart';
+import 'ftune_license.dart';
 import 'ftune_models.dart';
 import 'ftune_storage.dart';
 
 class FTuneAppController extends ChangeNotifier {
-  FTuneAppController({FTuneStorage? storage})
-      : _storage = storage ?? FTuneStorage();
+  FTuneAppController({FTuneStorage? storage, FTuneLicenseService? licenseService})
+      : _storage = storage ?? FTuneStorage(),
+        _licenseService = licenseService ?? FTuneLicenseService();
 
   final FTuneStorage _storage;
+  final FTuneLicenseService _licenseService;
 
   AppSection _section = AppSection.dashboard;
   AppPreferences _preferences = const AppPreferences.defaults();
@@ -18,6 +22,9 @@ class FTuneAppController extends ChangeNotifier {
   String? _customBackgroundPath;
   SavedTuneRecord? _activeOverlayTune;
   CreateTuneSession? _pendingCreateSession;
+  LicenseStatus _licenseStatus = LicenseStatus.free;
+  String? _licenseKey;
+  String _appVersion = '';
 
   AppSection get section => _section;
   AppPreferences get preferences => _preferences;
@@ -28,6 +35,20 @@ class FTuneAppController extends ChangeNotifier {
   String? get customBackgroundPath => _customBackgroundPath;
   SavedTuneRecord? get activeOverlayTune => _activeOverlayTune;
   CreateTuneSession? get pendingCreateSession => _pendingCreateSession;
+  LicenseStatus get licenseStatus => _licenseStatus;
+  String? get licenseKey => _licenseKey;
+  bool get isPro => _licenseStatus == LicenseStatus.pro;
+  String get appVersion => _appVersion;
+
+  /// Tiêu đề hiển thị trên title bar.
+  String get windowTitle {
+    final edition = isPro ? 'Unlimited' : 'Free';
+    final ver = _appVersion.isNotEmpty ? _appVersion : '0.1.0';
+    return 'F.Tune Pro - v$ver - $edition';
+  }
+
+  /// Số tune tối đa cho bản Free. Pro không giới hạn.
+  static const int freeGarageLimit = 15;
 
   Future<void> initialize() async {
     _preferences = await _storage.loadPreferences();
@@ -44,6 +65,18 @@ class FTuneAppController extends ChangeNotifier {
             (record) => record?.id == overlayTuneId,
             orElse: () => null,
           );
+    }
+    // Load app version
+    try {
+      final info = await PackageInfo.fromPlatform();
+      _appVersion = info.version;
+    } catch (_) {}
+
+    // Load saved license key and re-validate
+    _licenseKey = await _storage.loadLicenseKey();
+    if (_licenseKey != null) {
+      _licenseStatus = LicenseStatus.pro; // assume valid from cache
+      _revalidateLicense(_licenseKey!);
     }
     _isReady = true;
     notifyListeners();
@@ -260,4 +293,58 @@ class FTuneAppController extends ChangeNotifier {
       return b.createdAt.compareTo(a.createdAt);
     });
   }
+
+  // ── License ───────────────────────────────────────────────────────────────
+
+  /// Kích hoạt license key qua API online.
+  /// Trả về thông báo lỗi nếu không hợp lệ, hoặc `null` nếu thành công.
+  Future<String?> activateLicense(String key) async {
+    _licenseStatus = LicenseStatus.validating;
+    // Không gọi notifyListeners() ở đây — tránh rebuild toàn bộ cây widget
+    // trong khi dialog vẫn đang mở.
+
+    final result = await _licenseService.validateOnline(key);
+    if (result.valid) {
+      _licenseKey = key.trim();
+      _licenseStatus = LicenseStatus.pro;
+      await _storage.saveLicenseKey(_licenseKey);
+      notifyListeners();
+      return null;
+    }
+
+    // Giữ trạng thái cũ (nếu đã pro thì vẫn pro)
+    if (_licenseKey != null) {
+      _licenseStatus = LicenseStatus.pro;
+    } else {
+      _licenseStatus = LicenseStatus.free;
+    }
+    notifyListeners();
+    return result.message ?? 'Mã kích hoạt không hợp lệ.';
+  }
+
+  /// Hủy kích hoạt license — quay về bản Free.
+  Future<void> deactivateLicense() async {
+    _licenseKey = null;
+    _licenseStatus = LicenseStatus.free;
+    notifyListeners();
+    await _storage.saveLicenseKey(null);
+  }
+
+  /// Re-validate license key đã lưu (chạy nền, không block UI).
+  void _revalidateLicense(String key) {
+    _licenseService.validateOnline(key).then((result) {
+      if (!result.valid) {
+        _licenseKey = null;
+        _licenseStatus = LicenseStatus.free;
+        _storage.saveLicenseKey(null);
+        notifyListeners();
+      }
+    }).catchError((_) {
+      // Nếu offline, giữ trạng thái pro từ cache.
+    });
+  }
+
+  /// Kiểm tra xem garage đã đầy chưa (cho bản Free).
+  bool get isGarageFull =>
+      !isPro && _garageTunes.length >= freeGarageLimit;
 }

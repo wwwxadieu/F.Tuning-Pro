@@ -6,6 +6,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../features/dashboard/dashboard_page.dart';
 import 'ftune_app_controller.dart';
+import 'ftune_license.dart';
 import 'ftune_models.dart';
 import 'ftune_overlay_window.dart';
 import 'ftune_ui.dart';
@@ -169,6 +170,12 @@ class _FTuneShellState extends State<FTuneShell> {
                 // InheritedWidget dependency assertions when the overlay appears.
                 Future<void>.delayed(Duration.zero, controller.reopenWelcome);
               },
+              isPro: controller.isPro,
+              licenseStatus: controller.licenseStatus,
+              licenseKey: controller.licenseKey,
+              onActivateLicense: controller.activateLicense,
+              onDeactivateLicense: controller.deactivateLicense,
+              garageLimit: FTuneAppController.freeGarageLimit,
             ),
             if (showInlineOverlay &&
                 controller.activeOverlayTune != null &&

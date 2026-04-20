@@ -1,0 +1,16 @@
+{
+  "name": "ftune-license-server",
+  "version": "1.0.0",
+  "description": "F.Tune Pro license server — PayOS payment + license key validation",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.0",
+    "better-sqlite3": "^11.3.0",
+    "uuid": "^10.0.0"
+  }
+}

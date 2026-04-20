@@ -109,6 +109,8 @@ class GaragePage extends StatefulWidget {
     required this.onExport,
     required this.onSetOverlayTune,
     required this.onEditInCreate,
+    this.isPro = false,
+    this.garageLimit = 15,
   });
 
   final String languageCode;
@@ -122,6 +124,8 @@ class GaragePage extends StatefulWidget {
   final Future<void> Function(List<SavedTuneRecord> records) onExport;
   final Future<void> Function(SavedTuneRecord? record) onSetOverlayTune;
   final ValueChanged<SavedTuneRecord> onEditInCreate;
+  final bool isPro;
+  final int garageLimit;
 
   @override
   State<GaragePage> createState() => _GaragePageState();
@@ -205,6 +209,14 @@ class _GaragePageState extends State<GaragePage> {
                               value: '${_selectedIds.length}',
                               palette: palette,
                             ),
+                            if (!widget.isPro)
+                              _garageOverviewPill(
+                                icon: Icons.workspace_premium_rounded,
+                                label: copy.isVietnamese ? 'Giới hạn' : 'Limit',
+                                value:
+                                    '${widget.records.length}/${widget.garageLimit}',
+                                palette: palette,
+                              ),
                           ],
                         ),
                         const SizedBox(height: 14),
@@ -304,6 +316,16 @@ class _GaragePageState extends State<GaragePage> {
                                     value: '${_selectedIds.length}',
                                     palette: palette,
                                   ),
+                                  if (!widget.isPro)
+                                    _garageOverviewPill(
+                                      icon: Icons.workspace_premium_rounded,
+                                      label: copy.isVietnamese
+                                          ? 'Giới hạn'
+                                          : 'Limit',
+                                      value:
+                                          '${widget.records.length}/${widget.garageLimit}',
+                                      palette: palette,
+                                    ),
                                 ],
                               ),
                             ],

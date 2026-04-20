@@ -28,6 +28,7 @@ class CreateTunePage extends StatefulWidget {
     this.onThemeModeChanged,
     this.onOverlayOnTopChanged,
     this.backgroundImagePath,
+    this.isPro = false,
   });
 
   final bool initialMetric;
@@ -44,6 +45,7 @@ class CreateTunePage extends StatefulWidget {
   final ValueChanged<String>? onThemeModeChanged;
   final ValueChanged<bool>? onOverlayOnTopChanged;
   final String? backgroundImagePath;
+  final bool isPro;
 
   @override
   State<CreateTunePage> createState() => _CreateTunePageState();
@@ -2182,8 +2184,21 @@ class _CreateTunePageState extends State<CreateTunePage> {
               columns: compact ? 3 : 3),
           const SizedBox(height: 14),
           _selectionGroup(copy.gameVersionLabel, <String>['FH5', 'FH6'],
-              _gameVersion, (value) => setState(() => _gameVersion = value),
-              columns: 2),
+              _gameVersion, (value) {
+            if (value == 'FH6' && !widget.isPro) {
+              ScaffoldMessenger.maybeOf(context)?.showSnackBar(
+                SnackBar(
+                  content: Text(
+                    widget.languageCode == 'vi'
+                        ? 'FH6 chỉ dành cho bản Pro. Kích hoạt trong Cài đặt.'
+                        : 'FH6 is Pro only. Activate in Settings.',
+                  ),
+                ),
+              );
+              return;
+            }
+            setState(() => _gameVersion = value);
+          }, columns: 2),
         ],
       ),
     );

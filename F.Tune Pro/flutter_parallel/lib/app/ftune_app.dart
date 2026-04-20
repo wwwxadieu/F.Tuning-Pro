@@ -1,6 +1,10 @@
+import 'dart:io';
 import 'dart:math' as math;
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:window_manager/window_manager.dart';
 
 import 'ftune_crash_reporter.dart';
 import 'ftune_app_controller.dart';
@@ -17,6 +21,7 @@ class FTuneApp extends StatefulWidget {
 class _FTuneAppState extends State<FTuneApp> {
   late final FTuneAppController _controller;
   late final Future<void> _bootstrapFuture;
+  String _lastWindowTitle = '';
 
   @override
   void initState() {
@@ -38,11 +43,23 @@ class _FTuneAppState extends State<FTuneApp> {
         }
 
         final accentColor = Color(_controller.preferences.accentColorValue);
+        final windowTitle = _controller.windowTitle;
+
+        // Cập nhật title bar sau khi build xong (tránh side-effect trong build).
+        if (windowTitle != _lastWindowTitle &&
+            !kIsWeb &&
+            (Platform.isWindows || Platform.isLinux || Platform.isMacOS)) {
+          _lastWindowTitle = windowTitle;
+          SchedulerBinding.instance.addPostFrameCallback((_) {
+            windowManager.setTitle(windowTitle);
+          });
+        }
+
         return MaterialApp(
           navigatorKey: FTuneCrashReporter.instance.navigatorKey,
           scaffoldMessengerKey: FTuneCrashReporter.instance.scaffoldMessengerKey,
           debugShowCheckedModeBanner: false,
-          title: 'F.Tuning Pro',
+          title: windowTitle,
           themeMode: themeMode,
           theme: _buildTheme(brightness: Brightness.light, accent: accentColor),
           darkTheme: _buildTheme(brightness: Brightness.dark, accent: accentColor),
