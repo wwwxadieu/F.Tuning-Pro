@@ -7,7 +7,8 @@ import 'ftune_models.dart';
 import 'ftune_storage.dart';
 
 class FTuneAppController extends ChangeNotifier {
-  FTuneAppController({FTuneStorage? storage, FTuneLicenseService? licenseService})
+  FTuneAppController(
+      {FTuneStorage? storage, FTuneLicenseService? licenseService})
       : _storage = storage ?? FTuneStorage(),
         _licenseService = licenseService ?? FTuneLicenseService();
 
@@ -43,7 +44,7 @@ class FTuneAppController extends ChangeNotifier {
   /// Tiêu đề hiển thị trên title bar.
   String get windowTitle {
     final edition = isPro ? 'Unlimited' : 'Free';
-    final ver = _appVersion.isNotEmpty ? _appVersion : '0.1.0';
+    final ver = _appVersion.isNotEmpty ? _appVersion : '0.1.1';
     return 'F.Tune Pro - v$ver - $edition';
   }
 
@@ -345,6 +346,5 @@ class FTuneAppController extends ChangeNotifier {
   }
 
   /// Kiểm tra xem garage đã đầy chưa (cho bản Free).
-  bool get isGarageFull =>
-      !isPro && _garageTunes.length >= freeGarageLimit;
+  bool get isGarageFull => !isPro && _garageTunes.length >= freeGarageLimit;
 }

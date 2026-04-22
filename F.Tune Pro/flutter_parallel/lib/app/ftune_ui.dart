@@ -533,8 +533,12 @@ String ftunePiClassDisplay(int? pi) {
 }
 
 String ftunePiClassLabelFromDisplay(String display) {
-  final match = RegExp(r'([A-Z0-9]+)').firstMatch(display.trim().toUpperCase());
-  return match?.group(1) ?? '--';
+  final normalized = display.trim().toUpperCase();
+  final labelMatch = RegExp(r'\b(X|S2|S1|A|B|C|D)\b').firstMatch(normalized);
+  if (labelMatch != null) return labelMatch.group(1) ?? '--';
+
+  final value = int.tryParse(ftunePiValueFromDisplay(normalized));
+  return ftunePiClassLabel(value);
 }
 
 String ftunePiValueFromDisplay(String display) {
@@ -1510,20 +1514,24 @@ class FTuneCustomColors extends ThemeExtension<FTuneCustomColors> {
       surface: Color.lerp(surface, other.surface, t) ?? surface,
       surfaceAlt: Color.lerp(surfaceAlt, other.surfaceAlt, t) ?? surfaceAlt,
       surfaceSoft: Color.lerp(surfaceSoft, other.surfaceSoft, t) ?? surfaceSoft,
-      surfaceHover: Color.lerp(surfaceHover, other.surfaceHover, t) ?? surfaceHover,
+      surfaceHover:
+          Color.lerp(surfaceHover, other.surfaceHover, t) ?? surfaceHover,
       surfaceHoverStrong:
           Color.lerp(surfaceHoverStrong, other.surfaceHoverStrong, t) ??
               surfaceHoverStrong,
       muted: Color.lerp(muted, other.muted, t) ?? muted,
       border: Color.lerp(border, other.border, t) ?? border,
-      borderStrong: Color.lerp(borderStrong, other.borderStrong, t) ?? borderStrong,
+      borderStrong:
+          Color.lerp(borderStrong, other.borderStrong, t) ?? borderStrong,
       shadow: Color.lerp(shadow, other.shadow, t) ?? shadow,
       backdrop: Color.lerp(backdrop, other.backdrop, t) ?? backdrop,
-      headerDivider: Color.lerp(headerDivider, other.headerDivider, t) ?? headerDivider,
+      headerDivider:
+          Color.lerp(headerDivider, other.headerDivider, t) ?? headerDivider,
       chromeTop: Color.lerp(chromeTop, other.chromeTop, t) ?? chromeTop,
-      chromeBottom: Color.lerp(chromeBottom, other.chromeBottom, t) ?? chromeBottom,
-      chromeHighlight:
-          Color.lerp(chromeHighlight, other.chromeHighlight, t) ?? chromeHighlight,
+      chromeBottom:
+          Color.lerp(chromeBottom, other.chromeBottom, t) ?? chromeBottom,
+      chromeHighlight: Color.lerp(chromeHighlight, other.chromeHighlight, t) ??
+          chromeHighlight,
       glow: Color.lerp(glow, other.glow, t) ?? glow,
       accentSoft: Color.lerp(accentSoft, other.accentSoft, t) ?? accentSoft,
       surfaceGradient: t < 0.5 ? surfaceGradient : other.surfaceGradient,

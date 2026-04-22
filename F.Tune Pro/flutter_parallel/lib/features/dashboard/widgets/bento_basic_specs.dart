@@ -180,11 +180,11 @@ class BentoBasicSpecs extends StatelessWidget {
 
 String _piClassLabel(int pi) {
   if (pi >= 999) return 'X';
-  if (pi >= 900) return 'S2';
-  if (pi >= 800) return 'S1';
-  if (pi >= 700) return 'A';
-  if (pi >= 600) return 'B';
-  if (pi >= 500) return 'C';
+  if (pi >= 901) return 'S2';
+  if (pi >= 801) return 'S1';
+  if (pi >= 701) return 'A';
+  if (pi >= 601) return 'B';
+  if (pi >= 501) return 'C';
   return 'D';
 }
 
@@ -223,8 +223,8 @@ class _PiBadgeSpec extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final piNum = int.tryParse(piText.replaceAll(RegExp(r'[^0-9]'), '')) ??
-        car.pi;
+    final piNum =
+        int.tryParse(piText.replaceAll(RegExp(r'[^0-9]'), '')) ?? car.pi;
     final cls = _piClassLabel(piNum);
     final clr = _piClassColor(cls);
 

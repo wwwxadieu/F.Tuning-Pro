@@ -6,7 +6,6 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../features/dashboard/dashboard_page.dart';
 import 'ftune_app_controller.dart';
-import 'ftune_license.dart';
 import 'ftune_models.dart';
 import 'ftune_overlay_window.dart';
 import 'ftune_ui.dart';

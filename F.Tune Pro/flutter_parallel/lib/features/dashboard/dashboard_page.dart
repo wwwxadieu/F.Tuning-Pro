@@ -24,7 +24,7 @@ Color _onAccent(Color accent) =>
     accent.computeLuminance() > 0.5 ? const Color(0xFF111111) : Colors.white;
 
 String _normalizeDashboardToken(String value) =>
-  value.trim().toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '');
+    value.trim().toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '');
 
 enum _DashboardCarCatalog {
   fh5('FH5', 'assets/data/FH5_cars.json'),
@@ -180,9 +180,8 @@ class _DashboardPageState extends State<DashboardPage> {
     final adaptiveCarTheme = prefs.autoBackgroundFromCarColor;
 
     return Scaffold(
-      backgroundColor: isDark
-          ? const Color(0xFF1A1A1A)
-          : const Color(0xFFDEDEDE),
+      backgroundColor:
+          isDark ? const Color(0xFF1A1A1A) : const Color(0xFFDEDEDE),
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
@@ -226,13 +225,14 @@ class _DashboardPageState extends State<DashboardPage> {
                             initialMetric: prefs.useMetric,
                             autoCalculateOnLoad: widget.autoCalculateOnLoad,
                             autoOpenResultPopupOnLoad:
-                              widget.autoOpenResultPopupOnLoad,
+                                widget.autoOpenResultPopupOnLoad,
                             inlineResultPopupPreview:
-                              widget.inlineResultPopupPreview,
+                                widget.inlineResultPopupPreview,
                             pendingSession: _pendingEdit?.session ??
                                 widget.pendingCreateSession,
                             garageTunes: widget.garageTunes,
                             onSaveTune: widget.onSaveTune,
+                            onExportTune: widget.onExportTune,
                             onOpenGarage: () => _switchTab(1),
                             onMetricChanged: widget.onMetricChanged,
                             onOpenOverlayTune: widget.onOpenOverlayTune,
@@ -549,6 +549,7 @@ class _DashboardHome extends StatefulWidget {
     this.inlineResultPopupPreview = false,
     this.pendingSession,
     this.onSaveTune,
+    this.onExportTune,
     this.onMetricChanged,
     this.onOpenOverlayTune,
     this.onAccentChange,
@@ -568,6 +569,7 @@ class _DashboardHome extends StatefulWidget {
   final List<SavedTuneRecord> garageTunes;
   final VoidCallback onOpenGarage;
   final ValueChanged<SavedTuneDraft>? onSaveTune;
+  final Future<void> Function(List<SavedTuneRecord> records)? onExportTune;
   final ValueChanged<bool>? onMetricChanged;
   final Future<void> Function(SavedTuneRecord? record)? onOpenOverlayTune;
   final ValueChanged<int>? onAccentChange;
@@ -582,11 +584,11 @@ class _DashboardHome extends StatefulWidget {
 // ── PI class system ────────────────────────────────────────────────
 String _piClassLabel(int pi) {
   if (pi >= 999) return 'X';
-  if (pi >= 900) return 'S2';
-  if (pi >= 800) return 'S1';
-  if (pi >= 700) return 'A';
-  if (pi >= 600) return 'B';
-  if (pi >= 500) return 'C';
+  if (pi >= 901) return 'S2';
+  if (pi >= 801) return 'S1';
+  if (pi >= 701) return 'A';
+  if (pi >= 601) return 'B';
+  if (pi >= 501) return 'C';
   return 'D';
 }
 
@@ -756,6 +758,163 @@ class _DashboardHomeState extends State<_DashboardHome> {
   bool get _canSaveCurrentTune =>
       _hasMinimumTuneInputs && _showResult && _result != null;
 
+  int _currentPiFor(CarSpec car) {
+    return int.tryParse(_piCtrl.text.trim()) ?? car.pi;
+  }
+
+  String _currentPiClassDisplay(CarSpec car) {
+    return ftunePiClassDisplay(_currentPiFor(car));
+  }
+
+  String _currentTopSpeedDisplay(TuneCalcResult result) {
+    final rawSpeed = double.tryParse(_topSpeedCtrl.text.trim());
+    if (rawSpeed == null) return result.overview.topSpeedDisplay;
+    return '${rawSpeed.toStringAsFixed(0)} ${_metric ? 'km/h' : 'mph'}';
+  }
+
+  String _tireSizeText(
+    TextEditingController width,
+    TextEditingController aspect,
+    TextEditingController rim,
+  ) {
+    final widthText = width.text.trim();
+    final aspectText = aspect.text.trim();
+    final rimText = rim.text.trim();
+    if (widthText.isEmpty || aspectText.isEmpty || rimText.isEmpty) {
+      return '';
+    }
+    return '$widthText / $aspectText / R$rimText';
+  }
+
+  CreateTuneSession _captureCurrentSession({
+    required CarSpec car,
+    required String tuneTitle,
+    required String shareCode,
+  }) {
+    return CreateTuneSession(
+      metric: _metric,
+      brand: car.brand,
+      model: car.model,
+      driveType: _driveType,
+      gameVersion: _selectedCatalog.label,
+      surface: _surface,
+      tuneType: _tuneType,
+      gearCount: _gearCount,
+      weightKg: _weightCtrl.text.trim(),
+      frontDistributionPercent: _frontDistCtrl.text.trim(),
+      currentPi: _piCtrl.text.trim(),
+      maxTorqueNm: _torqueCtrl.text.trim(),
+      topSpeed: _topSpeedCtrl.text.trim(),
+      frontTireSize: _tireSizeText(_fTireWCtrl, _fTireACtrl, _fTireRCtrl),
+      rearTireSize: _tireSizeText(_rTireWCtrl, _rTireACtrl, _rTireRCtrl),
+      powerBand: TuneCalcPowerBand(
+        scaleMax: _scaleMax,
+        redlineRpm: _redlineRpm,
+        maxTorqueRpm: _maxTorqueRpm,
+      ),
+      tuneTitle: tuneTitle,
+      shareCode: shareCode,
+    );
+  }
+
+  SavedTuneDraft? _buildCurrentTuneDraft(
+    TuneCalcResult result, {
+    String? title,
+    String shareCode = '',
+  }) {
+    final car = _selectedCar;
+    if (car == null) return null;
+    final normalizedTitle = (title ?? '').trim().isEmpty
+        ? '${car.brand} ${car.model}'
+        : title!.trim();
+    final normalizedShareCode = shareCode.trim();
+    return SavedTuneDraft(
+      title: normalizedTitle,
+      shareCode: normalizedShareCode,
+      brand: car.brand,
+      model: car.model,
+      driveType: _driveType,
+      surface: _surface,
+      tuneType: _tuneType,
+      piClass: _currentPiClassDisplay(car),
+      topSpeedDisplay: _currentTopSpeedDisplay(result),
+      result: result,
+      session: _captureCurrentSession(
+        car: car,
+        tuneTitle: normalizedTitle,
+        shareCode: normalizedShareCode,
+      ),
+    );
+  }
+
+  SavedTuneRecord? _buildCurrentTuneRecord(
+    TuneCalcResult result, {
+    String? title,
+    String shareCode = '',
+    String idPrefix = 'quick-export',
+  }) {
+    final draft = _buildCurrentTuneDraft(
+      result,
+      title: title,
+      shareCode: shareCode,
+    );
+    if (draft == null) return null;
+    final timestamp = DateTime.now();
+    return SavedTuneRecord(
+      id: '$idPrefix-${timestamp.microsecondsSinceEpoch}',
+      title: draft.title,
+      shareCode: draft.shareCode,
+      brand: draft.brand,
+      model: draft.model,
+      driveType: draft.driveType,
+      surface: draft.surface,
+      tuneType: draft.tuneType,
+      piClass: draft.piClass,
+      topSpeedDisplay: draft.topSpeedDisplay,
+      result: draft.result,
+      createdAt: timestamp,
+      session: draft.session,
+    );
+  }
+
+  bool _ensureGarageHasRoom() {
+    if (widget.isPro || widget.garageTunes.length < widget.garageLimit) {
+      return true;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          widget.languageCode == 'vi'
+              ? 'Garage đầy (${widget.garageLimit}/${widget.garageLimit}). Nâng cấp Pro để lưu không giới hạn.'
+              : 'Garage full (${widget.garageLimit}/${widget.garageLimit}). Upgrade to Pro for unlimited saves.',
+        ),
+      ),
+    );
+    return false;
+  }
+
+  void _saveCurrentTuneQuick(TuneCalcResult result) {
+    if (widget.onSaveTune == null || !_ensureGarageHasRoom()) return;
+    final draft = _buildCurrentTuneDraft(result);
+    if (draft == null) return;
+    widget.onSaveTune!(draft);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          widget.languageCode == 'vi'
+              ? 'Tune đã lưu vào Garage.'
+              : 'Tune saved to Garage.',
+        ),
+      ),
+    );
+  }
+
+  Future<void> _exportCurrentTuneQuick(TuneCalcResult result) async {
+    final record = _buildCurrentTuneRecord(result);
+    if (record == null || widget.onExportTune == null) return;
+    await widget.onExportTune!(<SavedTuneRecord>[record]);
+  }
+
   int get _readyFieldCount {
     final checks = <bool>[
       _selectedCar != null,
@@ -828,7 +987,8 @@ class _DashboardHomeState extends State<_DashboardHome> {
   }
 
   String? _matchLocalThumbnail(CarSpec car) {
-    final exact = _thumbnails[_thumbnailLookupKey(car.brand, car.model)]?.trim();
+    final exact =
+        _thumbnails[_thumbnailLookupKey(car.brand, car.model)]?.trim();
     if (exact != null && exact.isNotEmpty) {
       return exact;
     }
@@ -883,8 +1043,8 @@ class _DashboardHomeState extends State<_DashboardHome> {
 
   Future<List<CarSpec>> _loadCarCatalog(_DashboardCarCatalog catalog) async {
     final raw = await rootBundle.loadString(catalog.assetPath).catchError(
-      (_) => '[]',
-    );
+          (_) => '[]',
+        );
     final decoded = jsonDecode(raw);
     if (decoded is! List) return const <CarSpec>[];
     final cars = decoded
@@ -1015,17 +1175,15 @@ class _DashboardHomeState extends State<_DashboardHome> {
 
   void _applySession(CreateTuneSession s) {
     final targetCatalog = _DashboardCarCatalog.fromGameVersion(s.gameVersion);
-    final catalogCars =
-        _carsByCatalog[targetCatalog] ??
+    final catalogCars = _carsByCatalog[targetCatalog] ??
         (targetCatalog == _selectedCatalog ? _cars : const <CarSpec>[]);
     final car = _findCarInCatalog(
       catalogCars,
       brand: s.brand,
       model: s.model,
     );
-    final sessionBrand = catalogCars.any((entry) => entry.brand == s.brand)
-        ? s.brand
-        : null;
+    final sessionBrand =
+        catalogCars.any((entry) => entry.brand == s.brand) ? s.brand : null;
     // Parse front tire
     final fParts = RegExp(r'(\d+)').allMatches(s.frontTireSize).toList();
     // Parse rear tire
@@ -1241,6 +1399,12 @@ class _DashboardHomeState extends State<_DashboardHome> {
         onActivateOverlay: () {
           Navigator.of(ctx).pop(true);
         },
+        onSave: widget.onSaveTune == null
+            ? null
+            : () => _saveCurrentTuneQuick(result),
+        onExport: widget.onExportTune == null
+            ? null
+            : () => _exportCurrentTuneQuick(result),
       ),
     ).then((activateOverlay) {
       if (mounted) setState(() => _isResultPopupOpen = false);
@@ -1311,11 +1475,6 @@ class _DashboardHomeState extends State<_DashboardHome> {
     final car = _selectedCar;
     if (car == null || result == null) return null;
     final timestamp = DateTime.now();
-    final piValue = int.tryParse(_piCtrl.text) ?? car.pi;
-    final rawSpeed = double.tryParse(_topSpeedCtrl.text);
-    final topSpeedDisplay = rawSpeed == null
-        ? result.overview.topSpeedDisplay
-        : '${rawSpeed.toStringAsFixed(0)} ${_metric ? 'km/h' : 'mph'}';
 
     return SavedTuneRecord(
       id: 'overlay-${timestamp.microsecondsSinceEpoch}',
@@ -1326,10 +1485,15 @@ class _DashboardHomeState extends State<_DashboardHome> {
       driveType: _driveType,
       surface: _surface,
       tuneType: _tuneType,
-      piClass: _piClassLabel(piValue),
-      topSpeedDisplay: topSpeedDisplay,
+      piClass: _currentPiClassDisplay(car),
+      topSpeedDisplay: _currentTopSpeedDisplay(result),
       result: result,
       createdAt: timestamp,
+      session: _captureCurrentSession(
+        car: car,
+        tuneTitle: '${car.brand} ${car.model}',
+        shareCode: '',
+      ),
     );
   }
 
@@ -1417,8 +1581,7 @@ class _DashboardHomeState extends State<_DashboardHome> {
             });
             _showTuneResultPopup(r);
           },
-          onSave:
-              _canSaveCurrentTune ? () => _showSaveDialog() : null,
+          onSave: _canSaveCurrentTune ? () => _showSaveDialog() : null,
         );
 
     Widget buildCarBrowser({required double listMaxHeight}) => _CarInfoBlock(
@@ -1439,7 +1602,8 @@ class _DashboardHomeState extends State<_DashboardHome> {
           onCarSelected: _selectCar,
         );
 
-        Widget buildSessionSummaryCard({bool compact = false}) => _SessionSummaryCard(
+    Widget buildSessionSummaryCard({bool compact = false}) =>
+        _SessionSummaryCard(
           accent: accent,
           border: border,
           text: text,
@@ -1462,7 +1626,8 @@ class _DashboardHomeState extends State<_DashboardHome> {
           gearsLabel: '${_gearCount.clamp(2, 10)} gears',
         );
 
-            Widget buildGarageSnapshotCard({bool compact = false}) => _GarageSnapshotCard(
+    Widget buildGarageSnapshotCard({bool compact = false}) =>
+        _GarageSnapshotCard(
           accent: accent,
           border: border,
           text: text,
@@ -1471,11 +1636,11 @@ class _DashboardHomeState extends State<_DashboardHome> {
           totalCount: widget.garageTunes.length,
           onOpenGarage: widget.onOpenGarage,
           relativeTimeLabel: _relativeTimeLabel,
-              compact: compact,
-              maxItems: compact ? 1 : 3,
+          compact: compact,
+          maxItems: compact ? 1 : 3,
         );
 
-            Widget buildQuickTuneTips({bool compact = false}) => _QuickTuneTipsCard(
+    Widget buildQuickTuneTips({bool compact = false}) => _QuickTuneTipsCard(
           accent: accent,
           border: border,
           text: text,
@@ -1523,11 +1688,11 @@ class _DashboardHomeState extends State<_DashboardHome> {
             final rightPanelWidth =
                 (constraints.maxWidth * 0.25).clamp(280.0, 360.0);
             final bottomPanelWidth =
-              (constraints.maxWidth * 0.38).clamp(460.0, 620.0);
+                (constraints.maxWidth * 0.38).clamp(460.0, 620.0);
             final bottomPanelNeedsTwoRows = bottomPanelWidth < 580;
             final bottomPanelHeight = bottomPanelNeedsTwoRows
-              ? (constraints.maxHeight * 0.30).clamp(246.0, 260.0)
-              : (constraints.maxHeight * 0.19).clamp(156.0, 182.0);
+                ? (constraints.maxHeight * 0.30).clamp(246.0, 260.0)
+                : (constraints.maxHeight * 0.19).clamp(156.0, 182.0);
             final sideBottomCardHeight = 118.0;
             final heroLabelWidth =
                 (constraints.maxWidth * 0.30).clamp(260.0, 420.0);
@@ -1537,8 +1702,8 @@ class _DashboardHomeState extends State<_DashboardHome> {
                 math.max(18.0, constraints.maxHeight * 0.03).toDouble();
             final sideColumnBottomInset = sideBottomCardHeight + 20;
             final browserListHeight =
-              (constraints.maxHeight - sideBottomCardHeight - 160)
-                .clamp(220.0, 520.0);
+                (constraints.maxHeight - sideBottomCardHeight - 160)
+                    .clamp(220.0, 520.0);
 
             Widget glassPanel({
               required double width,
@@ -1913,19 +2078,7 @@ class _DashboardHomeState extends State<_DashboardHome> {
     final result = _result;
     if (car == null || result == null) return;
 
-    // Check garage limit for free users
-    if (!widget.isPro && widget.garageTunes.length >= widget.garageLimit) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            widget.languageCode == 'vi'
-                ? 'Garage đầy (${widget.garageLimit}/${widget.garageLimit}). Nâng cấp Pro để lưu không giới hạn.'
-                : 'Garage full (${widget.garageLimit}/${widget.garageLimit}). Upgrade to Pro for unlimited saves.',
-          ),
-        ),
-      );
-      return;
-    }
+    if (!_ensureGarageHasRoom()) return;
 
     final nameCtrl = TextEditingController(text: '${car.brand} ${car.model}');
     final codeCtrl = TextEditingController();
@@ -1956,25 +2109,23 @@ class _DashboardHomeState extends State<_DashboardHome> {
           ),
           FilledButton(
             onPressed: () {
-              widget.onSaveTune?.call(SavedTuneDraft(
-                title: nameCtrl.text.trim().isEmpty
-                    ? '${car.brand} ${car.model}'
-                    : nameCtrl.text.trim(),
-                shareCode: codeCtrl.text.trim(),
-                brand: car.brand,
-                model: car.model,
-                driveType: _driveType,
-                surface: _surface,
-                tuneType: _tuneType,
-                piClass:
-                    'PI ${_piCtrl.text.trim().isEmpty ? car.pi : _piCtrl.text.trim()}',
-                topSpeedDisplay:
-                    '${_topSpeedCtrl.text.trim()} ${_metric ? 'km/h' : 'mph'}',
-                result: result,
-              ));
+              final draft = _buildCurrentTuneDraft(
+                result,
+                title: nameCtrl.text,
+                shareCode: codeCtrl.text,
+              );
+              if (draft != null) {
+                widget.onSaveTune?.call(draft);
+              }
               Navigator.pop(ctx);
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Tune saved to Garage!')),
+                SnackBar(
+                  content: Text(
+                    widget.languageCode == 'vi'
+                        ? 'Tune đã lưu vào Garage.'
+                        : 'Tune saved to Garage.',
+                  ),
+                ),
               );
             },
             child: const Text('Save'),
@@ -2728,9 +2879,7 @@ class _CarInfoBlockState extends State<_CarInfoBlock> {
               ),
             ],
             onTabChanged: (index) => widget.onCatalogChanged(
-              index == 0
-                  ? _DashboardCarCatalog.fh5
-                  : _DashboardCarCatalog.fh6,
+              index == 0 ? _DashboardCarCatalog.fh5 : _DashboardCarCatalog.fh6,
             ),
           ),
           const SizedBox(height: 10),
@@ -3034,7 +3183,12 @@ class _TuneConfigBlock extends StatelessWidget {
             child: _ChipGroup(
               label: 'Surface',
               icon: Icons.terrain_rounded,
-              options: const <String>['Street', 'Dirt', 'Cross Country', 'Snow'],
+              options: const <String>[
+                'Street',
+                'Dirt',
+                'Cross Country',
+                'Snow'
+              ],
               selected: surface,
               accent: accent,
               border: border,
@@ -3361,7 +3515,8 @@ class _PerformanceBlockState extends State<_PerformanceBlock> {
                             key: ValueKey<String>('performance-actions-hidden'),
                           )
                         : Padding(
-                            key: const ValueKey<String>('performance-actions-visible'),
+                            key: const ValueKey<String>(
+                                'performance-actions-visible'),
                             padding: const EdgeInsets.only(top: 12),
                             child: Align(
                               alignment: Alignment.centerRight,
@@ -3405,7 +3560,8 @@ class _PerformanceBlockState extends State<_PerformanceBlock> {
                                         const SizedBox(width: 8),
                                         Expanded(
                                           child: _HoverButton(
-                                            key: const ValueKey<String>('action-save'),
+                                            key: const ValueKey<String>(
+                                                'action-save'),
                                             enabled: true,
                                             selected: true,
                                             accent: const Color(0xFF2E7D32),
@@ -3610,8 +3766,8 @@ class _HoverButtonState extends State<_HoverButton> {
     final hoverMatte = widget.accent;
     final bg = _hovered && active ? hoverMatte : baseMatte;
     final borderColor = isSelected
-      ? widget.accent
-      : (_hovered && active ? widget.accent : Colors.transparent);
+        ? widget.accent
+        : (_hovered && active ? widget.accent : Colors.transparent);
     final shadow = !active ? <BoxShadow>[] : const <BoxShadow>[];
 
     return MouseRegion(
@@ -4920,6 +5076,8 @@ class _TuneResultPopup extends StatefulWidget {
     required this.muted,
     this.onClose,
     this.onActivateOverlay,
+    this.onSave,
+    this.onExport,
   });
 
   final TuneCalcResult result;
@@ -4931,6 +5089,8 @@ class _TuneResultPopup extends StatefulWidget {
   final Color muted;
   final VoidCallback? onClose;
   final VoidCallback? onActivateOverlay;
+  final VoidCallback? onSave;
+  final Future<void> Function()? onExport;
 
   @override
   State<_TuneResultPopup> createState() => _TuneResultPopupState();
@@ -5065,6 +5225,30 @@ class _TuneResultPopupState extends State<_TuneResultPopup>
                                 tooltip: 'Overlay',
                               ),
                             ),
+                          if (widget.onExport != null)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: _PopupIconButton(
+                                icon: Icons.ios_share_rounded,
+                                accent: widget.accent,
+                                isDark: isDark,
+                                onTap: () {
+                                  widget.onExport!();
+                                },
+                                tooltip: 'Export tune',
+                              ),
+                            ),
+                          if (widget.onSave != null)
+                            Padding(
+                              padding: const EdgeInsets.only(right: 8),
+                              child: _PopupIconButton(
+                                icon: Icons.save_rounded,
+                                accent: const Color(0xFF22C55E),
+                                isDark: isDark,
+                                onTap: widget.onSave!,
+                                tooltip: 'Save to Garage',
+                              ),
+                            ),
                           _PopupCloseButton(
                             onTap: _closeWithAnimation,
                             isDark: isDark,
@@ -5093,6 +5277,40 @@ class _TuneResultPopupState extends State<_TuneResultPopup>
                         ),
                       ),
                     ),
+                    if (widget.onSave != null || widget.onExport != null) ...[
+                      Divider(
+                        height: 1,
+                        color: isDark
+                            ? Colors.white.withAlpha(10)
+                            : Colors.black.withAlpha(6),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(20, 12, 20, 18),
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Wrap(
+                            spacing: 10,
+                            runSpacing: 10,
+                            children: <Widget>[
+                              if (widget.onExport != null)
+                                OutlinedButton.icon(
+                                  onPressed: () {
+                                    widget.onExport!();
+                                  },
+                                  icon: const Icon(Icons.ios_share_rounded),
+                                  label: const Text('EXPORT'),
+                                ),
+                              if (widget.onSave != null)
+                                FilledButton.icon(
+                                  onPressed: widget.onSave,
+                                  icon: const Icon(Icons.save_rounded),
+                                  label: const Text('SAVE TO GARAGE'),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -5374,11 +5592,11 @@ class _CarHeroLabel extends StatelessWidget {
 
   static String _piClassLabelFromValue(int pi) {
     if (pi >= 999) return 'X';
-    if (pi >= 900) return 'S2';
-    if (pi >= 800) return 'S1';
-    if (pi >= 700) return 'A';
-    if (pi >= 600) return 'B';
-    if (pi >= 500) return 'C';
+    if (pi >= 901) return 'S2';
+    if (pi >= 801) return 'S1';
+    if (pi >= 701) return 'A';
+    if (pi >= 601) return 'B';
+    if (pi >= 501) return 'C';
     return 'D';
   }
 }
@@ -6366,9 +6584,8 @@ class _SessionSummaryCard extends StatelessWidget {
       text: text,
       muted: muted,
       compact: compact,
-      subtitle: compact
-          ? null
-          : 'Current tune context and readiness at a glance.',
+      subtitle:
+          compact ? null : 'Current tune context and readiness at a glance.',
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -6524,18 +6741,18 @@ class _GarageSnapshotCard extends StatelessWidget {
             )
           else
             ...records.take(maxItems).map(
-              (record) => Padding(
-                padding: EdgeInsets.only(bottom: compact ? 6 : 8),
-                child: _GarageSnapshotRow(
-                  record: record,
-                  border: border,
-                  text: text,
-                  muted: muted,
-                  relativeTime: relativeTimeLabel(record.createdAt),
-                  compact: compact,
+                  (record) => Padding(
+                    padding: EdgeInsets.only(bottom: compact ? 6 : 8),
+                    child: _GarageSnapshotRow(
+                      record: record,
+                      border: border,
+                      text: text,
+                      muted: muted,
+                      relativeTime: relativeTimeLabel(record.createdAt),
+                      compact: compact,
+                    ),
+                  ),
                 ),
-              ),
-            ),
           Align(
             alignment: Alignment.centerLeft,
             child: TextButton.icon(
@@ -6596,9 +6813,7 @@ class _GarageSnapshotRow extends StatelessWidget {
                   ? const Color(0x1AF59E0B)
                   : const Color(0x14000000),
               border: Border.all(
-                color: record.isPinned
-                    ? const Color(0x80F59E0B)
-                    : border,
+                color: record.isPinned ? const Color(0x80F59E0B) : border,
               ),
             ),
             child: Icon(
@@ -6673,7 +6888,8 @@ class _QuickTuneTipsCard extends StatelessWidget {
   final String tuneType;
   final bool compact;
 
-  static const Map<String, List<_QuickTuneTip>> _tipsByType = <String, List<_QuickTuneTip>>{
+  static const Map<String, List<_QuickTuneTip>> _tipsByType =
+      <String, List<_QuickTuneTip>>{
     'Race': <_QuickTuneTip>[
       _QuickTuneTip(label: 'Tire Pressure', value: '2.0–2.3 bar'),
       _QuickTuneTip(label: 'Anti-roll Bars', value: 'Stiffer front'),
@@ -6696,8 +6912,7 @@ class _QuickTuneTipsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tips = _tipsByType[tuneType] ??
-        _tipsByType['Race']!;
+    final tips = _tipsByType[tuneType] ?? _tipsByType['Race']!;
 
     return _DashboardGlassCard(
       title: 'Quick Tune Tips',
@@ -6710,61 +6925,66 @@ class _QuickTuneTipsCard extends StatelessWidget {
       subtitle: tuneType,
       child: compact
           ? Column(
-              children: tips.map((tip) => Padding(
-                padding: const EdgeInsets.only(bottom: 6),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Text(
-                        tip.label,
-                        style: TextStyle(fontSize: 10, color: muted),
-                      ),
-                    ),
-                    Text(
-                      tip.value,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w800,
-                        color: text,
-                      ),
-                    ),
-                  ],
-                ),
-              )).toList(),
+              children: tips
+                  .map((tip) => Padding(
+                        padding: const EdgeInsets.only(bottom: 6),
+                        child: Row(
+                          children: <Widget>[
+                            Expanded(
+                              child: Text(
+                                tip.label,
+                                style: TextStyle(fontSize: 10, color: muted),
+                              ),
+                            ),
+                            Text(
+                              tip.value,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w800,
+                                color: text,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ))
+                  .toList(),
             )
           : Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: tips.map((tip) => Container(
-                constraints: const BoxConstraints(minWidth: 120),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 9),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: border),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    Text(
-                      tip.label,
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: FontWeight.w700,
-                        color: muted,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      tip.value,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w800,
-                        color: accent,
-                      ),
-                    ),
-                  ],
-                ),
-              )).toList(),
+              children: tips
+                  .map((tip) => Container(
+                        constraints: const BoxConstraints(minWidth: 120),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 9),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(color: border),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              tip.label,
+                              style: TextStyle(
+                                fontSize: 10,
+                                fontWeight: FontWeight.w700,
+                                color: muted,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              tip.value,
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                                color: accent,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ))
+                  .toList(),
             ),
     );
   }

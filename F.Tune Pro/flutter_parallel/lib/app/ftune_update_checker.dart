@@ -18,8 +18,10 @@ class FTuneRemoteVersion {
   final int build;
   final String releaseNotesVi;
   final String releaseNotesEn;
+
   /// Direct URL to the new portable .exe file.
   final String exeDownloadUrl;
+
   /// Fallback page URL (GitHub Releases).
   final String downloadUrl;
 
@@ -33,7 +35,7 @@ class FTuneUpdateChecker {
   static final FTuneUpdateChecker instance = FTuneUpdateChecker._();
 
   static const String _versionUrl =
-      'https://raw.githubusercontent.com/wwwxadieu/F.Tuning-Pro/main/version.json';
+      'https://raw.githubusercontent.com/wwwxadieu/F.Tuning-Pro/master/version.json';
 
   /// Returns the remote version if it is newer than the installed build,
   /// or `null` if the app is up to date or the check failed.
@@ -50,8 +52,7 @@ class FTuneUpdateChecker {
       final remoteVersion = (data['version'] as String?) ?? '';
       final notes = (data['release_notes'] as Map<String, dynamic>?) ?? {};
       final exeDownloadUrl = (data['exe_download_url'] as String?) ?? '';
-      final downloadUrl =
-          (data['download_url'] as String?) ?? _versionUrl;
+      final downloadUrl = (data['download_url'] as String?) ?? _versionUrl;
 
       final info = await PackageInfo.fromPlatform();
       final localBuild = int.tryParse(info.buildNumber) ?? 0;

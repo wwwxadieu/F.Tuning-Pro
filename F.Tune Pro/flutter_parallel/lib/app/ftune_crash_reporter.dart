@@ -16,7 +16,8 @@ class FTuneCrashReporter {
   FTuneCrashReporter._();
 
   static final FTuneCrashReporter instance = FTuneCrashReporter._();
-  static const Map<String, String> _formSubmitMultipartHeaders = <String, String>{
+  static const Map<String, String> _formSubmitMultipartHeaders =
+      <String, String>{
     'Accept': 'application/json',
     'Origin': 'https://ftune.app',
     'Referer': 'https://ftune.app/desktop',
@@ -28,7 +29,7 @@ class FTuneCrashReporter {
 
   bool _dialogVisible = false;
   _CrashLogEntry? _pending;
-    String? _lastResponseMessage;
+  String? _lastResponseMessage;
   Uri _crashReportEndpoint =
       Uri.parse('https://formsubmit.co/contact.vndrift@gmail.com');
   CrashReportSender? _sendOverride;
@@ -68,25 +69,46 @@ class FTuneCrashReporter {
   }
 
   void captureFlutterError(FlutterErrorDetails details) {
-    // Tạm thời không hiển thị dialog trong giai đoạn phát triển
-    // Chỉ log ra console để debug
     final stack = details.stack ?? StackTrace.current;
     debugPrint('[CrashReporter] FlutterError: ${details.exceptionAsString()}');
     debugPrint('[CrashReporter] Stack: ${stack.toString()}');
-    // Đã disable để không làm phiền user trong giai đoạn phát triển
+    _enqueue(
+      _CrashLogEntry(
+        source: details.library ?? 'FlutterError',
+        error: details.exceptionAsString(),
+        stackTrace: stack.toString(),
+        timestamp: DateTime.now(),
+        library: details.library,
+        context: details.context?.toDescription(),
+        silent: details.silent,
+      ),
+    );
   }
 
   void capturePlatformError(Object error, StackTrace stackTrace) {
-    // Tạm thời không hiển thị dialog trong giai đoạn phát triển
     debugPrint('[CrashReporter] PlatformError: $error');
     debugPrint('[CrashReporter] Stack: ${stackTrace.toString()}');
-    // Đã disable để không làm phiền user trong giai đoạn phát triển
+    _enqueue(
+      _CrashLogEntry(
+        source: 'PlatformDispatcher',
+        error: error.toString(),
+        stackTrace: stackTrace.toString(),
+        timestamp: DateTime.now(),
+      ),
+    );
   }
 
   void captureZoneError(Object error, StackTrace stackTrace) {
-    // Tạm thời không hiển thị dialog trong giai đoạn phát triển
     debugPrint('[CrashReporter] ZoneError: $error');
     debugPrint('[CrashReporter] Stack: ${stackTrace.toString()}');
+    _enqueue(
+      _CrashLogEntry(
+        source: 'runZonedGuarded',
+        error: error.toString(),
+        stackTrace: stackTrace.toString(),
+        timestamp: DateTime.now(),
+      ),
+    );
   }
 
   void _enqueue(_CrashLogEntry entry) {
@@ -120,7 +142,9 @@ class FTuneCrashReporter {
       builder: (dialogContext) {
         return AlertDialog(
           title: Text(
-            isVietnamese ? 'Ứng dụng vừa gặp lỗi' : 'The app encountered an error',
+            isVietnamese
+                ? 'Ứng dụng vừa gặp lỗi'
+                : 'The app encountered an error',
           ),
           content: Text(
             isVietnamese
@@ -207,7 +231,8 @@ class FTuneCrashReporter {
           ),
         );
 
-      final streamed = await request.send().timeout(const Duration(seconds: 20));
+      final streamed =
+          await request.send().timeout(const Duration(seconds: 20));
       final body = await streamed.stream.bytesToString();
       return _isSuccessfulFormSubmitResponse(
         statusCode: streamed.statusCode,
@@ -251,8 +276,11 @@ class FTuneCrashReporter {
         normalizedBody.contains('success');
     final compactBody = body.replaceAll(RegExp(r'\s+'), ' ').trim();
     _lastResponseMessage = htmlSuccess
-      ? 'html-success'
-      : compactBody.substring(0, compactBody.length > 120 ? 120 : compactBody.length);
+        ? 'html-success'
+        : compactBody.substring(
+            0,
+            compactBody.length > 120 ? 120 : compactBody.length,
+          );
     return htmlSuccess;
   }
 

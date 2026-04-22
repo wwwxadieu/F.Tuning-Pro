@@ -9,23 +9,30 @@ import '../dashboard/widgets/bento_glass_container.dart';
 // ─── PI class helpers (mirroring dashboard logic) ─────────────────────────────
 String _garageClassLabel(int pi) {
   if (pi >= 999) return 'X';
-  if (pi >= 900) return 'S2';
-  if (pi >= 800) return 'S1';
-  if (pi >= 700) return 'A';
-  if (pi >= 600) return 'B';
-  if (pi >= 500) return 'C';
+  if (pi >= 901) return 'S2';
+  if (pi >= 801) return 'S1';
+  if (pi >= 701) return 'A';
+  if (pi >= 601) return 'B';
+  if (pi >= 501) return 'C';
   return 'D';
 }
 
 Color _garageClassColor(String cls) {
   switch (cls) {
-    case 'X':  return const Color(0xFFE040FB);
-    case 'S2': return const Color(0xFFE53935);
-    case 'S1': return const Color(0xFFFF7043);
-    case 'A':  return const Color(0xFFFFB300);
-    case 'B':  return const Color(0xFF00BCD4);
-    case 'C':  return const Color(0xFF4CAF50);
-    default:   return const Color(0xFF9E9E9E);
+    case 'X':
+      return const Color(0xFFE040FB);
+    case 'S2':
+      return const Color(0xFFE53935);
+    case 'S1':
+      return const Color(0xFFFF7043);
+    case 'A':
+      return const Color(0xFFFFB300);
+    case 'B':
+      return const Color(0xFF00BCD4);
+    case 'C':
+      return const Color(0xFF4CAF50);
+    default:
+      return const Color(0xFF9E9E9E);
   }
 }
 
@@ -41,12 +48,12 @@ class _GaragePiBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final pi   = _parsePiNumber(piClass);
+    final pi = _parsePiNumber(piClass);
     if (pi == null) {
       return Text(piClass,
           style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w700));
     }
-    final cls      = _garageClassLabel(pi);
+    final cls = _garageClassLabel(pi);
     final clrColor = _garageClassColor(cls);
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -63,9 +70,7 @@ class _GaragePiBadge extends StatelessWidget {
           child: Text(
             cls,
             style: const TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w900,
-                color: Colors.white),
+                fontSize: 11, fontWeight: FontWeight.w900, color: Colors.white),
           ),
         ),
         Container(
@@ -85,9 +90,7 @@ class _GaragePiBadge extends StatelessWidget {
           child: Text(
             '$pi',
             style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w900,
-                color: clrColor),
+                fontSize: 11, fontWeight: FontWeight.w900, color: clrColor),
           ),
         ),
       ],
@@ -158,15 +161,18 @@ class _GaragePageState extends State<GaragePage> {
 
   @override
   Widget build(BuildContext context) {
-    final copy           = _GarageCopy.forLanguage(widget.languageCode);
-    final palette        = FTuneElectronPaletteData.of(context);
-    final isDark         = palette.isDark;
-    final border         = isDark ? Colors.white.withAlpha(20) : Colors.black.withAlpha(12);
-    final text           = isDark ? const Color(0xFFF2F6FF) : const Color(0xFF1A1E28);
-    final muted          = isDark ? const Color(0xFF8A95A8) : const Color(0xFF5E6470);
-    final panelBg        = isDark ? Colors.white.withAlpha(10) : Colors.white.withAlpha(172);
+    final copy = _GarageCopy.forLanguage(widget.languageCode);
+    final palette = FTuneElectronPaletteData.of(context);
+    final isDark = palette.isDark;
+    final border =
+        isDark ? Colors.white.withAlpha(20) : Colors.black.withAlpha(12);
+    final text = isDark ? const Color(0xFFF2F6FF) : const Color(0xFF1A1E28);
+    final muted = isDark ? const Color(0xFF8A95A8) : const Color(0xFF5E6470);
+    final panelBg =
+        isDark ? Colors.white.withAlpha(10) : Colors.white.withAlpha(172);
     final visibleRecords = _filteredRecords();
-    final pinnedCount = widget.records.where((record) => record.isPinned).length;
+    final pinnedCount =
+        widget.records.where((record) => record.isPinned).length;
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -184,7 +190,8 @@ class _GaragePageState extends State<GaragePage> {
                   ? Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        _garageHeroLead(copy, palette, text, muted, visibleRecords),
+                        _garageHeroLead(
+                            copy, palette, text, muted, visibleRecords),
                         const SizedBox(height: 14),
                         Wrap(
                           spacing: 10,
@@ -384,8 +391,8 @@ class _GaragePageState extends State<GaragePage> {
                                       onTap: visibleRecords.isEmpty
                                           ? null
                                           : () => _exportSelectionOrVisible(
-                                              visibleRecords,
-                                            ),
+                                                visibleRecords,
+                                              ),
                                     ),
                                   ),
                                   const SizedBox(width: 8),
@@ -419,11 +426,13 @@ class _GaragePageState extends State<GaragePage> {
               child: stackedToolbar
                   ? Column(
                       children: <Widget>[
-                        _garageSearchField(copy, text, muted, border, panelBg, palette),
+                        _garageSearchField(
+                            copy, text, muted, border, panelBg, palette),
                         const SizedBox(height: 10),
                         Align(
                           alignment: Alignment.centerLeft,
-                          child: _pinnedToggle(copy, palette, panelBg, border, muted),
+                          child: _pinnedToggle(
+                              copy, palette, panelBg, border, muted),
                         ),
                       ],
                     )
@@ -697,8 +706,14 @@ class _GaragePageState extends State<GaragePage> {
     );
   }
 
-  Widget _tableView(_GarageCopy copy, FTuneElectronPaletteData palette,
-      bool isDark, Color panelBg, Color border, Color text, Color muted,
+  Widget _tableView(
+      _GarageCopy copy,
+      FTuneElectronPaletteData palette,
+      bool isDark,
+      Color panelBg,
+      Color border,
+      Color text,
+      Color muted,
       List<SavedTuneRecord> visibleRecords) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -716,7 +731,8 @@ class _GaragePageState extends State<GaragePage> {
                 separatorBuilder: (_, __) => Divider(height: 1, color: border),
                 itemBuilder: (context, index) {
                   final record = visibleRecords[index];
-                  return _tableRow(copy, palette, isDark, border, text, muted, record);
+                  return _tableRow(
+                      copy, palette, isDark, border, text, muted, record);
                 },
               ),
             ),
@@ -755,14 +771,18 @@ class _GaragePageState extends State<GaragePage> {
                 child: Text(
                   title,
                   style: style.copyWith(
-                    color: isActive ? FTuneElectronPaletteData.of(context).text : style.color,
+                    color: isActive
+                        ? FTuneElectronPaletteData.of(context).text
+                        : style.color,
                   ),
                 ),
               ),
               if (isActive) ...<Widget>[
                 const SizedBox(width: 4),
                 Icon(
-                  _sortAscending ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
+                  _sortAscending
+                      ? Icons.arrow_upward_rounded
+                      : Icons.arrow_downward_rounded,
                   size: 14,
                   color: FTuneElectronPaletteData.of(context).text,
                 ),
@@ -790,22 +810,44 @@ class _GaragePageState extends State<GaragePage> {
       child: Row(
         children: <Widget>[
           const SizedBox(width: 34),
-          _sortableHeader(title: copy.colName, columnKey: 'tune', flex: 3, style: style),
-          _sortableHeader(title: copy.colVehicle, columnKey: 'vehicle', flex: 3, style: style),
-          _sortableHeader(title: copy.colDrive, columnKey: 'drive', flex: 1, style: style),
-          _sortableHeader(title: copy.colSurface, columnKey: 'surface', flex: 1, style: style),
-          _sortableHeader(title: copy.colType, columnKey: 'type', flex: 1, style: style),
-          _sortableHeader(title: copy.colClass, columnKey: 'pi', flex: 1, style: style),
-          _sortableHeader(title: copy.colTopSpeed, columnKey: 'speed', flex: 1, style: style),
-          _sortableHeader(title: copy.colDate, columnKey: 'date', flex: 1, style: style),
+          _sortableHeader(
+              title: copy.colName, columnKey: 'tune', flex: 3, style: style),
+          _sortableHeader(
+              title: copy.colVehicle,
+              columnKey: 'vehicle',
+              flex: 3,
+              style: style),
+          _sortableHeader(
+              title: copy.colDrive, columnKey: 'drive', flex: 1, style: style),
+          _sortableHeader(
+              title: copy.colSurface,
+              columnKey: 'surface',
+              flex: 1,
+              style: style),
+          _sortableHeader(
+              title: copy.colType, columnKey: 'type', flex: 1, style: style),
+          _sortableHeader(
+              title: copy.colClass, columnKey: 'pi', flex: 1, style: style),
+          _sortableHeader(
+              title: copy.colTopSpeed,
+              columnKey: 'speed',
+              flex: 1,
+              style: style),
+          _sortableHeader(
+              title: copy.colDate, columnKey: 'date', flex: 1, style: style),
           const SizedBox(width: 40),
         ],
       ),
     );
   }
 
-  Widget _tableRow(_GarageCopy copy, FTuneElectronPaletteData palette,
-      bool isDark, Color border, Color text, Color muted,
+  Widget _tableRow(
+      _GarageCopy copy,
+      FTuneElectronPaletteData palette,
+      bool isDark,
+      Color border,
+      Color text,
+      Color muted,
       SavedTuneRecord record) {
     final selected = _selectedIds.contains(record.id);
 
@@ -827,9 +869,10 @@ class _GaragePageState extends State<GaragePage> {
               child: Row(
                 children: <Widget>[
                   if (record.isPinned)
-                     Padding(
+                    Padding(
                       padding: const EdgeInsets.only(right: 6),
-                      child: Icon(Icons.push_pin_rounded, size: 14, color: palette.accent),
+                      child: Icon(Icons.push_pin_rounded,
+                          size: 14, color: palette.accent),
                     ),
                   Expanded(
                     child: Text(
@@ -884,7 +927,8 @@ class _GaragePageState extends State<GaragePage> {
               child: Text(record.topSpeedDisplay,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: text)),
+                  style: TextStyle(
+                      fontSize: 13, fontWeight: FontWeight.w600, color: text)),
             ),
             Expanded(
               flex: 1,
@@ -903,8 +947,14 @@ class _GaragePageState extends State<GaragePage> {
     );
   }
 
-  Widget _listView(_GarageCopy copy, FTuneElectronPaletteData palette,
-      bool isDark, Color panelBg, Color border, Color text, Color muted,
+  Widget _listView(
+      _GarageCopy copy,
+      FTuneElectronPaletteData palette,
+      bool isDark,
+      Color panelBg,
+      Color border,
+      Color text,
+      Color muted,
       List<SavedTuneRecord> visibleRecords) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
@@ -912,75 +962,74 @@ class _GaragePageState extends State<GaragePage> {
         itemCount: visibleRecords.length,
         separatorBuilder: (_, __) => const SizedBox(height: 6),
         itemBuilder: (context, index) {
-          final record   = visibleRecords[index];
+          final record = visibleRecords[index];
           final selected = _selectedIds.contains(record.id);
 
           return _GarageListItem(
             index: index,
             child: GestureDetector(
-            onTap: () => _openDetails(copy, record),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 100),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              decoration: BoxDecoration(
-                color: selected
-                    ? palette.accent.withAlpha(20)
-                    : panelBg,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: selected ? palette.accent.withAlpha(120) : border,
+              onTap: () => _openDetails(copy, record),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 100),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: selected ? palette.accent.withAlpha(20) : panelBg,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(
+                    color: selected ? palette.accent.withAlpha(120) : border,
+                  ),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Checkbox(
+                      value: selected,
+                      onChanged: (_) => _toggleSelected(record.id),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              if (record.isPinned)
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 5),
+                                  child: Icon(Icons.push_pin_rounded,
+                                      size: 13, color: palette.accent),
+                                ),
+                              Expanded(
+                                child: Text(
+                                  record.title,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w800,
+                                      fontSize: 14,
+                                      color: text),
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              _GaragePiBadge(piClass: record.piClass),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${record.brand} ${record.model}  •  ${record.topSpeedDisplay}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(fontSize: 12, color: muted),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    _rowMenu(copy, record),
+                  ],
                 ),
               ),
-              child: Row(
-                children: <Widget>[
-                  Checkbox(
-                    value: selected,
-                    onChanged: (_) => _toggleSelected(record.id),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          children: <Widget>[
-                            if (record.isPinned)
-                              Padding(
-                                padding: const EdgeInsets.only(right: 5),
-                                child: Icon(Icons.push_pin_rounded,
-                                    size: 13, color: palette.accent),
-                              ),
-                            Expanded(
-                              child: Text(
-                                record.title,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w800,
-                                    fontSize: 14,
-                                    color: text),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            _GaragePiBadge(piClass: record.piClass),
-                          ],
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          '${record.brand} ${record.model}  •  ${record.topSpeedDisplay}',
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(fontSize: 12, color: muted),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  _rowMenu(copy, record),
-                ],
-              ),
             ),
-          ),
           );
         },
       ),
@@ -1078,8 +1127,6 @@ class _GaragePageState extends State<GaragePage> {
     );
   }
 
-
-
   void _toggleSelected(String id) {
     setState(() {
       if (_selectedIds.contains(id)) {
@@ -1135,8 +1182,12 @@ class _GaragePageState extends State<GaragePage> {
           cmp = a.piClass.compareTo(b.piClass);
         case 'speed':
           // Sort by numeric speed if we can parse it
-          double speedA = double.tryParse(a.topSpeedDisplay.replaceAll(RegExp(r'[^0-9.]'), '')) ?? 0;
-          double speedB = double.tryParse(b.topSpeedDisplay.replaceAll(RegExp(r'[^0-9.]'), '')) ?? 0;
+          double speedA = double.tryParse(
+                  a.topSpeedDisplay.replaceAll(RegExp(r'[^0-9.]'), '')) ??
+              0;
+          double speedB = double.tryParse(
+                  b.topSpeedDisplay.replaceAll(RegExp(r'[^0-9.]'), '')) ??
+              0;
           cmp = speedA.compareTo(speedB);
         case 'date':
         default:
@@ -1450,12 +1501,13 @@ class _GarageViewModalState extends State<_GarageViewModal>
         filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
         child: Container(
           width: isGearing ? null : 240,
-          constraints: isGearing ? const BoxConstraints(minWidth: 240, maxWidth: 480) : null,
+          constraints: isGearing
+              ? const BoxConstraints(minWidth: 240, maxWidth: 480)
+              : null,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
-            color: isDark
-                ? Colors.white.withAlpha(8)
-                : Colors.white.withAlpha(60),
+            color:
+                isDark ? Colors.white.withAlpha(8) : Colors.white.withAlpha(60),
             borderRadius: BorderRadius.circular(14),
             border: Border.all(
               color: isDark
@@ -1519,22 +1571,18 @@ class _GarageViewModalState extends State<_GarageViewModal>
 
   Widget _compactGearChip(int index, TuneCalcGearRatio ratio, double maxKmh,
       FTuneElectronPaletteData palette) {
-    final frac = maxKmh > 0
-        ? (ratio.topSpeedKmh / maxKmh).clamp(0.0, 1.0)
-        : 0.0;
+    final frac =
+        maxKmh > 0 ? (ratio.topSpeedKmh / maxKmh).clamp(0.0, 1.0) : 0.0;
     final isDark = palette.isDark;
     return Container(
       width: 110,
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       decoration: BoxDecoration(
-        color: isDark
-            ? Colors.white.withAlpha(6)
-            : Colors.black.withAlpha(4),
+        color: isDark ? Colors.white.withAlpha(6) : Colors.black.withAlpha(4),
         borderRadius: BorderRadius.circular(8),
         border: Border.all(
-          color: isDark
-              ? Colors.white.withAlpha(12)
-              : Colors.black.withAlpha(8),
+          color:
+              isDark ? Colors.white.withAlpha(12) : Colors.black.withAlpha(8),
         ),
       ),
       child: Column(
@@ -1579,9 +1627,8 @@ class _GarageViewModalState extends State<_GarageViewModal>
   Widget _sliderProgressRow(TuneCalcSlider slider) {
     final palette = widget.palette;
     final range = slider.max - slider.min;
-    final frac = range > 0
-        ? ((slider.value - slider.min) / range).clamp(0.0, 1.0)
-        : 0.0;
+    final frac =
+        range > 0 ? ((slider.value - slider.min) / range).clamp(0.0, 1.0) : 0.0;
     final label = widget.sliderFormatter(slider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1721,8 +1768,7 @@ class _GarageHeaderButtonState extends State<_GarageHeaderButton> {
     final labelColor =
         widget.filled ? Colors.white : (disabled ? widget.muted : widget.text);
     return MouseRegion(
-      cursor:
-          disabled ? SystemMouseCursors.basic : SystemMouseCursors.click,
+      cursor: disabled ? SystemMouseCursors.basic : SystemMouseCursors.click,
       onEnter: disabled ? null : (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: GestureDetector(
@@ -1732,9 +1778,8 @@ class _GarageHeaderButtonState extends State<_GarageHeaderButton> {
           duration: const Duration(milliseconds: 160),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 160),
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              alignment: widget.expand ? Alignment.center : null,
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            alignment: widget.expand ? Alignment.center : null,
             decoration: BoxDecoration(
               color: bg,
               borderRadius: BorderRadius.circular(9),
@@ -1743,10 +1788,10 @@ class _GarageHeaderButtonState extends State<_GarageHeaderButton> {
               ),
             ),
             child: Row(
-                mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,
-                mainAxisAlignment: widget.expand
-                    ? MainAxisAlignment.center
-                    : MainAxisAlignment.start,
+              mainAxisSize: widget.expand ? MainAxisSize.max : MainAxisSize.min,
+              mainAxisAlignment: widget.expand
+                  ? MainAxisAlignment.center
+                  : MainAxisAlignment.start,
               children: <Widget>[
                 Icon(widget.icon, size: 15, color: labelColor),
                 const SizedBox(width: 6),

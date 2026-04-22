@@ -70,11 +70,10 @@ class FTuneLogCodec {
       'mac': base64Encode(secretBox.mac.bytes),
     };
 
-    final safeSource = source.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '_');
-    final safeTimestamp = timestamp
-        .toIso8601String()
-        .replaceAll(':', '-')
-        .replaceAll('.', '-');
+    final safeSource =
+        source.toLowerCase().replaceAll(RegExp(r'[^a-z0-9]+'), '_');
+    final safeTimestamp =
+        timestamp.toIso8601String().replaceAll(':', '-').replaceAll('.', '-');
 
     return FTuneEncryptedLog(
       fileName: 'crash_${safeSource}_$safeTimestamp.$fileExtension',
@@ -126,7 +125,7 @@ class FTuneLogCodec {
       return const <String, dynamic>{
         'name': 'F.Tune Pro',
         'packageName': 'ftune_flutter',
-        'version': '0.1.0',
+        'version': '0.1.1',
         'buildNumber': '1',
       };
     }

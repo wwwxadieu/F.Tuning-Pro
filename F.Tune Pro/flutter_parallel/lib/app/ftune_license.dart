@@ -110,7 +110,7 @@ class FTuneLicenseService {
       );
     } catch (e) {
       debugPrint('[FTuneLicense] Validate error: $e');
-      return LicenseValidationResult(
+      return const LicenseValidationResult(
         valid: false,
         message: 'Không thể kết nối server. Kiểm tra mạng và thử lại.',
       );

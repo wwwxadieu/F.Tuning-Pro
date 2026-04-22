@@ -209,7 +209,8 @@ class BentoCarPreview extends StatelessWidget {
             Positioned(
               right: 18,
               top: 18,
-              child: _QuickResultPill(result: result!, accent: accent, isDark: isDark),
+              child: _QuickResultPill(
+                  result: result!, accent: accent, isDark: isDark),
             ),
         ],
       ),
@@ -285,9 +286,8 @@ class _CarPreviewImageState extends State<_CarPreviewImage>
         child: Icon(
           Icons.directions_car_rounded,
           size: 100,
-          color: widget.isDark
-              ? const Color(0xFF2A2F3A)
-              : const Color(0xFFD0D3DA),
+          color:
+              widget.isDark ? const Color(0xFF2A2F3A) : const Color(0xFFD0D3DA),
         ),
       );
     }
@@ -360,9 +360,8 @@ class _BrandLogoState extends State<_BrandLogo> {
         height: widget.size,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: widget.isDark
-              ? const Color(0xFF252A34)
-              : const Color(0xFFD8DAE0),
+          color:
+              widget.isDark ? const Color(0xFF252A34) : const Color(0xFFD8DAE0),
         ),
         child: Center(
           child: Text(
@@ -404,11 +403,11 @@ class _BrandLogoState extends State<_BrandLogo> {
 
 String _piClassLabel(int pi) {
   if (pi >= 999) return 'X';
-  if (pi >= 900) return 'S2';
-  if (pi >= 800) return 'S1';
-  if (pi >= 700) return 'A';
-  if (pi >= 600) return 'B';
-  if (pi >= 500) return 'C';
+  if (pi >= 901) return 'S2';
+  if (pi >= 801) return 'S1';
+  if (pi >= 701) return 'A';
+  if (pi >= 601) return 'B';
+  if (pi >= 501) return 'C';
   return 'D';
 }
 
@@ -564,14 +563,10 @@ class _QuickResultPill extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
-            color: isDark
-                ? const Color(0x60000000)
-                : const Color(0x40FFFFFF),
+            color: isDark ? const Color(0x60000000) : const Color(0x40FFFFFF),
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: isDark
-                  ? const Color(0x20FFFFFF)
-                  : const Color(0x15000000),
+              color: isDark ? const Color(0x20FFFFFF) : const Color(0x15000000),
             ),
           ),
           child: Row(

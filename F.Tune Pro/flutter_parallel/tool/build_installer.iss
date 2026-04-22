@@ -1,5 +1,5 @@
 #define MyAppName "F.Tune Pro"
-#define MyAppVersion "0.1.0"
+#define MyAppVersion "0.1.1"
 #define MyAppPublisher "MrBeoHP"
 #define MyAppExeName "ftune_flutter.exe"
 #define MyAppSourceDir "..\\build\\windows\\x64\\runner\\Release"
