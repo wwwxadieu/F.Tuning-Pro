@@ -47,15 +47,17 @@ class _FTuneShellState extends State<FTuneShell> {
       animation: widget.controller,
       builder: (context, _) {
         final controller = widget.controller;
-        final copy = _ShellCopy.forLanguage(controller.preferences.languageCode);
+        final copy =
+            _ShellCopy.forLanguage(controller.preferences.languageCode);
         final initialTab = switch (controller.section) {
           AppSection.garage => 1,
           AppSection.settings => 2,
           _ => 0,
         };
-        final showInlineOverlay = controller.preferences.overlayPreviewEnabled &&
-            (!controller.preferences.overlayOnTop ||
-                !FTuneOverlayWindowService.instance.isSupported);
+        final showInlineOverlay =
+            controller.preferences.overlayPreviewEnabled &&
+                (!controller.preferences.overlayOnTop ||
+                    !FTuneOverlayWindowService.instance.isSupported);
         final messenger = ScaffoldMessenger.maybeOf(context);
 
         unawaited(
@@ -112,7 +114,8 @@ class _FTuneShellState extends State<FTuneShell> {
                 unawaited(controller.setOverlayOnTop(value));
               },
               garageTunes: controller.garageTunes,
-              overlayPreviewEnabled: controller.preferences.overlayPreviewEnabled,
+              overlayPreviewEnabled:
+                  controller.preferences.overlayPreviewEnabled,
               onDeleteTune: (id) {
                 unawaited(controller.deleteTune(id));
               },
@@ -138,7 +141,9 @@ class _FTuneShellState extends State<FTuneShell> {
                 messenger.showSnackBar(
                   SnackBar(
                     content: Text(
-                      path == null ? copy.exportCanceled : copy.exportDone(path),
+                      path == null
+                          ? copy.exportCanceled
+                          : copy.exportDone(path),
                     ),
                   ),
                 );
@@ -201,7 +206,8 @@ class _FTuneShellState extends State<FTuneShell> {
                     unawaited(controller.updatePreferences(preferences));
                   },
                   onDismiss: (dontShowAgain) {
-                    unawaited(controller.completeWelcome(dontShowAgain: dontShowAgain));
+                    unawaited(controller.completeWelcome(
+                        dontShowAgain: dontShowAgain));
                   },
                 ),
               ),
@@ -241,8 +247,9 @@ class _UpdateBanner extends StatelessWidget {
   bool get _isVi => languageCode == 'vi';
 
   Future<void> _startUpdate(BuildContext context) async {
-    // If no direct exe URL, fall back to browser.
-    if (update.exeDownloadUrl.isEmpty) {
+    // If no direct package URL is available, fall back to the release page.
+    if (update.installerDownloadUrl.isEmpty &&
+        update.portableDownloadUrl.isEmpty) {
       await launchUrl(Uri.parse(update.downloadUrl));
       return;
     }
@@ -362,7 +369,8 @@ class _UpdateProgressDialogState extends State<_UpdateProgressDialog> {
 
   Future<void> _download() async {
     final success = await FTuneUpdater.instance.downloadAndApply(
-      exeUrl: widget.update.exeDownloadUrl,
+      installerUrl: widget.update.installerDownloadUrl,
+      portableUrl: widget.update.portableDownloadUrl,
       onProgress: (p) {
         if (mounted) setState(() => _progress = p);
       },
@@ -381,8 +389,8 @@ class _UpdateProgressDialogState extends State<_UpdateProgressDialog> {
             ? 'Không thể tải file. Vui lòng thử lại sau.'
             : 'Could not download the update. Please try again later.')
         : (_isVi
-            ? 'App sẽ tự khởi động lại khi hoàn tất.'
-            : 'The app will restart automatically when done.');
+            ? 'App sẽ đóng, cập nhật gói mới, rồi mở lại khi hoàn tất.'
+            : 'The app will close, apply the update, then reopen when done.');
 
     return AlertDialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -394,8 +402,7 @@ class _UpdateProgressDialogState extends State<_UpdateProgressDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            Text(sub,
-                style: const TextStyle(fontSize: 13, color: Colors.grey)),
+            Text(sub, style: const TextStyle(fontSize: 13, color: Colors.grey)),
             const SizedBox(height: 20),
             if (!_failed)
               Column(
@@ -566,9 +573,9 @@ class _WelcomeTourOverlayState extends State<_WelcomeTourOverlay> {
                 child: const SizedBox.expand(),
               ),
               SafeArea(
-              minimum: const EdgeInsets.all(32),
-              child: Center(
-                child: _WelcomeGlassPanel(
+                minimum: const EdgeInsets.all(32),
+                child: Center(
+                  child: _WelcomeGlassPanel(
                     palette: palette,
                     child: Stack(
                       children: <Widget>[
@@ -624,11 +631,11 @@ class _WelcomeTourOverlayState extends State<_WelcomeTourOverlay> {
                     ),
                   ),
                 ),
-            ),
-          ],
+              ),
+            ],
+          ),
         ),
       ),
-    ),
     );
   }
 
@@ -841,17 +848,17 @@ class _WelcomeTourOverlayState extends State<_WelcomeTourOverlay> {
                             blurRadius: 28,
                             offset: const Offset(0, 14),
                           ),
-                    ],
-                  ),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(22),
-                    child: _WelcomePreviewScene(
-                      palette: palette,
-                      type: activeSlide.previewType,
-                      isVietnamese: copy.isVietnamese,
+                        ],
+                      ),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(22),
+                        child: _WelcomePreviewScene(
+                          palette: palette,
+                          type: activeSlide.previewType,
+                          isVietnamese: copy.isVietnamese,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
                     Positioned(
                       left: 0,
                       right: 0,
@@ -885,31 +892,31 @@ class _WelcomeTourOverlayState extends State<_WelcomeTourOverlay> {
             SizedBox(height: dense ? 14 : 22),
             _buildOnboardingReveal(
               motionKey: 'feature-chip-$activeIndex',
-                beginOffset: const Offset(0, 10),
-                durationMs: 420,
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
+              beginOffset: const Offset(0, 10),
+              durationMs: 420,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(999),
+                  color: _withAlpha(palette.accent, 0.12),
+                  border: Border.all(
+                    color: _withAlpha(palette.accent, 0.24),
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(999),
-                    color: _withAlpha(palette.accent, 0.12),
-                    border: Border.all(
-                      color: _withAlpha(palette.accent, 0.24),
-                    ),
-                  ),
-                  child: Text(
-                    copy.flowLabel,
-                    style: TextStyle(
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                      letterSpacing: 0.5,
-                      color: _withAlpha(palette.accent, 0.90),
-                    ),
+                ),
+                child: Text(
+                  copy.flowLabel,
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: 0.5,
+                    color: _withAlpha(palette.accent, 0.90),
                   ),
                 ),
               ),
+            ),
             SizedBox(height: dense ? 8 : 14),
             Padding(
               padding: EdgeInsets.symmetric(horizontal: hPad),
@@ -1319,9 +1326,7 @@ class _WelcomeTourOverlayState extends State<_WelcomeTourOverlay> {
               margin: const EdgeInsets.symmetric(horizontal: 4),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(999),
-                color: active
-                    ? Colors.white
-                    : _withAlpha(Colors.white, 0.28),
+                color: active ? Colors.white : _withAlpha(Colors.white, 0.28),
                 boxShadow: active
                     ? <BoxShadow>[
                         BoxShadow(
@@ -1670,12 +1675,9 @@ enum _WelcomePreviewType {
 
 String _welcomePreviewAsset(_WelcomePreviewType type) {
   return switch (type) {
-    _WelcomePreviewType.create =>
-      'assets/images/welcome/home_create.png',
-    _WelcomePreviewType.calculate =>
-      'assets/images/welcome/home_calculate.png',
-    _WelcomePreviewType.garage =>
-      'assets/images/welcome/garage_overview.png',
+    _WelcomePreviewType.create => 'assets/images/welcome/home_create.png',
+    _WelcomePreviewType.calculate => 'assets/images/welcome/home_calculate.png',
+    _WelcomePreviewType.garage => 'assets/images/welcome/garage_overview.png',
     _WelcomePreviewType.settings =>
       'assets/images/welcome/settings_overview.png',
   };
@@ -1749,63 +1751,62 @@ class _ShellCopy {
       isVietnamese ? 'Overlay đang được khóa' : 'Overlay is locked';
   String get overlayClose =>
       isVietnamese ? 'Đóng cửa sổ overlay' : 'Close overlay window';
-  String get welcomeTitle => isVietnamese
-      ? 'Chào mừng đến với F.Tune Pro'
-      : 'Welcome to F.Tune Pro';
+  String get welcomeTitle =>
+      isVietnamese ? 'Chào mừng đến với F.Tune Pro' : 'Welcome to F.Tune Pro';
   String get welcomeSubtitle => isVietnamese
       ? 'Xem nhanh giao diện, luồng tune và các mục chính của ứng dụng.'
       : 'A quick look at the interface, tuning flow, and main sections of the app.';
-    String get welcomeSetupHeadline =>
+  String get welcomeSetupHeadline =>
       isVietnamese ? 'Thiết lập F.Tune Pro' : 'Set Up F.Tune Pro';
   String get welcomeSetupTitle => isVietnamese
       ? 'F.Tune Pro hỗ trợ Forza Horizon 5 và 6'
       : 'F.Tune Pro supports Forza Horizon 5 and 6';
-    String get welcomeSetupDescription => isVietnamese
+  String get welcomeSetupDescription => isVietnamese
       ? 'Chọn ngôn ngữ, đơn vị đo và giao diện trước khi bắt đầu. Bạn có thể đổi lại mọi thứ trong Settings bất cứ lúc nào.'
       : 'Choose your language, measurement system, and theme before you begin. You can change everything again later in Settings.';
-    String get supportedGamesLabel =>
+  String get supportedGamesLabel =>
       isVietnamese ? 'GAME ĐƯỢC HỖ TRỢ' : 'SUPPORTED GAMES';
-    String get fh5CoverTitle => 'FH5';
-    String get fh6CoverTitle => 'FH6';
-    String get fh5CoverSubtitle => 'Forza Horizon 5';
-    String get fh6CoverSubtitle => 'Forza Horizon 6';
-    String get fh5CoverCaption => isVietnamese
+  String get fh5CoverTitle => 'FH5';
+  String get fh6CoverTitle => 'FH6';
+  String get fh5CoverSubtitle => 'Forza Horizon 5';
+  String get fh6CoverSubtitle => 'Forza Horizon 6';
+  String get fh5CoverCaption => isVietnamese
       ? 'Luồng create tune, dữ liệu xe và kho tune cho FH5.'
       : 'Create-tune flow, car data, and garage workflow for FH5.';
-    String get fh6CoverCaption => isVietnamese
+  String get fh6CoverCaption => isVietnamese
       ? 'Sẵn sàng cho bố cục chào mừng và trải nghiệm FH6.'
       : 'Ready for the welcome layout and FH6 experience.';
-    String get flowLabel =>
+  String get flowLabel =>
       isVietnamese ? 'TÍNH NĂNG CHÍNH' : 'FEATURE HIGHLIGHTS';
-    String get languageLabel => isVietnamese ? 'Ngôn ngữ' : 'Language';
-    String get measurementLabel => isVietnamese ? 'Đơn vị' : 'Measurement';
-    String get themeLabel => isVietnamese ? 'Giao diện' : 'Theme';
-    String get englishLabel => 'English';
-    String get vietnameseLabel => 'Tiếng Việt';
-    String get metricLabel => 'Metric';
-    String get imperialLabel => 'Imperial';
-    String get lightLabel => isVietnamese ? 'Sáng' : 'Light';
-    String get darkLabel => isVietnamese ? 'Tối' : 'Dark';
-    String get backLabel => isVietnamese ? 'Quay lại' : 'Back';
-    String get nextLabel => isVietnamese ? 'Tiếp tục' : 'Continue';
-    String get startTuneLabel => isVietnamese ? 'Bắt đầu' : 'Start Tune';
-    String get finishLabel => isVietnamese ? 'Hoàn tất' : 'Finish';
-    String get closeLabel => isVietnamese ? 'Đóng' : 'Close';
-    String get welcomeDontShowAgain => isVietnamese
+  String get languageLabel => isVietnamese ? 'Ngôn ngữ' : 'Language';
+  String get measurementLabel => isVietnamese ? 'Đơn vị' : 'Measurement';
+  String get themeLabel => isVietnamese ? 'Giao diện' : 'Theme';
+  String get englishLabel => 'English';
+  String get vietnameseLabel => 'Tiếng Việt';
+  String get metricLabel => 'Metric';
+  String get imperialLabel => 'Imperial';
+  String get lightLabel => isVietnamese ? 'Sáng' : 'Light';
+  String get darkLabel => isVietnamese ? 'Tối' : 'Dark';
+  String get backLabel => isVietnamese ? 'Quay lại' : 'Back';
+  String get nextLabel => isVietnamese ? 'Tiếp tục' : 'Continue';
+  String get startTuneLabel => isVietnamese ? 'Bắt đầu' : 'Start Tune';
+  String get finishLabel => isVietnamese ? 'Hoàn tất' : 'Finish';
+  String get closeLabel => isVietnamese ? 'Đóng' : 'Close';
+  String get welcomeDontShowAgain => isVietnamese
       ? 'Không hiển thị lại ở lần sau'
       : 'Do not show again next time';
-    String get importNone =>
+  String get importNone =>
       isVietnamese ? 'Không có tune nào được nhập.' : 'No tunes were imported.';
-    String importDone(int count) =>
+  String importDone(int count) =>
       isVietnamese ? 'Đã nhập $count tune.' : 'Imported $count tune(s).';
-    String get exportCanceled =>
+  String get exportCanceled =>
       isVietnamese ? 'Đã hủy xuất file.' : 'Export canceled.';
-    String exportDone(String path) =>
+  String exportDone(String path) =>
       isVietnamese ? 'Đã xuất tune tới $path' : 'Exported tunes to $path';
-    String get backgroundUpdated => isVietnamese
+  String get backgroundUpdated => isVietnamese
       ? 'Đã cập nhật background tùy chỉnh.'
       : 'Custom background updated.';
-    String get backgroundCleared => isVietnamese
+  String get backgroundCleared => isVietnamese
       ? 'Đã xóa background tùy chỉnh.'
       : 'Custom background cleared.';
 
@@ -2013,10 +2014,10 @@ class _WelcomeChoiceButtonState extends State<_WelcomeChoiceButton> {
         ? _withAlpha(const Color(0xFF2D84FF), 0.24)
         : (_hovered
             ? _withAlpha(Colors.white, 0.10)
-      : _withAlpha(Colors.white, 0.03));
+            : _withAlpha(Colors.white, 0.03));
     final borderColor = widget.selected
         ? _withAlpha(const Color(0xFF6FB5FF), 0.50)
-    : _withAlpha(Colors.white, _hovered ? 0.16 : 0.08);
+        : _withAlpha(Colors.white, _hovered ? 0.16 : 0.08);
     final foreground = widget.selected
         ? Colors.white
         : (_hovered ? Colors.white : _withAlpha(Colors.white, 0.74));
@@ -2110,7 +2111,8 @@ class _WelcomeGlassPanel extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: <Color>[
-                _withAlpha(const Color(0xFF11131A), palette.isDark ? 0.42 : 0.18),
+                _withAlpha(
+                    const Color(0xFF11131A), palette.isDark ? 0.42 : 0.18),
                 _withAlpha(palette.surface, palette.isDark ? 0.26 : 0.16),
               ],
             ),
@@ -2153,7 +2155,8 @@ class _WelcomeTopBarButtonState extends State<_WelcomeTopBarButton> {
     final background = _hovered && enabled
         ? _withAlpha(Colors.white, 0.18)
         : _withAlpha(Colors.white, 0.12);
-    final borderColor = _withAlpha(Colors.white, _hovered && enabled ? 0.28 : 0.16);
+    final borderColor =
+        _withAlpha(Colors.white, _hovered && enabled ? 0.28 : 0.16);
     final foreground = enabled ? Colors.white : _withAlpha(Colors.white, 0.36);
 
     return Opacity(
@@ -2180,7 +2183,8 @@ class _WelcomeTopBarButtonState extends State<_WelcomeTopBarButton> {
                   color: background,
                   boxShadow: <BoxShadow>[
                     BoxShadow(
-                      color: _withAlpha(Colors.black, widget.palette.isDark ? 0.16 : 0.08),
+                      color: _withAlpha(
+                          Colors.black, widget.palette.isDark ? 0.16 : 0.08),
                       blurRadius: enabled && _hovered ? 20 : 16,
                       offset: const Offset(0, 10),
                     ),
@@ -2414,7 +2418,8 @@ class _WelcomePreviewScene extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        _miniPanelTitle(_t('Garage Snapshot', 'Garage gần đây')),
+                        _miniPanelTitle(
+                            _t('Garage Snapshot', 'Garage gần đây')),
                         const SizedBox(height: 8),
                         _miniResultLine('GT3 RS', _t('Saved', 'Đã lưu')),
                       ],
@@ -2605,11 +2610,14 @@ class _WelcomePreviewScene extends StatelessWidget {
                       children: <Widget>[
                         _miniPanelTitle(_t('Result Delta', 'So sánh kết quả')),
                         const SizedBox(height: 10),
-                        _miniResultLine(_t('Pressure', 'Áp suất'), 'F 1.95 · R 2.02'),
+                        _miniResultLine(
+                            _t('Pressure', 'Áp suất'), 'F 1.95 · R 2.02'),
                         const SizedBox(height: 8),
-                        _miniResultLine(_t('Gearing', 'Tỷ số truyền'), 'FD 3.62'),
+                        _miniResultLine(
+                            _t('Gearing', 'Tỷ số truyền'), 'FD 3.62'),
                         const SizedBox(height: 8),
-                        _miniResultLine(_t('Braking', 'Phanh'), _t('Balance 51%', 'Cân bằng 51%')),
+                        _miniResultLine(_t('Braking', 'Phanh'),
+                            _t('Balance 51%', 'Cân bằng 51%')),
                       ],
                     ),
                   ),
@@ -2631,11 +2639,17 @@ class _WelcomePreviewScene extends StatelessWidget {
                     children: <Widget>[
                       Row(
                         children: <Widget>[
-                          Expanded(child: _miniMetric(_t('Handling', 'Vào cua'), '#FF764B')),
+                          Expanded(
+                              child: _miniMetric(
+                                  _t('Handling', 'Vào cua'), '#FF764B')),
                           const SizedBox(width: 8),
-                          Expanded(child: _miniMetric(_t('Grip', 'Bám đường'), '#5EA1FF')),
+                          Expanded(
+                              child: _miniMetric(
+                                  _t('Grip', 'Bám đường'), '#5EA1FF')),
                           const SizedBox(width: 8),
-                          Expanded(child: _miniMetric(_t('Launch', 'Đề-pa'), '#50C878')),
+                          Expanded(
+                              child: _miniMetric(
+                                  _t('Launch', 'Đề-pa'), '#50C878')),
                         ],
                       ),
                       const SizedBox(height: 10),

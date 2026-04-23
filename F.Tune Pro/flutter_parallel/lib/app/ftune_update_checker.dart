@@ -10,7 +10,8 @@ class FTuneRemoteVersion {
     required this.build,
     required this.releaseNotesVi,
     required this.releaseNotesEn,
-    required this.exeDownloadUrl,
+    required this.installerDownloadUrl,
+    required this.portableDownloadUrl,
     required this.downloadUrl,
   });
 
@@ -19,8 +20,11 @@ class FTuneRemoteVersion {
   final String releaseNotesVi;
   final String releaseNotesEn;
 
-  /// Direct URL to the new portable .exe file.
-  final String exeDownloadUrl;
+  /// Direct URL to the Windows installer asset.
+  final String installerDownloadUrl;
+
+  /// Direct URL to the portable ZIP asset.
+  final String portableDownloadUrl;
 
   /// Fallback page URL (GitHub Releases).
   final String downloadUrl;
@@ -51,7 +55,11 @@ class FTuneUpdateChecker {
       final remoteBuild = (data['build'] as num?)?.toInt() ?? 0;
       final remoteVersion = (data['version'] as String?) ?? '';
       final notes = (data['release_notes'] as Map<String, dynamic>?) ?? {};
-      final exeDownloadUrl = (data['exe_download_url'] as String?) ?? '';
+      final legacyExeDownloadUrl = (data['exe_download_url'] as String?) ?? '';
+      final installerDownloadUrl =
+          (data['installer_download_url'] as String?) ?? legacyExeDownloadUrl;
+      final portableDownloadUrl =
+          (data['portable_download_url'] as String?) ?? '';
       final downloadUrl = (data['download_url'] as String?) ?? _versionUrl;
 
       final info = await PackageInfo.fromPlatform();
@@ -64,7 +72,8 @@ class FTuneUpdateChecker {
         build: remoteBuild,
         releaseNotesVi: (notes['vi'] as String?) ?? '',
         releaseNotesEn: (notes['en'] as String?) ?? '',
-        exeDownloadUrl: exeDownloadUrl,
+        installerDownloadUrl: installerDownloadUrl,
+        portableDownloadUrl: portableDownloadUrl,
         downloadUrl: downloadUrl,
       );
     } catch (_) {

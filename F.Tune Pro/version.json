@@ -7,6 +7,8 @@
     "vi": "Thêm lưu/xuất nhanh ngay trong Tune Results, sửa phân hạng PI và khôi phục gửi báo cáo lỗi.",
     "en": "Added quick save/export in Tune Results, fixed PI class boundaries, and restored crash reporting."
   },
-  "exe_download_url": "https://github.com/wwwxadieu/F.Tuning-Pro/releases/latest/download/F.Tune-Pro-Setup.exe",
-  "download_url": "https://github.com/wwwxadieu/F.Tuning-Pro/releases/latest"
+  "installer_download_url": "https://github.com/wwwxadieu/F.Tuning-Pro/releases/download/v0.1.1-beta/F.Tune-Pro-Setup.exe",
+  "portable_download_url": "https://github.com/wwwxadieu/F.Tuning-Pro/releases/download/v0.1.1-beta/F.Tune-Pro-Portable.zip",
+  "exe_download_url": "",
+  "download_url": "https://github.com/wwwxadieu/F.Tuning-Pro/releases/tag/v0.1.1-beta"
 }
