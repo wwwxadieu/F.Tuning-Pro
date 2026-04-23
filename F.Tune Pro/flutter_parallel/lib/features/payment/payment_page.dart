@@ -55,8 +55,7 @@ class _FTunePaymentPageState extends State<FTunePaymentPage> {
 
   void _submitEmail() {
     final email = _emailController.text.trim();
-    // Cho phép bỏ trống email (optional), nhưng nếu nhập thì phải hợp lệ
-    if (email.isNotEmpty && !_isValidEmail(email)) {
+    if (email.isEmpty || !_isValidEmail(email)) {
       setState(() => _error = 'Email không hợp lệ.');
       return;
     }
@@ -65,7 +64,7 @@ class _FTunePaymentPageState extends State<FTunePaymentPage> {
       _isLoading = true;
       _error = null;
     });
-    _initPayment(email: email.isEmpty ? null : email);
+    _initPayment(email: email);
   }
 
   bool _isValidEmail(String email) {
@@ -77,7 +76,8 @@ class _FTunePaymentPageState extends State<FTunePaymentPage> {
       // 1. Tạo checkout session từ backend (gửi kèm email nếu có)
       final response = await http
           .post(
-            Uri.parse('${FTuneLicenseService.apiBaseUrl}/create-checkout-session'),
+            Uri.parse(
+                '${FTuneLicenseService.apiBaseUrl}/create-checkout-session'),
             headers: {'Content-Type': 'application/json'},
             body: jsonEncode({if (email != null) 'email': email}),
           )
@@ -169,79 +169,114 @@ class _FTunePaymentPageState extends State<FTunePaymentPage> {
         padding: const EdgeInsets.all(32),
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 400),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.email_outlined,
-                  size: 48, color: palette.accent),
-              const SizedBox(height: 16),
-              Text(
-                'Nhập email để nhận mã kích hoạt',
-                style: TextStyle(
-                  color: palette.text,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Mã kích hoạt sẽ được gửi về email này để backup, '
-                'phòng trường hợp bạn cần cài lại app.',
-                style: TextStyle(color: palette.muted, fontSize: 13),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              TextField(
-                controller: _emailController,
-                keyboardType: TextInputType.emailAddress,
-                style: TextStyle(color: palette.text, fontSize: 14),
-                decoration: InputDecoration(
-                  hintText: 'your@email.com (không bắt buộc)',
-                  hintStyle: TextStyle(color: palette.muted),
-                  filled: true,
-                  fillColor: palette.surfaceAlt,
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: palette.border),
+          child: StatefulBuilder(
+            builder: (context, setStateSB) {
+              final email = _emailController.text.trim();
+              final isValid = email.isNotEmpty && _isValidEmail(email);
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.email_outlined, size: 48, color: palette.accent),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Nhập email để nhận mã kích hoạt',
+                    style: TextStyle(
+                      color: palette.text,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                    textAlign: TextAlign.center,
                   ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: palette.border),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Bạn bắt buộc phải nhập email để nhận mã kích hoạt và backup.',
+                    style: TextStyle(color: palette.muted, fontSize: 13),
+                    textAlign: TextAlign.center,
                   ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                    borderSide: BorderSide(color: palette.accent, width: 2),
+                  const SizedBox(height: 24),
+                  TextField(
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    style: TextStyle(color: palette.text, fontSize: 14),
+                    decoration: InputDecoration(
+                      hintText: 'your@email.com',
+                      labelText: 'Email nhận mã kích hoạt',
+                      hintStyle: TextStyle(color: palette.muted),
+                      filled: true,
+                      fillColor: palette.surfaceAlt,
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: palette.border),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: palette.border),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        borderSide: BorderSide(color: palette.accent, width: 2),
+                      ),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 14,
+                      ),
+                      prefixIcon: Icon(
+                        Icons.mail_outline_rounded,
+                        color: palette.muted,
+                        size: 20,
+                      ),
+                    ),
+                    onChanged: (_) => setStateSB(() {}),
+                    onSubmitted: (_) {
+                      if (isValid) _submitEmail();
+                    },
                   ),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16, vertical: 14),
-                  prefixIcon: Icon(Icons.mail_outline_rounded,
-                      color: palette.muted, size: 20),
-                ),
-                onSubmitted: (_) => _submitEmail(),
-              ),
-              if (_error != null) ...[
-                const SizedBox(height: 8),
-                Text(
-                  _error!,
-                  style: TextStyle(color: Colors.red.shade400, fontSize: 12),
-                ),
-              ],
-              const SizedBox(height: 20),
-              SizedBox(
-                width: double.infinity,
-                child: FilledButton.icon(
-                  onPressed: _submitEmail,
-                  icon: const Icon(Icons.payment_rounded, size: 18),
-                  label: const Text('Tiếp tục thanh toán'),
-                  style: FilledButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    textStyle: const TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w600),
+                  if (_error != null) ...[
+                    const SizedBox(height: 8),
+                    Text(
+                      _error!,
+                      style:
+                          TextStyle(color: Colors.red.shade400, fontSize: 12),
+                    ),
+                  ],
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton.icon(
+                          onPressed: () => Navigator.of(context).pop(),
+                          icon: const Icon(Icons.close_rounded, size: 18),
+                          label: const Text('Hủy'),
+                          style: OutlinedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            textStyle: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: FilledButton.icon(
+                          onPressed: isValid ? _submitEmail : null,
+                          icon: const Icon(Icons.payment_rounded, size: 18),
+                          label: const Text('Tiếp tục thanh toán'),
+                          style: FilledButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            textStyle: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-            ],
+                ],
+              );
+            },
           ),
         ),
       ),

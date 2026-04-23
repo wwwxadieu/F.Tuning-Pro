@@ -53,6 +53,10 @@ class FTuneLicenseService {
   // ── Cấu hình ──────────────────────────────────────────────────────────────
   // Khi deploy production: thay đổi URL này thành domain thật.
   static const String apiBaseUrl = 'http://localhost:3000';
+  /// Danh sách endpoint cho các môi trường (có thể mở rộng sau này)
+  static const List<String> apiBaseUrls = [apiBaseUrl];
+  /// Endpoint cho môi trường local dev
+  static const String localDevApiBaseUrl = 'http://localhost:3000';
   static const Duration _timeout = Duration(seconds: 15);
 
   /// Dev key — chỉ dùng để test offline, không cần server.
