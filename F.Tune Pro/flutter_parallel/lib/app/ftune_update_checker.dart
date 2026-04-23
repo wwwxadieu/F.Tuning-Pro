@@ -39,7 +39,7 @@ class FTuneUpdateChecker {
   static final FTuneUpdateChecker instance = FTuneUpdateChecker._();
 
   static const String _versionUrl =
-      'https://raw.githubusercontent.com/wwwxadieu/F.Tuning-Pro/master/version.json';
+      'https://raw.githubusercontent.com/wwwxadieu/F.Tuning-Pro/master/F.Tune%20Pro/version.json';
 
   /// Returns the remote version if it is newer than the installed build,
   /// or `null` if the app is up to date or the check failed.
