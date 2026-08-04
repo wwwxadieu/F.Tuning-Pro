@@ -1,28 +1,29 @@
-## [0.1.0-beta] - 2026-04-20
+# TechWave
 
-### ✨ Tính năng chính
+Ứng dụng web desktop tổng hợp tin tức công nghệ theo thời gian thực, giao diện lấy cảm hứng từ Apple.
 
-- **Dashboard hiện đại** — Giao diện bento grid responsive với preview xe, thống kê nhanh và truy cập nhanh các chức năng
-- **Tạo Tune tự động** — Chọn xe từ cơ sở dữ liệu FH5/FH6, nhập thông số → nhận bộ tune hoàn chỉnh (lò xo, giảm chấn, thanh cân bằng, hộp số, v.v.)
-- **Garage** — Lưu trữ, ghim, xuất/nhập các tune đã tạo dưới dạng file JSON
-- **Overlay trong game** — Hiển thị thông số tune dạng cửa sổ luôn nằm trên, hỗ trợ khóa vị trí và tùy chỉnh opacity
-- **Hỗ trợ đa ngôn ngữ** — Tiếng Việt & Tiếng Anh, chuyển đổi tức thì
-- **Welcome Tour** — Hướng dẫn người dùng mới với slides giới thiệu từng tính năng
-- **Dark / Light theme** — Chuyển đổi theme tối/sáng, tùy chỉnh accent color
-- **Custom background** — Đặt ảnh hoặc video làm nền dashboard
-- **Tự động cập nhật** — Kiểm tra và tải phiên bản mới trực tiếp từ GitHub
-- **Hỗ trợ Donate** — QR code ủng hộ tác giả
+## Tính năng
 
-### 🛠️ Sửa lỗi
+- **Tổng hợp tin tức tự động** — lấy tin từ TechCrunch, The Verge, Ars Technica, Wired, Engadget, 9to5Mac, The Hacker News, VentureBeat qua RSS
+- **Giao diện Apple style** — nền tối, kính mờ (glassmorphism), typography lớn, chuyển động mượt theo chuẩn easing của Apple
+- **3D animation khi cuộn** — hero section có hiệu ứng parallax 3D (rotateX, scale, lớp orb chuyển động), thẻ tin tức nghiêng 3D theo con trỏ chuột và xuất hiện với hiệu ứng cuộn
+- **Sắp xếp theo thẻ** — lọc tin theo chủ đề: AI, Apple, Bảo mật, Di động, Phần mềm, Phần cứng, Gaming, Startup, Big Tech
+- **Thông báo tin mới** — dùng Web Notifications API, tự động kiểm tra tin mới mỗi 3 phút và báo cho người dùng
 
-- Sửa Welcome Tour không che phủ hoàn toàn giao diện phía sau — thêm lớp scrim tối + chặn tương tác nền
-- Sửa lỗi Zone mismatch khi khởi động app (đưa toàn bộ initialization vào `runZonedGuarded`)
-- Ẩn dialog thông báo crash trong giai đoạn beta (chỉ log ra console)
-- Giảm kích thước ảnh xe preview từ 1920px → 800px (API) và thêm `cacheWidth` cho widget
+## Công nghệ
 
-### 📦 Kỹ thuật
+- Next.js 16 (App Router) + TypeScript
+- Tailwind CSS
+- Framer Motion (scroll & 3D animation)
+- rss-parser (tổng hợp RSS phía server)
 
-- Flutter Desktop (Windows) — SDK >=3.3.0
-- Dữ liệu lưu trữ qua SharedPreferences + file JSON cục bộ
-- Cơ chế update tự thay thế exe qua PowerShell script
-- Hỗ trợ multi-window (overlay) qua `desktop_multi_window`
+## Chạy dự án
+
+```bash
+npm install
+npm run dev
+```
+
+Mở [http://localhost:3000](http://localhost:3000).
+
+API tổng hợp tin tức: `GET /api/news` (cache 5 phút, chạy trên Node runtime).
