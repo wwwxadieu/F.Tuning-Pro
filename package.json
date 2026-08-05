@@ -11,11 +11,14 @@
     "start": "next start",
     "lint": "next lint",
     "electron:prepare": "cross-env ELECTRON_BUILD=1 next build && node scripts/prepare-electron-build.js",
-    "electron:dist:win": "npm run electron:prepare && electron-builder --win --x64",
-    "electron:dist:mac": "npm run electron:prepare && electron-builder --mac --x64 --arm64",
-    "electron:dist": "npm run electron:prepare && electron-builder --win --mac"
+    "electron:dist:win": "npm run electron:prepare && electron-builder --win --x64 --publish never",
+    "electron:dist:mac": "npm run electron:prepare && electron-builder --mac --x64 --arm64 --publish never",
+    "electron:dist": "npm run electron:prepare && electron-builder --win --mac --publish never",
+    "electron:publish:win": "npm run electron:prepare && electron-builder --win --x64 --publish always",
+    "electron:publish:mac": "npm run electron:prepare && electron-builder --mac --x64 --arm64 --publish always"
   },
   "dependencies": {
+    "electron-updater": "^6.8.9",
     "framer-motion": "^12.23.0",
     "next": "^16.3.0",
     "react": "^19.2.8",
@@ -38,7 +41,12 @@
   "build": {
     "appId": "app.techwave.desktop",
     "productName": "TechWave",
-    "publish": null,
+    "publish": {
+      "provider": "github",
+      "owner": "wwwxadieu",
+      "repo": "F.Tuning-Pro",
+      "releaseType": "release"
+    },
     "files": [
       "electron/**/*"
     ],

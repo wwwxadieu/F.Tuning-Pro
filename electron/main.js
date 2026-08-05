@@ -1,4 +1,5 @@
-const { app, BrowserWindow, Menu } = require("electron");
+const { app, BrowserWindow, Menu, dialog } = require("electron");
+const { autoUpdater } = require("electron-updater");
 const fs = require("fs");
 const path = require("path");
 const http = require("http");
@@ -6,6 +7,7 @@ const { spawn } = require("child_process");
 
 const PORT = 47821;
 const HOST = "127.0.0.1";
+const UPDATE_CHECK_INTERVAL_MS = 2 * 60 * 60 * 1000;
 
 let serverProcess = null;
 let mainWindow = null;
@@ -122,10 +124,44 @@ function createWindow() {
   });
 }
 
+function setupAutoUpdater() {
+  if (!app.isPackaged) {
+    log("[updater] skipped (not packaged)");
+    return;
+  }
+
+  autoUpdater.autoDownload = true;
+  autoUpdater.autoInstallOnAppQuit = true;
+
+  autoUpdater.on("checking-for-update", () => log("[updater] checking for update"));
+  autoUpdater.on("update-available", (info) => log("[updater] update available:", info.version));
+  autoUpdater.on("update-not-available", () => log("[updater] already up to date"));
+  autoUpdater.on("error", (err) => log("[updater] error:", err.message));
+  autoUpdater.on("download-progress", (p) => log(`[updater] downloading ${Math.round(p.percent)}%`));
+
+  autoUpdater.on("update-downloaded", async (info) => {
+    log("[updater] update downloaded:", info.version);
+    const { response } = await dialog.showMessageBox(mainWindow ?? undefined, {
+      type: "info",
+      title: "Có bản cập nhật mới",
+      message: `TechWave ${info.version} đã sẵn sàng. Khởi động lại để cài đặt?`,
+      buttons: ["Cài đặt ngay", "Để sau"],
+      defaultId: 0,
+      cancelId: 1,
+    });
+    if (response === 0) autoUpdater.quitAndInstall();
+  });
+
+  const check = () => autoUpdater.checkForUpdates().catch((err) => log("[updater] check failed:", err.message));
+  setTimeout(check, 5000);
+  setInterval(check, UPDATE_CHECK_INTERVAL_MS);
+}
+
 app.whenReady().then(async () => {
   log("App starting. Packaged:", app.isPackaged, "Platform:", process.platform);
   Menu.setApplicationMenu(null);
   createWindow();
+  setupAutoUpdater();
 
   try {
     await startServer();
