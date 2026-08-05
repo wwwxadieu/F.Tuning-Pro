@@ -89,9 +89,20 @@ export function NewsCard({ article, index }: { article: Article; index: number }
               {tag}
             </span>
           ))}
+          {article.translated && (
+            <span
+              title={article.originalTitle}
+              className="rounded-full border border-hair px-2 py-0.5 text-[11px] font-medium text-white/50"
+            >
+              Đã dịch
+            </span>
+          )}
         </div>
 
-        <h3 className="text-balance text-[17px] font-semibold leading-snug text-white/95">
+        <h3
+          title={article.translated ? article.originalTitle : undefined}
+          className="text-balance text-[17px] font-semibold leading-snug text-white/95"
+        >
           {article.title}
         </h3>
 

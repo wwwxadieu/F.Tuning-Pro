@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Parser from "rss-parser";
 import { ProxyAgent, setGlobalDispatcher } from "undici";
 import { FEEDS, inferTags } from "@/lib/feeds";
+import { translateBatch } from "@/lib/translate";
 import type { Article, NewsResponse } from "@/lib/types";
 
 export const runtime = "nodejs";
@@ -12,9 +13,12 @@ if (proxyUrl) {
   setGlobalDispatcher(new ProxyAgent(proxyUrl));
 }
 
+const UA =
+  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36 TechWaveBot/1.0";
+
 const parser = new Parser({
   timeout: 9000,
-  headers: { "User-Agent": "TechWaveBot/1.0 (+https://techwave.app)" },
+  headers: { "User-Agent": UA },
 });
 
 function stripHtml(html: string | undefined): string {
@@ -40,7 +44,7 @@ function extractImage(item: Parser.Item & Record<string, any>): string | null {
 async function fetchFeed(feed: (typeof FEEDS)[number]): Promise<Article[]> {
   try {
     const res = await fetch(feed.url, {
-      headers: { "User-Agent": "TechWaveBot/1.0 (+https://techwave.app)" },
+      headers: { "User-Agent": UA },
       next: { revalidate: 300 },
       signal: AbortSignal.timeout(9000),
     });
@@ -50,15 +54,18 @@ async function fetchFeed(feed: (typeof FEEDS)[number]): Promise<Article[]> {
     return (parsed.items || []).slice(0, 15).map((item) => {
       const summary = stripHtml(item.contentSnippet || item.content || item.summary);
       const title = item.title || "Untitled";
+      const trimmedSummary = summary.length > 200 ? `${summary.slice(0, 200)}…` : summary;
       return {
         id: item.guid || item.link || `${feed.name}-${title}`,
         title,
         link: item.link || "#",
         source: feed.name,
-        summary: summary.length > 200 ? `${summary.slice(0, 200)}…` : summary,
+        summary: trimmedSummary,
         image: extractImage(item as any),
         tags: inferTags(feed.baseTags, title, summary),
         publishedAt: item.isoDate || item.pubDate || new Date().toISOString(),
+        lang: feed.lang,
+        translated: false,
       } satisfies Article;
     });
   } catch (err) {
@@ -81,8 +88,27 @@ export async function GET() {
     (a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
   );
 
+  const top = sorted.slice(0, 80);
+  const toTranslate = top.filter((a) => a.lang === "en");
+  const translations = await translateBatch(toTranslate);
+
+  let cursor = 0;
+  const translated = top.map((article) => {
+    if (article.lang !== "en") return article;
+    const result = translations[cursor++];
+    if (!result.ok) return article;
+    return {
+      ...article,
+      title: result.title,
+      summary: result.summary,
+      originalTitle: article.title,
+      originalSummary: article.summary,
+      translated: true,
+    } satisfies Article;
+  });
+
   const payload: NewsResponse = {
-    articles: sorted.slice(0, 80),
+    articles: translated,
     fetchedAt: new Date().toISOString(),
   };
 

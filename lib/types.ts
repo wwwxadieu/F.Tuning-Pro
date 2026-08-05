@@ -18,6 +18,10 @@ export interface Article {
   image: string | null;
   tags: Tag[];
   publishedAt: string;
+  lang: "vi" | "en";
+  translated: boolean;
+  originalTitle?: string;
+  originalSummary?: string;
 }
 
 export interface NewsResponse {
