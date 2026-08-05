@@ -8,10 +8,14 @@ const { spawn } = require("child_process");
 const PORT = 47821;
 const HOST = "127.0.0.1";
 const UPDATE_CHECK_INTERVAL_MS = 2 * 60 * 60 * 1000;
+const MAX_STDERR_LINES = 20;
 
 let serverProcess = null;
 let mainWindow = null;
 let serverExited = null;
+// Kept so a startup failure can show its real cause on screen, rather than
+// only a generic exit code with the details buried in the log file.
+const serverStderr = [];
 
 const logPath = path.join(app.getPath("userData"), "techwave.log");
 function log(...args) {
@@ -64,7 +68,16 @@ function startServer() {
   });
 
   serverProcess.stdout.on("data", (chunk) => log("[server:stdout]", chunk.toString().trim()));
-  serverProcess.stderr.on("data", (chunk) => log("[server:stderr]", chunk.toString().trim()));
+  serverProcess.stderr.on("data", (chunk) => {
+    const text = chunk.toString().trim();
+    log("[server:stderr]", text);
+    for (const line of text.split("\n")) {
+      serverStderr.push(line);
+    }
+    if (serverStderr.length > MAX_STDERR_LINES) {
+      serverStderr.splice(0, serverStderr.length - MAX_STDERR_LINES);
+    }
+  });
   serverProcess.on("error", (err) => {
     log("[server] spawn error:", err.message);
     serverExited = err;
@@ -88,13 +101,23 @@ function loadingHtml() {
   </body></html>`;
 }
 
+function escapeHtml(value) {
+  return String(value).replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" })[c]);
+}
+
 function errorHtml(message) {
-  const safe = String(message).replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" })[c]);
+  const safe = escapeHtml(message);
+  const details = serverStderr.length
+    ? `<pre style="margin-top:20px;padding:14px;max-height:240px;overflow:auto;text-align:left;white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;font-size:11.5px;line-height:1.5;color:rgba(245,245,247,.65);">${escapeHtml(
+        serverStderr.join("\n")
+      )}</pre>`
+    : "";
   return `<!doctype html><html><body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0a0c;color:#f5f5f7;font-family:-apple-system,Segoe UI,sans-serif;padding:40px;box-sizing:border-box;">
-    <div style="max-width:520px;text-align:center;">
+    <div style="max-width:620px;text-align:center;">
       <div style="font-size:17px;font-weight:600;">Không thể khởi động TechWave</div>
       <div style="margin-top:12px;font-size:13px;line-height:1.6;color:rgba(245,245,247,.6);">${safe}</div>
-      <div style="margin-top:20px;font-size:12px;color:rgba(245,245,247,.35);">Log chi tiết: ${logPath}</div>
+      ${details}
+      <div style="margin-top:20px;font-size:12px;color:rgba(245,245,247,.35);">Log chi tiết: ${escapeHtml(logPath)}</div>
       <div style="margin-top:6px;font-size:12px;color:rgba(245,245,247,.35);">Thử tắt tạm phần mềm diệt virus rồi mở lại ứng dụng.</div>
     </div>
   </body></html>`;
