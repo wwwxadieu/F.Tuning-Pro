@@ -38,6 +38,7 @@
   "build": {
     "appId": "app.techwave.desktop",
     "productName": "TechWave",
+    "publish": null,
     "files": [
       "electron/**/*"
     ],
