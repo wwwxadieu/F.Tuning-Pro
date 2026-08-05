@@ -21,8 +21,9 @@ jobs:
         id: version
         shell: bash
         run: echo "version=0.1.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
-      - name: Build and publish
-        run: npm run electron:publish:win -- -c.extraMetadata.version=${{ steps.version.outputs.version }}
+      - run: npm run electron:prepare
+      - name: Build and publish (win x64)
+        run: npx electron-builder --win --x64 --publish always "-c.extraMetadata.version=${{ steps.version.outputs.version }}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v4
@@ -45,8 +46,16 @@ jobs:
         id: version
         shell: bash
         run: echo "version=0.1.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
-      - name: Build and publish
-        run: npm run electron:publish:mac -- -c.extraMetadata.version=${{ steps.version.outputs.version }}
+      - run: npm run electron:prepare
+      # Built and published as two separate sequential electron-builder
+      # invocations (not one `--x64 --arm64` call): publishing both archs in a
+      # single invocation races to create the same GitHub release and fails.
+      - name: Build and publish (mac x64)
+        run: npx electron-builder --mac --x64 --publish always "-c.extraMetadata.version=${{ steps.version.outputs.version }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and publish (mac arm64)
+        run: npx electron-builder --mac --arm64 --publish always "-c.extraMetadata.version=${{ steps.version.outputs.version }}"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v4
