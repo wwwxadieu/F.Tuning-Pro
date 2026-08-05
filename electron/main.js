@@ -1,4 +1,5 @@
 const { app, BrowserWindow, Menu } = require("electron");
+const fs = require("fs");
 const path = require("path");
 const http = require("http");
 const { spawn } = require("child_process");
@@ -8,6 +9,18 @@ const HOST = "127.0.0.1";
 
 let serverProcess = null;
 let mainWindow = null;
+let serverExited = null;
+
+const logPath = path.join(app.getPath("userData"), "techwave.log");
+function log(...args) {
+  const line = `[${new Date().toISOString()}] ${args.join(" ")}`;
+  console.log(line);
+  try {
+    fs.appendFileSync(logPath, line + "\n");
+  } catch {
+    // ignore
+  }
+}
 
 function getServerPath() {
   return app.isPackaged
@@ -15,15 +28,18 @@ function getServerPath() {
     : path.join(__dirname, "..", ".next", "standalone", "server.js");
 }
 
-function waitForServer(attempt = 0) {
+function waitForServer(deadline) {
   return new Promise((resolve, reject) => {
+    if (serverExited) return reject(serverExited);
+
     const req = http.get({ host: HOST, port: PORT, path: "/", timeout: 2000 }, (res) => {
       res.resume();
       resolve();
     });
-    req.on("error", () => {
-      if (attempt > 80) return reject(new Error("TechWave server did not start in time"));
-      setTimeout(() => waitForServer(attempt + 1).then(resolve, reject), 500);
+    req.on("error", (err) => {
+      if (serverExited) return reject(serverExited);
+      if (Date.now() > deadline) return reject(err);
+      setTimeout(() => waitForServer(deadline).then(resolve, reject), 500);
     });
     req.on("timeout", () => req.destroy());
   });
@@ -31,6 +47,8 @@ function waitForServer(attempt = 0) {
 
 function startServer() {
   const serverPath = getServerPath();
+  log("Server path:", serverPath, "exists:", fs.existsSync(serverPath));
+
   serverProcess = spawn(process.execPath, [serverPath], {
     cwd: path.dirname(serverPath),
     env: {
@@ -40,9 +58,44 @@ function startServer() {
       HOSTNAME: HOST,
       NODE_ENV: "production",
     },
-    stdio: "ignore",
+    stdio: ["ignore", "pipe", "pipe"],
   });
-  return waitForServer();
+
+  serverProcess.stdout.on("data", (chunk) => log("[server:stdout]", chunk.toString().trim()));
+  serverProcess.stderr.on("data", (chunk) => log("[server:stderr]", chunk.toString().trim()));
+  serverProcess.on("error", (err) => {
+    log("[server] spawn error:", err.message);
+    serverExited = err;
+  });
+  serverProcess.on("exit", (code, signal) => {
+    log("[server] exited code:", code, "signal:", signal);
+    if (code !== 0) {
+      serverExited = new Error(`Server process exited early (code ${code}, signal ${signal})`);
+    }
+  });
+
+  return waitForServer(Date.now() + 40000);
+}
+
+function loadingHtml() {
+  return `<!doctype html><html><body style="margin:0;height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0a0c;color:#f5f5f7;font-family:-apple-system,Segoe UI,sans-serif;">
+    <div style="text-align:center;">
+      <div style="font-size:15px;font-weight:600;letter-spacing:.02em;">TechWave</div>
+      <div style="margin-top:10px;font-size:13px;color:rgba(245,245,247,.5);">Đang khởi động…</div>
+    </div>
+  </body></html>`;
+}
+
+function errorHtml(message) {
+  const safe = String(message).replace(/[<>&]/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;" })[c]);
+  return `<!doctype html><html><body style="margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0a0a0c;color:#f5f5f7;font-family:-apple-system,Segoe UI,sans-serif;padding:40px;box-sizing:border-box;">
+    <div style="max-width:520px;text-align:center;">
+      <div style="font-size:17px;font-weight:600;">Không thể khởi động TechWave</div>
+      <div style="margin-top:12px;font-size:13px;line-height:1.6;color:rgba(245,245,247,.6);">${safe}</div>
+      <div style="margin-top:20px;font-size:12px;color:rgba(245,245,247,.35);">Log chi tiết: ${logPath}</div>
+      <div style="margin-top:6px;font-size:12px;color:rgba(245,245,247,.35);">Thử tắt tạm phần mềm diệt virus rồi mở lại ứng dụng.</div>
+    </div>
+  </body></html>`;
 }
 
 function createWindow() {
@@ -63,20 +116,26 @@ function createWindow() {
     },
   });
 
-  mainWindow.loadURL(`http://${HOST}:${PORT}/`);
+  mainWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(loadingHtml())}`);
   mainWindow.on("closed", () => {
     mainWindow = null;
   });
 }
 
 app.whenReady().then(async () => {
+  log("App starting. Packaged:", app.isPackaged, "Platform:", process.platform);
   Menu.setApplicationMenu(null);
+  createWindow();
+
   try {
     await startServer();
+    log("Server ready, loading app UI");
+    mainWindow?.loadURL(`http://${HOST}:${PORT}/`);
   } catch (err) {
-    console.error("[electron] failed to start TechWave server:", err);
+    log("[electron] failed to start TechWave server:", err.message);
+    mainWindow?.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(errorHtml(err.message))}`);
+    mainWindow?.webContents.openDevTools({ mode: "detach" });
   }
-  createWindow();
 
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
