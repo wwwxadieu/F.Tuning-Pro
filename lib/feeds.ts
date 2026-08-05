@@ -4,29 +4,35 @@ export interface FeedSource {
   name: string;
   url: string;
   baseTags: Tag[];
+  lang: "en" | "vi";
 }
 
 export const FEEDS: FeedSource[] = [
-  { name: "TechCrunch", url: "https://techcrunch.com/feed/", baseTags: ["Startup", "Big Tech"] },
-  { name: "The Verge", url: "https://www.theverge.com/rss/index.xml", baseTags: ["Big Tech"] },
-  { name: "Ars Technica", url: "https://feeds.arstechnica.com/arstechnica/index", baseTags: ["Phần mềm"] },
-  { name: "Wired", url: "https://www.wired.com/feed/rss", baseTags: ["Big Tech"] },
-  { name: "Engadget", url: "https://www.engadget.com/rss.xml", baseTags: ["Phần cứng"] },
-  { name: "9to5Mac", url: "https://9to5mac.com/feed/", baseTags: ["Apple"] },
-  { name: "The Hacker News", url: "https://feeds.feedburner.com/TheHackersNews", baseTags: ["Bảo mật"] },
-  { name: "VentureBeat", url: "https://venturebeat.com/feed/", baseTags: ["AI", "Startup"] },
+  { name: "TechCrunch", url: "https://techcrunch.com/feed/", baseTags: ["Startup", "Big Tech"], lang: "en" },
+  { name: "The Verge", url: "https://www.theverge.com/rss/index.xml", baseTags: ["Big Tech"], lang: "en" },
+  { name: "Ars Technica", url: "https://feeds.arstechnica.com/arstechnica/index", baseTags: ["Phần mềm"], lang: "en" },
+  { name: "Wired", url: "https://www.wired.com/feed/rss", baseTags: ["Big Tech"], lang: "en" },
+  { name: "Engadget", url: "https://www.engadget.com/rss.xml", baseTags: ["Phần cứng"], lang: "en" },
+  { name: "9to5Mac", url: "https://9to5mac.com/feed/", baseTags: ["Apple"], lang: "en" },
+  { name: "The Hacker News", url: "https://feeds.feedburner.com/TheHackersNews", baseTags: ["Bảo mật"], lang: "en" },
+  { name: "VentureBeat", url: "https://venturebeat.com/feed/", baseTags: ["AI", "Startup"], lang: "en" },
+  { name: "VnExpress Số hóa", url: "https://vnexpress.net/rss/so-hoa.rss", baseTags: ["Phần mềm"], lang: "vi" },
+  { name: "VietNamNet Công nghệ", url: "https://vietnamnet.vn/rss/cong-nghe.rss", baseTags: ["Big Tech"], lang: "vi" },
+  { name: "Genk", url: "https://genk.vn/rss/home.rss", baseTags: ["Big Tech"], lang: "vi" },
+  { name: "Tinh Tế", url: "https://tinhte.vn/rss", baseTags: ["Phần cứng"], lang: "vi" },
+  { name: "Thanh Niên Công nghệ", url: "https://thanhnien.vn/rss/cong-nghe.rss", baseTags: ["Big Tech"], lang: "vi" },
 ];
 
 const KEYWORD_TAGS: Array<{ pattern: RegExp; tag: Tag }> = [
-  { pattern: /\b(ai|artificial intelligence|chatgpt|openai|gpt-|llm|gemini|anthropic|claude)\b/i, tag: "AI" },
+  { pattern: /\b(ai|artificial intelligence|chatgpt|openai|gpt-|llm|gemini|anthropic|claude|trí tuệ nhân tạo)\b/i, tag: "AI" },
   { pattern: /\b(apple|iphone|ipad|macbook|ios |ipados|macos|airpods|apple watch|vision pro)\b/i, tag: "Apple" },
-  { pattern: /\b(hack|breach|vulnerab|exploit|ransomware|malware|cyberattack|phishing|cve-)\b/i, tag: "Bảo mật" },
-  { pattern: /\b(android|smartphone|iphone|galaxy|pixel|ipad|tablet)\b/i, tag: "Di động" },
-  { pattern: /\b(app|software|update|os |operating system|firmware|api)\b/i, tag: "Phần mềm" },
-  { pattern: /\b(chip|processor|gpu|cpu|hardware|silicon|nvidia|amd|intel|laptop|device)\b/i, tag: "Phần cứng" },
-  { pattern: /\b(game|gaming|xbox|playstation|nintendo|steam|esports)\b/i, tag: "Gaming" },
-  { pattern: /\b(startup|funding|raises|series [a-e]|venture capital|ipo)\b/i, tag: "Startup" },
-  { pattern: /\b(google|meta|amazon|microsoft|facebook|tesla|apple)\b/i, tag: "Big Tech" },
+  { pattern: /\b(hack|breach|vulnerab|exploit|ransomware|malware|cyberattack|phishing|cve-|bảo mật|lỗ hổng|tấn công mạng|rò rỉ dữ liệu|mã độc)\b/i, tag: "Bảo mật" },
+  { pattern: /\b(android|smartphone|iphone|galaxy|pixel|ipad|tablet|điện thoại)\b/i, tag: "Di động" },
+  { pattern: /\b(app|software|update|os |operating system|firmware|api|ứng dụng|phần mềm|cập nhật)\b/i, tag: "Phần mềm" },
+  { pattern: /\b(chip|processor|gpu|cpu|hardware|silicon|nvidia|amd|intel|laptop|device|con chip|máy tính|phần cứng)\b/i, tag: "Phần cứng" },
+  { pattern: /\b(game|gaming|xbox|playstation|nintendo|steam|esports|trò chơi)\b/i, tag: "Gaming" },
+  { pattern: /\b(startup|funding|raises|series [a-e]|venture capital|ipo|khởi nghiệp|gọi vốn)\b/i, tag: "Startup" },
+  { pattern: /\b(google|meta|amazon|microsoft|facebook|tesla|apple|samsung|xiaomi)\b/i, tag: "Big Tech" },
 ];
 
 export function inferTags(baseTags: Tag[], title: string, summary: string): Tag[] {
