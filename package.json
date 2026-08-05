@@ -2,11 +2,18 @@
   "name": "techwave",
   "version": "0.1.0",
   "private": true,
+  "description": "Ứng dụng desktop tổng hợp tin tức công nghệ, giao diện lấy cảm hứng từ Apple.",
+  "author": "TechWave",
+  "main": "electron/main.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "electron:prepare": "cross-env ELECTRON_BUILD=1 next build && node scripts/prepare-electron-build.js",
+    "electron:dist:win": "npm run electron:prepare && electron-builder --win --x64",
+    "electron:dist:mac": "npm run electron:prepare && electron-builder --mac --x64 --arm64",
+    "electron:dist": "npm run electron:prepare && electron-builder --win --mac"
   },
   "dependencies": {
     "framer-motion": "^12.23.0",
@@ -21,8 +28,58 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "autoprefixer": "^10.4.20",
+    "cross-env": "^7.0.3",
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.3"
+  },
+  "build": {
+    "appId": "app.techwave.desktop",
+    "productName": "TechWave",
+    "files": [
+      "electron/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": ".next/standalone",
+        "to": "standalone",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "directories": {
+      "output": "release",
+      "buildResources": "build"
+    },
+    "icon": "build/icon.png",
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "artifactName": "TechWave-Setup-${version}.${ext}"
+    },
+    "portable": {
+      "artifactName": "TechWave-Portable-${version}.${ext}"
+    },
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "icon": "build/icon.png",
+      "category": "public.app-category.news"
+    },
+    "dmg": {
+      "artifactName": "TechWave-${version}.${ext}"
+    }
   }
 }
