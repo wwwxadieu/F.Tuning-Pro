@@ -3,8 +3,10 @@ name: Build desktop app
 on:
   workflow_dispatch:
   push:
-    tags:
-      - "v*"
+    branches: [main]
+
+permissions:
+  contents: write
 
 jobs:
   build-windows:
@@ -15,7 +17,14 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - run: npm run electron:dist:win
+      - name: Compute version
+        id: version
+        shell: bash
+        run: echo "version=0.1.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+      - name: Build and publish
+        run: npm run electron:publish:win -- -c.extraMetadata.version=${{ steps.version.outputs.version }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v4
         with:
           name: techwave-windows
@@ -32,7 +41,14 @@ jobs:
         with:
           node-version: 22
       - run: npm ci
-      - run: npm run electron:dist:mac
+      - name: Compute version
+        id: version
+        shell: bash
+        run: echo "version=0.1.${{ github.run_number }}" >> "$GITHUB_OUTPUT"
+      - name: Build and publish
+        run: npm run electron:publish:mac -- -c.extraMetadata.version=${{ steps.version.outputs.version }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v4
         with:
           name: techwave-macos
