@@ -9,7 +9,10 @@ if (!fs.existsSync(standalone)) {
   process.exit(1);
 }
 
-fs.cpSync(path.join(root, "public"), path.join(standalone, "public"), { recursive: true });
+const publicDir = path.join(root, "public");
+if (fs.existsSync(publicDir)) {
+  fs.cpSync(publicDir, path.join(standalone, "public"), { recursive: true });
+}
 fs.cpSync(path.join(root, ".next", "static"), path.join(standalone, ".next", "static"), {
   recursive: true,
 });
