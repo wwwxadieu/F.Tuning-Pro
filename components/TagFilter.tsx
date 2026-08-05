@@ -15,8 +15,8 @@ export function TagFilter({
   counts: Record<string, number>;
 }) {
   return (
-    <div className="sticky top-[64px] z-40 -mx-6 border-b border-hair bg-ink/70 px-6 py-3 backdrop-blur-xl">
-      <div className="mx-auto flex max-w-6xl gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+    <div className="sticky top-[64px] z-40 border-b border-hair bg-ink/70 py-3 backdrop-blur-xl">
+      <div className="flex gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <Pill
           label="Tất cả"
           active={selectedTag === null}

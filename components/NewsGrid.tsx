@@ -21,7 +21,7 @@ export function NewsGrid({
 }) {
   if (error && articles.length === 0) {
     return (
-      <div className="mx-auto max-w-6xl px-6 py-24 text-center text-white/50">
+      <div className="py-24 text-center text-white/50">
         <p>Không thể tải tin tức: {error}</p>
       </div>
     );
@@ -29,7 +29,7 @@ export function NewsGrid({
 
   if (loading && articles.length === 0) {
     return (
-      <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 px-6 py-12 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-6 py-12 sm:grid-cols-2 xl:grid-cols-3">
         {Array.from({ length: 6 }).map((_, i) => (
           <SkeletonCard key={i} />
         ))}
@@ -39,18 +39,21 @@ export function NewsGrid({
 
   if (!loading && articles.length === 0) {
     return (
-      <div className="mx-auto max-w-6xl px-6 py-24 text-center text-white/40">
-        <p>Không có tin tức phù hợp với thẻ này.</p>
+      <div className="py-24 text-center text-white/40">
+        <p>Không có tin tức phù hợp với bộ lọc hiện tại.</p>
+        <p className="mt-2 text-sm text-white/30">
+          Thử chọn thẻ khác hoặc bật lại nguồn tin ở cột bên trái.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="perspective mx-auto max-w-6xl px-6 py-12">
+    <div className="perspective py-12">
       <AnimatePresence mode="popLayout">
         <motion.div
           layout
-          className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3"
+          className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3"
         >
           {articles.map((article, i) => (
             <NewsCard key={article.id} article={article} index={i} />

@@ -6,6 +6,10 @@ import type { Article, NewsResponse, Tag } from "@/lib/types";
 const POLL_INTERVAL_MS = 3 * 60 * 1000;
 const SEEN_IDS_KEY = "techwave:seen-ids";
 const NOTIF_PREF_KEY = "techwave:notifications-enabled";
+// Stores the sources the user switched OFF, not the ones left on: that way a
+// feed added in a later release shows up for existing users instead of being
+// silently filtered out because it wasn't in their saved list.
+const DISABLED_SOURCES_KEY = "techwave:disabled-sources";
 const MAX_STORED_IDS = 400;
 
 function loadSeenIds(): Set<string> {
@@ -27,6 +31,25 @@ function saveSeenIds(ids: Set<string>) {
   }
 }
 
+function loadDisabledSources(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(DISABLED_SOURCES_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed.filter((v) => typeof v === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveDisabledSources(sources: string[]) {
+  try {
+    window.localStorage.setItem(DISABLED_SOURCES_KEY, JSON.stringify(sources));
+  } catch {
+    // ignore quota errors
+  }
+}
+
 export interface UseNewsResult {
   articles: Article[];
   filteredArticles: Article[];
@@ -34,6 +57,9 @@ export interface UseNewsResult {
   error: string | null;
   selectedTag: Tag | null;
   setSelectedTag: (tag: Tag | null) => void;
+  disabledSources: string[];
+  toggleSource: (name: string) => void;
+  setAllSourcesEnabled: (enabled: boolean, allSources: string[]) => void;
   lastFetchedAt: string | null;
   newCount: number;
   clearNewCount: () => void;
@@ -48,6 +74,7 @@ export function useNews(): UseNewsResult {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
+  const [disabledSources, setDisabledSources] = useState<string[]>([]);
   const [lastFetchedAt, setLastFetchedAt] = useState<string | null>(null);
   const [newCount, setNewCount] = useState(0);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -61,6 +88,7 @@ export function useNews(): UseNewsResult {
   useEffect(() => {
     seenIdsRef.current = loadSeenIds();
     isFirstLoadRef.current = seenIdsRef.current.size === 0;
+    setDisabledSources(loadDisabledSources());
 
     if (typeof window !== "undefined" && "Notification" in window) {
       setNotificationPermission(Notification.permission);
@@ -151,9 +179,25 @@ export function useNews(): UseNewsResult {
     }
   }, [notificationsEnabled]);
 
-  const filteredArticles = selectedTag
-    ? articles.filter((a) => a.tags.includes(selectedTag))
-    : articles;
+  const toggleSource = useCallback((name: string) => {
+    setDisabledSources((prev) => {
+      const next = prev.includes(name) ? prev.filter((s) => s !== name) : [...prev, name];
+      saveDisabledSources(next);
+      return next;
+    });
+  }, []);
+
+  const setAllSourcesEnabled = useCallback((enabled: boolean, allSources: string[]) => {
+    const next = enabled ? [] : [...allSources];
+    saveDisabledSources(next);
+    setDisabledSources(next);
+  }, []);
+
+  const filteredArticles = articles.filter(
+    (a) =>
+      (selectedTag === null || a.tags.includes(selectedTag)) &&
+      !disabledSources.includes(a.source)
+  );
 
   return {
     articles,
@@ -162,6 +206,9 @@ export function useNews(): UseNewsResult {
     error,
     selectedTag,
     setSelectedTag,
+    disabledSources,
+    toggleSource,
+    setAllSourcesEnabled,
     lastFetchedAt,
     newCount,
     clearNewCount: () => setNewCount(0),
