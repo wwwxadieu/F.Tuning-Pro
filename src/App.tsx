@@ -9,6 +9,7 @@ import SettingsModal from './components/SettingsModal'
 import UpdateBanner from './components/UpdateBanner'
 import ReaderView from './components/ReaderView'
 import Onboarding from './components/Onboarding'
+import TodayDigest from './components/TodayDigest'
 import { useNews } from './hooks/useNews'
 import { useSettings } from './hooks/useSettings'
 import { useCustomSources } from './hooks/useCustomSources'
@@ -92,6 +93,7 @@ export default function App() {
 
   const unreadCount = notifications.filter((n) => !n.read).length
   const readerArticle = readerList ? readerList[readerIndex] : null
+  const digestLoading = articles.length === 0 && Object.values(statuses).some((s) => s === 'loading')
 
   return (
     <TagsProvider customTags={customSources}>
@@ -123,6 +125,8 @@ export default function App() {
 
         <div className={`transition-[padding-left] duration-300 ease-out ${sidebarOpen ? 'lg:pl-64' : ''}`}>
           <Hero />
+
+          <TodayDigest articles={articles} loading={digestLoading} onOpenArticle={handleOpenArticle} />
 
           <main className="mx-auto max-w-[1600px] px-6 pb-10 pt-16 sm:px-8">
             <NewsGrid

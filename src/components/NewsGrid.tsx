@@ -15,7 +15,7 @@ interface Props {
   onOpenArticle: (article: Article, list: Article[]) => void
 }
 
-const GRID_COLS = 'grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))]'
+const MASONRY_COLS = 'columns-1 sm:columns-2 lg:columns-3 xl:columns-4'
 
 export default function NewsGrid({
   articles,
@@ -75,23 +75,26 @@ export default function NewsGrid({
             )}
 
             {status === 'loading' && items.length === 0 && (
-              <div className={`${GRID_COLS} gap-5`}>
+              <div className={`${MASONRY_COLS} gap-5`}>
                 {Array.from({ length: 3 }).map((_, i) => (
-                  <CardSkeleton key={i} />
+                  <div key={i} className="mb-5 break-inside-avoid">
+                    <CardSkeleton />
+                  </div>
                 ))}
               </div>
             )}
 
             {items.length > 0 && (
               <>
-                <div className={`perspective-container ${GRID_COLS} gap-5`}>
+                <div className={`perspective-container ${MASONRY_COLS} gap-5`}>
                   {visibleItems.map((article, i) => (
-                    <NewsCard
-                      key={article.id}
-                      article={article}
-                      index={i}
-                      onOpen={(a) => onOpenArticle(a, items)}
-                    />
+                    <div key={article.id} className="mb-5 break-inside-avoid">
+                      <NewsCard
+                        article={article}
+                        index={i}
+                        onOpen={(a) => onOpenArticle(a, items)}
+                      />
+                    </div>
                   ))}
                 </div>
                 {hasMore && (

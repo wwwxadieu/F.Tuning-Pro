@@ -67,6 +67,14 @@ body {
   pointer-events: none;
 }
 
+.scrollbar-none {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
 /* Typography for sanitized article HTML rendered inside the reader view. */
 .reader-content {
   font-family: 'New York', Georgia, 'Times New Roman', serif;

@@ -41,7 +41,7 @@ export default function Onboarding({ onComplete }: Props) {
             Bạn quan tâm điều gì?
           </h1>
           <p className="mx-auto mt-3 max-w-md text-[15px] text-white/50">
-            Chọn một vài chủ đề để Luồng ưu tiên hiển thị tin tức phù hợp với bạn. Bạn có thể thay đổi
+            Chọn một vài chủ đề để F.VNN ưu tiên hiển thị tin tức phù hợp với bạn. Bạn có thể thay đổi
             bất cứ lúc nào trong phần Cài đặt.
           </p>
         </div>

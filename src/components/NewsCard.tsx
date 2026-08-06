@@ -18,6 +18,10 @@ const GRADIENTS = [
   'from-[#64D2FF] to-[#5E5CE6]',
 ]
 
+// Rotating aspect ratios give the masonry grid organic, Pinterest-like
+// staggered heights instead of every card lining up in uniform rows.
+const ASPECT_RATIOS = ['aspect-[4/5]', 'aspect-square', 'aspect-[16/10]', 'aspect-[3/4]', 'aspect-[16/9]']
+
 export default function NewsCard({ article, index, onOpen }: Props) {
   const ref = useRef<HTMLButtonElement>(null)
   const rotateX = useSpring(0, { stiffness: 300, damping: 25 })
@@ -29,6 +33,7 @@ export default function NewsCard({ article, index, onOpen }: Props) {
   const { tagMap } = useTags()
   const tag = tagMap.get(article.tagId)
   const gradient = GRADIENTS[index % GRADIENTS.length]
+  const aspect = ASPECT_RATIOS[index % ASPECT_RATIOS.length]
 
   function handleMouseMove(e: React.MouseEvent<HTMLButtonElement>) {
     const el = ref.current
@@ -59,9 +64,9 @@ export default function NewsCard({ article, index, onOpen }: Props) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.5, delay: Math.min(index * 0.04, 0.3), ease: [0.16, 1, 0.3, 1] }}
-      className="glass group flex flex-col overflow-hidden rounded-2xl text-left transition-shadow will-change-transform hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+      className="glass group flex w-full flex-col overflow-hidden rounded-2xl text-left transition-shadow will-change-transform hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
     >
-      <div className={`relative aspect-[16/10] w-full overflow-hidden bg-gradient-to-br ${gradient}`}>
+      <div className={`relative w-full overflow-hidden bg-gradient-to-br ${gradient} ${aspect}`}>
         {article.image && (
           <img
             src={article.image}

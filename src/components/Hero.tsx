@@ -41,7 +41,7 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
           className="mt-6 max-w-xl text-lg text-white/60"
         >
-          Luồng tổng hợp tin tức mới nhất từ nhiều nguồn, sắp xếp gọn gàng theo chủ đề bạn quan tâm.
+          F.VNN tổng hợp tin tức mới nhất từ nhiều nguồn, sắp xếp gọn gàng theo chủ đề bạn quan tâm.
         </motion.p>
         <motion.button
           type="button"

@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { MenuIcon, GearIcon } from './icons'
 import NotificationBell from './NotificationBell'
+import LiveClock from './LiveClock'
 import { smoothScrollTo } from '../lib/lenisInstance'
 import type { Notification } from '../types/news'
 
@@ -44,18 +45,21 @@ export default function Header({
             className="flex items-center gap-2.5"
           >
             <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#0A84FF] to-[#BF5AF2] text-sm font-bold shadow-lg shadow-blue-500/20">
-              L
+              F
             </span>
-            <span className="hidden text-[15px] font-semibold tracking-tight sm:inline">Luồng</span>
+            <span className="hidden text-[15px] font-semibold tracking-tight sm:inline">F.VNN</span>
           </button>
         </div>
 
-        <span
-          aria-hidden="true"
-          className="lock-select hidden rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium text-white/50 sm:inline-block"
-        >
-          Cập nhật trực tiếp
-        </span>
+        <div className="hidden items-center gap-2 sm:flex">
+          <LiveClock />
+          <span
+            aria-hidden="true"
+            className="lock-select rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium text-white/50"
+          >
+            Cập nhật trực tiếp
+          </span>
+        </div>
 
         <div className="flex items-center gap-1">
           <NotificationBell
