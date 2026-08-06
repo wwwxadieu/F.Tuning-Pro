@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import type { Article } from "@/lib/types";
 import { tagGradientClass } from "@/lib/tagStyle";
@@ -18,6 +18,7 @@ function timeAgo(iso: string): string {
 
 export function NewsCard({ article, index }: { article: Article; index: number }) {
   const ref = useRef<HTMLAnchorElement>(null);
+  const [imageFailed, setImageFailed] = useState(false);
   const mouseX = useMotionValue(0.5);
   const mouseY = useMotionValue(0.5);
 
@@ -63,12 +64,13 @@ export function NewsCard({ article, index }: { article: Article; index: number }
       />
 
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-white/5">
-        {article.image ? (
+        {article.image && !imageFailed ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={article.image}
             alt=""
             loading="lazy"
+            onError={() => setImageFailed(true)}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (

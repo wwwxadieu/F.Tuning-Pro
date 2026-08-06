@@ -19,6 +19,17 @@ const UA =
 const parser = new Parser({
   timeout: 9000,
   headers: { "User-Agent": UA },
+  // rss-parser only keeps a fixed default set of per-item fields (enclosure,
+  // content:encoded, title, ...) — media:content/media:thumbnail are silently
+  // dropped during parsing unless explicitly whitelisted here, even when the
+  // source XML has them.
+  customFields: {
+    item: [
+      ["media:thumbnail", "media:thumbnail"],
+      ["media:content", "media:content", { keepArray: true }],
+      ["image", "image"],
+    ],
+  },
 });
 
 function stripHtml(html: string | undefined): string {
@@ -36,6 +47,7 @@ function extractImage(item: Parser.Item & Record<string, any>): string | null {
   if (Array.isArray(mediaContent) && mediaContent[0]?.$?.url) return mediaContent[0].$.url;
   const mediaThumb = item["media:thumbnail"];
   if (mediaThumb?.$?.url) return mediaThumb.$.url;
+  if (typeof item.image === "string" && item.image.trim()) return item.image.trim();
   const html = item["content:encoded"] || item.content || "";
   const match = html.match(/<img[^>]+src="([^"]+)"/i);
   return match ? match[1] : null;
