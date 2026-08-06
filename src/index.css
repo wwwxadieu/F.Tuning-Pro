@@ -104,6 +104,11 @@ body {
   height: auto;
   border-radius: 12px;
   margin: 1.2em 0;
+  cursor: zoom-in;
+  transition: opacity 0.15s ease;
+}
+.reader-content img:hover {
+  opacity: 0.9;
 }
 .reader-content a {
   color: #0a84ff;

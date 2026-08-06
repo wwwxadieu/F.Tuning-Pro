@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import type { Article, ReaderTheme, Settings } from '../types/news'
 import { fetchReaderContent } from '../services/readerService'
 import { formatRelativeTime } from '../utils/time'
+import ImageLightbox from './ImageLightbox'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -45,11 +46,13 @@ export default function ReaderView({
 }: Props) {
   const [state, setState] = useState<LoadState>('loading')
   const [html, setHtml] = useState<string>('')
+  const [zoomedImage, setZoomedImage] = useState<string | null>(null)
 
   useEffect(() => {
     if (!article) return
     setState('loading')
     setHtml('')
+    setZoomedImage(null)
     const controller = new AbortController()
 
     fetchReaderContent(article.link, controller.signal)
@@ -68,13 +71,14 @@ export default function ReaderView({
   useEffect(() => {
     if (!article) return
     function onKeyDown(e: KeyboardEvent) {
+      if (zoomedImage) return // let the lightbox handle its own Escape/zoom keys
       if (e.key === 'Escape') onClose()
       else if (e.key === 'ArrowLeft' && hasPrev) onPrev()
       else if (e.key === 'ArrowRight' && hasNext) onNext()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [article, hasPrev, hasNext, onPrev, onNext, onClose])
+  }, [article, hasPrev, hasNext, onPrev, onNext, onClose, zoomedImage])
 
   const theme = THEME_STYLES[settings.readerTheme]
 
@@ -163,7 +167,8 @@ export default function ReaderView({
                 <img
                   src={article.image}
                   alt=""
-                  className="mb-6 aspect-video w-full rounded-2xl object-cover"
+                  className="mb-6 aspect-video w-full cursor-zoom-in rounded-2xl object-cover transition hover:opacity-90"
+                  onClick={() => setZoomedImage(article.image)}
                   onError={(e) => {
                     ;(e.currentTarget as HTMLImageElement).style.display = 'none'
                   }}
@@ -183,6 +188,13 @@ export default function ReaderView({
                   className="reader-content"
                   style={{ fontSize: `${settings.readerFontSize}px`, lineHeight: 1.7 }}
                   dangerouslySetInnerHTML={{ __html: html }}
+                  onClick={(e) => {
+                    const target = e.target as HTMLElement
+                    if (target.tagName === 'IMG') {
+                      e.preventDefault()
+                      setZoomedImage((target as HTMLImageElement).src)
+                    }
+                  }}
                 />
               )}
 
@@ -197,6 +209,8 @@ export default function ReaderView({
               )}
             </article>
           </div>
+
+          <ImageLightbox src={zoomedImage} onClose={() => setZoomedImage(null)} />
         </motion.div>
       )}
     </AnimatePresence>
