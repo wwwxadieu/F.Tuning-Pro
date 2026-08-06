@@ -10,7 +10,7 @@ interface Props {
   onOpenArticle: (article: Article, list: Article[]) => void
 }
 
-const DIGEST_SIZE = 10
+const DIGEST_SIZE = 5
 
 export default function TodayDigest({ articles, loading, onOpenArticle }: Props) {
   const { tagMap } = useTags()
@@ -30,9 +30,9 @@ export default function TodayDigest({ articles, loading, onOpenArticle }: Props)
         <span className="text-[12px] text-white/35">Tổng hợp tin mới nhất từ mọi chuyên mục</span>
       </div>
 
-      <div className="scrollbar-none -mx-6 flex gap-4 overflow-x-auto px-6 pb-3 sm:mx-0 sm:px-0">
+      <div className="glass flex flex-col divide-y divide-white/8 overflow-hidden rounded-2xl">
         {loading && topStories.length === 0
-          ? Array.from({ length: 5 }).map((_, i) => <DigestSkeleton key={i} />)
+          ? Array.from({ length: DIGEST_SIZE }).map((_, i) => <DigestSkeleton key={i} />)
           : topStories.map((article, i) => {
               const tag = tagMap.get(article.tagId)
               return (
@@ -40,12 +40,15 @@ export default function TodayDigest({ articles, loading, onOpenArticle }: Props)
                   key={article.id}
                   type="button"
                   onClick={() => onOpenArticle(article, topStories)}
-                  initial={{ opacity: 0, x: 16 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.4, delay: Math.min(i * 0.05, 0.3) }}
-                  className="glass flex w-[260px] shrink-0 flex-col overflow-hidden rounded-2xl text-left transition hover:shadow-[0_12px_40px_rgba(0,0,0,0.5)]"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.35, delay: Math.min(i * 0.06, 0.3) }}
+                  className="flex w-full items-center gap-4 px-4 py-3 text-left transition hover:bg-white/5"
                 >
-                  <div className="relative aspect-[16/9] w-full shrink-0 overflow-hidden bg-gradient-to-br from-[#0A84FF]/40 to-[#BF5AF2]/40">
+                  <span className="w-5 shrink-0 text-center text-[15px] font-bold text-white/20">
+                    {i + 1}
+                  </span>
+                  <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-[#0A84FF]/40 to-[#BF5AF2]/40">
                     {article.image && (
                       <img
                         src={article.image}
@@ -57,18 +60,16 @@ export default function TodayDigest({ articles, loading, onOpenArticle }: Props)
                         }}
                       />
                     )}
-                    <span className="absolute left-2 top-2 flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-[10px] font-bold text-white">
-                      {i + 1}
-                    </span>
                   </div>
-                  <div className="flex flex-1 flex-col gap-1.5 p-3">
-                    <h3 className="line-clamp-2 text-[13px] font-semibold leading-snug text-white">
+                  <div className="min-w-0 flex-1">
+                    <h3 className="line-clamp-1 text-[14px] font-semibold leading-snug text-white sm:line-clamp-2">
                       {article.title}
                     </h3>
-                    <div className="mt-auto flex items-center justify-between text-[10.5px] text-white/40">
+                    <div className="mt-1 flex items-center gap-1.5 text-[11px] text-white/40">
                       <span>
                         {tag?.emoji} {tag?.label}
                       </span>
+                      <span className="text-white/20">·</span>
                       <span>{formatRelativeTime(article.pubDate)}</span>
                     </div>
                   </div>
@@ -82,11 +83,11 @@ export default function TodayDigest({ articles, loading, onOpenArticle }: Props)
 
 function DigestSkeleton() {
   return (
-    <div className="glass flex w-[260px] shrink-0 flex-col overflow-hidden rounded-2xl">
-      <div className="shimmer-bg aspect-[16/9] w-full animate-shimmer" />
-      <div className="flex flex-col gap-2 p-3">
-        <div className="shimmer-bg h-3.5 w-full animate-shimmer rounded-full" />
-        <div className="shimmer-bg h-3.5 w-2/3 animate-shimmer rounded-full" />
+    <div className="flex items-center gap-4 px-4 py-3">
+      <div className="shimmer-bg h-14 w-14 shrink-0 animate-shimmer rounded-xl" />
+      <div className="flex flex-1 flex-col gap-2">
+        <div className="shimmer-bg h-3.5 w-4/5 animate-shimmer rounded-full" />
+        <div className="shimmer-bg h-3 w-1/3 animate-shimmer rounded-full" />
       </div>
     </div>
   )
