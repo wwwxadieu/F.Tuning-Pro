@@ -14,12 +14,16 @@
   "dependencies": {
     "@react-three/drei": "^9.114.0",
     "@react-three/fiber": "^8.17.10",
+    "dompurify": "^3.4.13",
     "framer-motion": "^11.11.17",
+    "lenis": "^1.3.26",
+    "marked": "^18.0.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "three": "^0.169.0"
   },
   "devDependencies": {
+    "@types/dompurify": "^3.0.5",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@types/three": "^0.169.0",

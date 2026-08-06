@@ -59,14 +59,24 @@ function writeCache(tagId: string, articles: Article[]) {
   }
 }
 
+interface FetchOptions {
+  count?: number
+  forceRefresh?: boolean
+}
+
 export async function fetchArticlesForTag(
   tag: Tag,
-  signal?: AbortSignal
+  signal?: AbortSignal,
+  options?: FetchOptions
 ): Promise<Article[]> {
-  const cached = readCache(tag.id)
-  if (cached) return cached
+  const count = options?.count ?? 12
 
-  const url = `${RSS2JSON_ENDPOINT}?rss_url=${encodeURIComponent(tag.feedUrl)}&count=12`
+  if (!options?.forceRefresh) {
+    const cached = readCache(tag.id)
+    if (cached) return cached
+  }
+
+  const url = `${RSS2JSON_ENDPOINT}?rss_url=${encodeURIComponent(tag.feedUrl)}&count=${count}`
   const res = await fetch(url, { signal })
   if (!res.ok) throw new Error(`rss2json HTTP ${res.status}`)
 

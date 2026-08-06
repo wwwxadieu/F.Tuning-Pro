@@ -1,50 +1,93 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { TAGS } from '../data/tags'
 import { fetchArticlesForTag } from '../services/newsService'
-import type { Article } from '../types/news'
+import type { Article, Tag } from '../types/news'
 
 type TagStatus = 'loading' | 'ok' | 'error'
 
-export function useNews() {
+const FETCH_COUNT = 30
+const REVEAL_STEP = 6
+const POLL_INTERVAL_MS = 3 * 60 * 1000
+
+export function useNews(tags: Tag[], onNewArticles?: (tag: Tag, newItems: Article[]) => void) {
   const [articles, setArticles] = useState<Article[]>([])
-  const [statuses, setStatuses] = useState<Record<string, TagStatus>>(() =>
-    Object.fromEntries(TAGS.map((t) => [t.id, 'loading']))
+  const [statuses, setStatuses] = useState<Record<string, TagStatus>>({})
+  const [revealCounts, setRevealCounts] = useState<Record<string, number>>({})
+
+  const tagsRef = useRef<Tag[]>(tags)
+  tagsRef.current = tags
+  const seenIdsRef = useRef<Record<string, Set<string>>>({})
+  const loadedOnceRef = useRef<Set<string>>(new Set())
+  const onNewArticlesRef = useRef(onNewArticles)
+  onNewArticlesRef.current = onNewArticles
+
+  const loadTag = useCallback(
+    async (tag: Tag, signal?: AbortSignal, opts?: { forceRefresh?: boolean; silent?: boolean }) => {
+      if (!opts?.silent) setStatuses((prev) => ({ ...prev, [tag.id]: 'loading' }))
+      try {
+        const items = await fetchArticlesForTag(tag, signal, {
+          count: FETCH_COUNT,
+          forceRefresh: opts?.forceRefresh,
+        })
+        setArticles((prev) => [...prev.filter((a) => a.tagId !== tag.id), ...items])
+        setStatuses((prev) => ({ ...prev, [tag.id]: 'ok' }))
+        setRevealCounts((prev) => (prev[tag.id] ? prev : { ...prev, [tag.id]: REVEAL_STEP }))
+
+        const prevSeen = seenIdsRef.current[tag.id]
+        const nextSeen = new Set(items.map((i) => i.id))
+        if (prevSeen && loadedOnceRef.current.has(tag.id)) {
+          const newly = items.filter((i) => !prevSeen.has(i.id))
+          if (newly.length > 0) onNewArticlesRef.current?.(tag, newly)
+        }
+        seenIdsRef.current[tag.id] = nextSeen
+        loadedOnceRef.current.add(tag.id)
+      } catch {
+        if (signal?.aborted) return
+        if (!opts?.silent) setStatuses((prev) => ({ ...prev, [tag.id]: 'error' }))
+      }
+    },
+    []
   )
+
   const controllerRef = useRef<AbortController | null>(null)
-
-  const loadTag = useCallback(async (tagId: string, signal?: AbortSignal) => {
-    const tag = TAGS.find((t) => t.id === tagId)
-    if (!tag) return
-
-    setStatuses((prev) => ({ ...prev, [tagId]: 'loading' }))
-    try {
-      const items = await fetchArticlesForTag(tag, signal)
-      setArticles((prev) => [
-        ...prev.filter((a) => a.tagId !== tagId),
-        ...items,
-      ])
-      setStatuses((prev) => ({ ...prev, [tagId]: 'ok' }))
-    } catch {
-      if (signal?.aborted) return
-      setStatuses((prev) => ({ ...prev, [tagId]: 'error' }))
-    }
-  }, [])
-
   useEffect(() => {
     const controller = new AbortController()
     controllerRef.current = controller
-    TAGS.forEach((tag) => loadTag(tag.id, controller.signal))
     return () => controller.abort()
+  }, [])
+
+  // Load any tag we haven't fetched yet (initial load, or a newly added custom source).
+  useEffect(() => {
+    tags.forEach((tag) => {
+      if (!(tag.id in statuses)) {
+        loadTag(tag, controllerRef.current?.signal)
+      }
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [tags, loadTag])
+
+  // Background poll for new articles on already-loaded tags.
+  useEffect(() => {
+    const interval = setInterval(() => {
+      tagsRef.current.forEach((tag) => {
+        if (loadedOnceRef.current.has(tag.id)) {
+          loadTag(tag, undefined, { forceRefresh: true, silent: true })
+        }
+      })
+    }, POLL_INTERVAL_MS)
+    return () => clearInterval(interval)
   }, [loadTag])
 
   const retryTag = useCallback(
     (tagId: string) => {
-      loadTag(tagId, controllerRef.current?.signal)
+      const tag = tagsRef.current.find((t) => t.id === tagId)
+      if (tag) loadTag(tag, controllerRef.current?.signal, { forceRefresh: true })
     },
     [loadTag]
   )
 
-  const isInitialLoading = Object.values(statuses).every((s) => s === 'loading')
+  const loadMore = useCallback((tagId: string) => {
+    setRevealCounts((prev) => ({ ...prev, [tagId]: (prev[tagId] ?? REVEAL_STEP) + REVEAL_STEP }))
+  }, [])
 
-  return { articles, statuses, retryTag, isInitialLoading }
+  return { articles, statuses, revealCounts, retryTag, loadMore }
 }

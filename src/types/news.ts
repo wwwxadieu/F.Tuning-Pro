@@ -4,6 +4,7 @@ export interface Tag {
   emoji: string
   feedUrl: string
   source: string
+  custom?: boolean
 }
 
 export interface Article {
@@ -15,4 +16,22 @@ export interface Article {
   pubDate: string
   source: string
   tagId: string
+}
+
+export interface Notification {
+  id: string
+  tagId: string
+  tagLabel: string
+  tagEmoji: string
+  count: number
+  timestamp: number
+  read: boolean
+}
+
+export type ReaderTheme = 'light' | 'sepia' | 'dark'
+
+export interface Settings {
+  notificationsEnabled: boolean
+  readerFontSize: number
+  readerTheme: ReaderTheme
 }

@@ -6,10 +6,6 @@
   color-scheme: dark;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   @apply bg-black text-white antialiased;
   font-feature-settings: 'ss01', 'ss02';
@@ -63,4 +59,66 @@ body {
     rgba(255, 255, 255, 0.04) 800px
   );
   background-size: 1000px 100%;
+}
+
+.lock-select {
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+}
+
+/* Typography for sanitized article HTML rendered inside the reader view. */
+.reader-content {
+  font-family: 'New York', Georgia, 'Times New Roman', serif;
+}
+.reader-content p {
+  margin: 0 0 1.2em;
+}
+.reader-content h1,
+.reader-content h2,
+.reader-content h3 {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+  font-weight: 700;
+  line-height: 1.3;
+  margin: 1.6em 0 0.6em;
+}
+.reader-content h1 {
+  font-size: 1.4em;
+}
+.reader-content h2 {
+  font-size: 1.25em;
+}
+.reader-content h3 {
+  font-size: 1.1em;
+}
+.reader-content img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  margin: 1.2em 0;
+}
+.reader-content a {
+  color: #0a84ff;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.reader-content blockquote {
+  margin: 1.2em 0;
+  padding-left: 1em;
+  border-left: 3px solid currentColor;
+  opacity: 0.75;
+  font-style: italic;
+}
+.reader-content ul,
+.reader-content ol {
+  margin: 0 0 1.2em;
+  padding-left: 1.4em;
+}
+.reader-content li {
+  margin-bottom: 0.4em;
+}
+.reader-content code {
+  font-family: ui-monospace, monospace;
+  font-size: 0.9em;
+  opacity: 0.85;
 }

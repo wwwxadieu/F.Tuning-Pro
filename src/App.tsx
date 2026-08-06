@@ -1,37 +1,162 @@
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import Header from './components/Header'
 import Hero from './components/Hero'
-import TagFilter from './components/TagFilter'
+import Sidebar from './components/Sidebar'
 import NewsGrid from './components/NewsGrid'
 import Footer from './components/Footer'
+import SettingsModal from './components/SettingsModal'
+import UpdateBanner from './components/UpdateBanner'
+import ReaderView from './components/ReaderView'
 import { useNews } from './hooks/useNews'
+import { useSettings } from './hooks/useSettings'
+import { useCustomSources } from './hooks/useCustomSources'
+import { useSmoothScroll } from './hooks/useSmoothScroll'
+import { TagsProvider } from './context/TagsContext'
+import { TAGS as BUILT_IN_TAGS } from './data/tags'
+import { smoothScrollTo } from './lib/lenisInstance'
+import type { Article, Notification, Tag } from './types/news'
+
+const TOAST_DURATION_MS = 6500
+const NOTIFICATION_HISTORY_LIMIT = 20
 
 export default function App() {
-  const { articles, statuses, retryTag } = useNews()
-  const [selected, setSelected] = useState<Set<string>>(new Set())
+  useSmoothScroll()
 
-  function toggleTag(tagId: string) {
-    setSelected((prev) => {
-      const next = new Set(prev)
-      if (next.has(tagId)) next.delete(tagId)
-      else next.add(tagId)
-      return next
-    })
+  const { settings, update: updateSettings } = useSettings()
+  const { sources: customSources, addSource, removeSource } = useCustomSources()
+  const allTags: Tag[] = useMemo(() => [...BUILT_IN_TAGS, ...customSources], [customSources])
+
+  const [notifications, setNotifications] = useState<Notification[]>([])
+  const [toast, setToast] = useState<Notification | null>(null)
+
+  const handleNewArticles = useCallback(
+    (tag: Tag, newItems: Article[]) => {
+      if (!settings.notificationsEnabled) return
+      const notification: Notification = {
+        id: `${tag.id}-${Date.now()}`,
+        tagId: tag.id,
+        tagLabel: tag.label,
+        tagEmoji: tag.emoji,
+        count: newItems.length,
+        timestamp: Date.now(),
+        read: false,
+      }
+      setNotifications((prev) => [notification, ...prev].slice(0, NOTIFICATION_HISTORY_LIMIT))
+      setToast(notification)
+      setTimeout(() => {
+        setToast((current) => (current?.id === notification.id ? null : current))
+      }, TOAST_DURATION_MS)
+    },
+    [settings.notificationsEnabled]
+  )
+
+  const { articles, statuses, revealCounts, retryTag, loadMore } = useNews(allTags, handleNewArticles)
+
+  const [selectedTag, setSelectedTag] = useState<string | null>(null)
+  const [sidebarOpen, setSidebarOpen] = useState(() =>
+    typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
+  )
+  const [settingsOpen, setSettingsOpen] = useState(false)
+
+  const [readerList, setReaderList] = useState<Article[] | null>(null)
+  const [readerIndex, setReaderIndex] = useState(0)
+
+  function selectTagAndScroll(tagId: string | null) {
+    setSelectedTag(tagId)
+    smoothScrollTo('#tin-tuc')
   }
 
+  function handleReadNotifications() {
+    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))
+  }
+
+  function handleOpenArticle(article: Article, list: Article[]) {
+    const index = list.findIndex((a) => a.id === article.id)
+    setReaderList(list)
+    setReaderIndex(index >= 0 ? index : 0)
+  }
+
+  function handleClearCache() {
+    const keys: string[] = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i)
+      if (key?.startsWith('luong:feed:')) keys.push(key)
+    }
+    keys.forEach((k) => localStorage.removeItem(k))
+    allTags.forEach((tag) => retryTag(tag.id))
+  }
+
+  const unreadCount = notifications.filter((n) => !n.read).length
+  const readerArticle = readerList ? readerList[readerIndex] : null
+
   return (
-    <div className="min-h-screen bg-black">
-      <Header />
-      <Hero />
+    <TagsProvider customTags={customSources}>
+      <div className="min-h-screen bg-black">
+        <Header
+          onToggleSidebar={() => setSidebarOpen((v) => !v)}
+          onOpenSettings={() => setSettingsOpen(true)}
+          notifications={notifications}
+          unreadCount={unreadCount}
+          onReadNotifications={handleReadNotifications}
+          onSelectNotification={selectTagAndScroll}
+        />
 
-      <main className="mx-auto max-w-6xl px-6 pb-10 pt-16 sm:px-8">
-        <div className="mb-10">
-          <TagFilter selected={selected} onToggle={toggleTag} onClear={() => setSelected(new Set())} />
+        <Sidebar
+          open={sidebarOpen}
+          selected={selectedTag}
+          onSelect={selectTagAndScroll}
+          onOpenSettings={() => setSettingsOpen(true)}
+        />
+
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 z-30 bg-black/50 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        <div className={`transition-[padding-left] duration-300 ease-out ${sidebarOpen ? 'lg:pl-64' : ''}`}>
+          <Hero />
+
+          <main className="mx-auto max-w-[1600px] px-6 pb-10 pt-16 sm:px-8">
+            <NewsGrid
+              articles={articles}
+              statuses={statuses}
+              revealCounts={revealCounts}
+              selected={selectedTag}
+              retryTag={retryTag}
+              onLoadMore={loadMore}
+              onOpenArticle={handleOpenArticle}
+            />
+          </main>
+
+          <Footer />
         </div>
-        <NewsGrid articles={articles} statuses={statuses} selected={selected} retryTag={retryTag} />
-      </main>
 
-      <Footer />
-    </div>
+        <UpdateBanner toast={toast} onDismiss={() => setToast(null)} onClick={selectTagAndScroll} />
+
+        <SettingsModal
+          open={settingsOpen}
+          onClose={() => setSettingsOpen(false)}
+          settings={settings}
+          onUpdateSettings={updateSettings}
+          customSources={customSources}
+          onAddSource={addSource}
+          onRemoveSource={removeSource}
+          onClearCache={handleClearCache}
+        />
+
+        <ReaderView
+          article={readerArticle}
+          hasPrev={readerIndex > 0}
+          hasNext={!!readerList && readerIndex < readerList.length - 1}
+          onPrev={() => setReaderIndex((i) => Math.max(0, i - 1))}
+          onNext={() => setReaderIndex((i) => Math.min((readerList?.length ?? 1) - 1, i + 1))}
+          onClose={() => setReaderList(null)}
+          settings={settings}
+          onUpdateSettings={updateSettings}
+        />
+      </div>
+    </TagsProvider>
   )
 }

@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { TAGS } from '../data/tags'
+import { useTags } from '../context/TagsContext'
 import type { Article } from '../types/news'
 import NewsCard from './NewsCard'
 import CardSkeleton from './CardSkeleton'
@@ -7,12 +7,26 @@ import CardSkeleton from './CardSkeleton'
 interface Props {
   articles: Article[]
   statuses: Record<string, 'loading' | 'ok' | 'error'>
-  selected: Set<string>
+  revealCounts: Record<string, number>
+  selected: string | null
   retryTag: (tagId: string) => void
+  onLoadMore: (tagId: string) => void
+  onOpenArticle: (article: Article, list: Article[]) => void
 }
 
-export default function NewsGrid({ articles, statuses, selected, retryTag }: Props) {
-  const visibleTags = TAGS.filter((t) => selected.size === 0 || selected.has(t.id))
+const GRID_COLS = 'grid grid-cols-[repeat(auto-fill,minmax(260px,1fr))]'
+
+export default function NewsGrid({
+  articles,
+  statuses,
+  revealCounts,
+  selected,
+  retryTag,
+  onLoadMore,
+  onOpenArticle,
+}: Props) {
+  const { tags } = useTags()
+  const visibleTags = selected === null ? tags : tags.filter((t) => t.id === selected)
 
   return (
     <div id="tin-tuc" className="flex flex-col gap-16">
@@ -21,6 +35,9 @@ export default function NewsGrid({ articles, statuses, selected, retryTag }: Pro
           .filter((a) => a.tagId === tag.id)
           .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
         const status = statuses[tag.id]
+        const revealCount = revealCounts[tag.id] ?? 6
+        const visibleItems = items.slice(0, revealCount)
+        const hasMore = items.length > revealCount
 
         return (
           <section key={tag.id}>
@@ -51,7 +68,7 @@ export default function NewsGrid({ articles, statuses, selected, retryTag }: Pro
             )}
 
             {status === 'loading' && items.length === 0 && (
-              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              <div className={`${GRID_COLS} gap-5`}>
                 {Array.from({ length: 3 }).map((_, i) => (
                   <CardSkeleton key={i} />
                 ))}
@@ -59,11 +76,29 @@ export default function NewsGrid({ articles, statuses, selected, retryTag }: Pro
             )}
 
             {items.length > 0 && (
-              <div className="perspective-container grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                {items.slice(0, 6).map((article, i) => (
-                  <NewsCard key={article.id} article={article} index={i} />
-                ))}
-              </div>
+              <>
+                <div className={`perspective-container ${GRID_COLS} gap-5`}>
+                  {visibleItems.map((article, i) => (
+                    <NewsCard
+                      key={article.id}
+                      article={article}
+                      index={i}
+                      onOpen={(a) => onOpenArticle(a, items)}
+                    />
+                  ))}
+                </div>
+                {hasMore && (
+                  <div className="mt-6 flex justify-center">
+                    <button
+                      type="button"
+                      onClick={() => onLoadMore(tag.id)}
+                      className="rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-[13px] font-medium text-white/80 transition hover:bg-white/10 hover:text-white"
+                    >
+                      Tải thêm tin tức
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </section>
         )

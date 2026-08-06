@@ -1,11 +1,12 @@
 import { motion } from 'framer-motion'
 import { lazy, Suspense } from 'react'
+import { smoothScrollTo } from '../lib/lenisInstance'
 
 const HeroScene = lazy(() => import('./HeroScene'))
 
 export default function Hero() {
   return (
-    <section id="top" className="relative h-[92vh] min-h-[640px] w-full overflow-hidden">
+    <section id="top" className="relative h-[92vh] min-h-[480px] w-full overflow-hidden">
       <div className="absolute inset-0">
         <Suspense fallback={null}>
           <HeroScene />
@@ -27,7 +28,8 @@ export default function Hero() {
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-          className="text-gradient max-w-3xl text-5xl font-semibold tracking-tight sm:text-7xl"
+          className="text-gradient max-w-3xl font-semibold tracking-tight"
+          style={{ fontSize: 'clamp(2.1rem, 7vw, 4.5rem)' }}
         >
           Mọi tin tức.
           <br />
@@ -41,8 +43,9 @@ export default function Hero() {
         >
           Luồng tổng hợp tin tức mới nhất từ nhiều nguồn, sắp xếp gọn gàng theo chủ đề bạn quan tâm.
         </motion.p>
-        <motion.a
-          href="#tin-tuc"
+        <motion.button
+          type="button"
+          onClick={() => smoothScrollTo('#tin-tuc')}
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
@@ -51,7 +54,7 @@ export default function Hero() {
           className="mt-10 rounded-full bg-white px-7 py-3 text-[15px] font-semibold text-black shadow-[0_8px_30px_rgba(255,255,255,0.15)] transition hover:shadow-[0_8px_40px_rgba(255,255,255,0.25)]"
         >
           Khám phá tin tức
-        </motion.a>
+        </motion.button>
       </div>
 
       <motion.div

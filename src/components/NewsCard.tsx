@@ -1,12 +1,13 @@
 import { motion, useMotionTemplate, useSpring } from 'framer-motion'
 import { useRef } from 'react'
 import type { Article } from '../types/news'
-import { TAG_MAP } from '../data/tags'
+import { useTags } from '../context/TagsContext'
 import { formatRelativeTime } from '../utils/time'
 
 interface Props {
   article: Article
   index: number
+  onOpen: (article: Article) => void
 }
 
 const GRADIENTS = [
@@ -17,18 +18,19 @@ const GRADIENTS = [
   'from-[#64D2FF] to-[#5E5CE6]',
 ]
 
-export default function NewsCard({ article, index }: Props) {
-  const ref = useRef<HTMLAnchorElement>(null)
+export default function NewsCard({ article, index, onOpen }: Props) {
+  const ref = useRef<HTMLButtonElement>(null)
   const rotateX = useSpring(0, { stiffness: 300, damping: 25 })
   const rotateY = useSpring(0, { stiffness: 300, damping: 25 })
   const scale = useSpring(1, { stiffness: 300, damping: 25 })
 
   const transform = useMotionTemplate`perspective(900px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`
 
-  const tag = TAG_MAP.get(article.tagId)
+  const { tagMap } = useTags()
+  const tag = tagMap.get(article.tagId)
   const gradient = GRADIENTS[index % GRADIENTS.length]
 
-  function handleMouseMove(e: React.MouseEvent<HTMLAnchorElement>) {
+  function handleMouseMove(e: React.MouseEvent<HTMLButtonElement>) {
     const el = ref.current
     if (!el) return
     const rect = el.getBoundingClientRect()
@@ -45,11 +47,10 @@ export default function NewsCard({ article, index }: Props) {
   }
 
   return (
-    <motion.a
+    <motion.button
+      type="button"
       ref={ref}
-      href={article.link}
-      target="_blank"
-      rel="noopener noreferrer"
+      onClick={() => onOpen(article)}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
       onMouseEnter={() => scale.set(1.03)}
@@ -58,7 +59,7 @@ export default function NewsCard({ article, index }: Props) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-40px' }}
       transition={{ duration: 0.5, delay: Math.min(index * 0.04, 0.3), ease: [0.16, 1, 0.3, 1] }}
-      className="glass group flex flex-col overflow-hidden rounded-2xl transition-shadow will-change-transform hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
+      className="glass group flex flex-col overflow-hidden rounded-2xl text-left transition-shadow will-change-transform hover:shadow-[0_20px_60px_rgba(0,0,0,0.5)]"
     >
       <div className={`relative aspect-[16/10] w-full overflow-hidden bg-gradient-to-br ${gradient}`}>
         {article.image && (
@@ -95,6 +96,6 @@ export default function NewsCard({ article, index }: Props) {
           <span>{formatRelativeTime(article.pubDate)}</span>
         </div>
       </div>
-    </motion.a>
+    </motion.button>
   )
 }
