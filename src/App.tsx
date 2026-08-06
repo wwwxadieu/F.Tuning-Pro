@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
+import { AnimatePresence } from 'framer-motion'
 import Header from './components/Header'
 import Hero from './components/Hero'
 import Sidebar from './components/Sidebar'
@@ -7,10 +8,12 @@ import Footer from './components/Footer'
 import SettingsModal from './components/SettingsModal'
 import UpdateBanner from './components/UpdateBanner'
 import ReaderView from './components/ReaderView'
+import Onboarding from './components/Onboarding'
 import { useNews } from './hooks/useNews'
 import { useSettings } from './hooks/useSettings'
 import { useCustomSources } from './hooks/useCustomSources'
 import { useSmoothScroll } from './hooks/useSmoothScroll'
+import { useInterests } from './hooks/useInterests'
 import { TagsProvider } from './context/TagsContext'
 import { TAGS as BUILT_IN_TAGS } from './data/tags'
 import { smoothScrollTo } from './lib/lenisInstance'
@@ -24,6 +27,7 @@ export default function App() {
 
   const { settings, update: updateSettings } = useSettings()
   const { sources: customSources, addSource, removeSource } = useCustomSources()
+  const { onboarded, interests, setInterests, completeOnboarding } = useInterests()
   const allTags: Tag[] = useMemo(() => [...BUILT_IN_TAGS, ...customSources], [customSources])
 
   const [notifications, setNotifications] = useState<Notification[]>([])
@@ -92,6 +96,8 @@ export default function App() {
   return (
     <TagsProvider customTags={customSources}>
       <div className="min-h-screen bg-black">
+        <AnimatePresence>{!onboarded && <Onboarding onComplete={completeOnboarding} />}</AnimatePresence>
+
         <Header
           onToggleSidebar={() => setSidebarOpen((v) => !v)}
           onOpenSettings={() => setSettingsOpen(true)}
@@ -124,6 +130,7 @@ export default function App() {
               statuses={statuses}
               revealCounts={revealCounts}
               selected={selectedTag}
+              interests={interests}
               retryTag={retryTag}
               onLoadMore={loadMore}
               onOpenArticle={handleOpenArticle}
@@ -144,6 +151,12 @@ export default function App() {
           onAddSource={addSource}
           onRemoveSource={removeSource}
           onClearCache={handleClearCache}
+          interests={interests}
+          onToggleInterest={(tagId) =>
+            setInterests((prev) =>
+              prev.includes(tagId) ? prev.filter((i) => i !== tagId) : [...prev, tagId]
+            )
+          }
         />
 
         <ReaderView

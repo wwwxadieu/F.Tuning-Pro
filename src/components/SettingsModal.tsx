@@ -1,8 +1,10 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { fetchArticlesForTag } from '../services/newsService'
+import { useTags } from '../context/TagsContext'
 import type { Settings, Tag, ReaderTheme } from '../types/news'
 import { XIcon, TrashIcon, PlusIcon, SunIcon, MoonIcon, SepiaIcon } from './icons'
+import InterestPicker from './InterestPicker'
 
 interface Props {
   open: boolean
@@ -13,6 +15,8 @@ interface Props {
   onAddSource: (input: { label: string; feedUrl: string; emoji?: string }) => void
   onRemoveSource: (id: string) => void
   onClearCache: () => void
+  interests: string[]
+  onToggleInterest: (tagId: string) => void
 }
 
 export default function SettingsModal({
@@ -24,7 +28,10 @@ export default function SettingsModal({
   onAddSource,
   onRemoveSource,
   onClearCache,
+  interests,
+  onToggleInterest,
 }: Props) {
+  const { tags } = useTags()
   const [label, setLabel] = useState('')
   const [emoji, setEmoji] = useState('')
   const [feedUrl, setFeedUrl] = useState('')
@@ -55,7 +62,7 @@ export default function SettingsModal({
         feedUrl: url.toString(),
         source: url.hostname,
       }
-      const items = await fetchArticlesForTag(tempTag, undefined, { count: 1, forceRefresh: true })
+      const items = await fetchArticlesForTag(tempTag, undefined, { forceRefresh: true })
       if (items.length === 0) {
         setError('Nguồn này không có bài viết nào, hoặc không phải RSS hợp lệ.')
         setValidating(false)
@@ -101,6 +108,20 @@ export default function SettingsModal({
                 <XIcon width={16} height={16} />
               </button>
             </div>
+
+            <section className="mb-7">
+              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-white/40">
+                Sở thích của bạn
+              </h3>
+              <p className="mb-3 text-[12px] text-white/40">
+                Trang chủ sẽ ưu tiên hiển thị các chủ đề bạn chọn ở đây. Bỏ chọn hết để xem tất cả.
+              </p>
+              <InterestPicker
+                tags={tags}
+                selected={new Set(interests)}
+                onToggle={onToggleInterest}
+              />
+            </section>
 
             <section className="mb-7">
               <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-white/40">

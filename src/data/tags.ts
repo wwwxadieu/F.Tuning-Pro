@@ -64,6 +64,27 @@ export const TAGS: Tag[] = [
     feedUrl: 'https://vnexpress.net/rss/du-lich.rss',
     source: 'VnExpress',
   },
+  {
+    id: 'xe',
+    label: 'Xe',
+    emoji: '🚗',
+    feedUrl: 'https://vnexpress.net/rss/oto-xe-may.rss',
+    source: 'VnExpress',
+  },
+  {
+    id: 'may-tinh',
+    label: 'Máy tính - Laptop',
+    emoji: '💻',
+    feedUrl: 'https://genk.vn/rss/may-tinh.rss',
+    source: 'Genk',
+  },
+  {
+    id: 'gaming',
+    label: 'Gaming',
+    emoji: '🎮',
+    feedUrl: 'https://gamek.vn/rss.rss',
+    source: 'GameK',
+  },
 ]
 
 export const TAG_MAP = new Map(TAGS.map((t) => [t.id, t]))

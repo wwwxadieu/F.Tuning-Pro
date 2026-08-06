@@ -9,6 +9,7 @@ interface Props {
   statuses: Record<string, 'loading' | 'ok' | 'error'>
   revealCounts: Record<string, number>
   selected: string | null
+  interests: string[]
   retryTag: (tagId: string) => void
   onLoadMore: (tagId: string) => void
   onOpenArticle: (article: Article, list: Article[]) => void
@@ -21,12 +22,18 @@ export default function NewsGrid({
   statuses,
   revealCounts,
   selected,
+  interests,
   retryTag,
   onLoadMore,
   onOpenArticle,
 }: Props) {
   const { tags } = useTags()
-  const visibleTags = selected === null ? tags : tags.filter((t) => t.id === selected)
+  const visibleTags =
+    selected !== null
+      ? tags.filter((t) => t.id === selected)
+      : interests.length > 0
+        ? tags.filter((t) => interests.includes(t.id))
+        : tags
 
   return (
     <div id="tin-tuc" className="flex flex-col gap-16">

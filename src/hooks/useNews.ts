@@ -4,7 +4,6 @@ import type { Article, Tag } from '../types/news'
 
 type TagStatus = 'loading' | 'ok' | 'error'
 
-const FETCH_COUNT = 30
 const REVEAL_STEP = 6
 const POLL_INTERVAL_MS = 3 * 60 * 1000
 
@@ -25,7 +24,6 @@ export function useNews(tags: Tag[], onNewArticles?: (tag: Tag, newItems: Articl
       if (!opts?.silent) setStatuses((prev) => ({ ...prev, [tag.id]: 'loading' }))
       try {
         const items = await fetchArticlesForTag(tag, signal, {
-          count: FETCH_COUNT,
           forceRefresh: opts?.forceRefresh,
         })
         setArticles((prev) => [...prev.filter((a) => a.tagId !== tag.id), ...items])
