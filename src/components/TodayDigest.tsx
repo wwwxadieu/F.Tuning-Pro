@@ -73,7 +73,7 @@ export default function TodayDigest({ articles, loading, onOpenArticle }: Props)
                     <div className="mt-1 flex items-center gap-1.5 text-[11px] text-white/40">
                       {tag && (
                         <span className="flex items-center gap-1">
-                          <CategoryIcon tagId={tag.id} emoji={tag.emoji} size={11} />
+                          <CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={11} />
                           {tag.label}
                         </span>
                       )}

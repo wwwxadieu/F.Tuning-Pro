@@ -59,7 +59,7 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings }: Pr
                 <SidebarItem
                   key={tag.id}
                   active={selected === tag.id}
-                  icon={<CategoryIcon tagId={tag.id} emoji={tag.emoji} size={13} chip />}
+                  icon={<CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={13} chip />}
                   label={tag.label}
                   onClick={() => onSelect(tag.id)}
                 />

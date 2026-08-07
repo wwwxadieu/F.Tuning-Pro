@@ -229,7 +229,7 @@ export default function SettingsModal({
                       key={s.id}
                       className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2"
                     >
-                      <CategoryIcon tagId={s.id} emoji={s.emoji} size={13} chip />
+                      <CategoryIcon tagId={s.id} emoji={s.emoji} faviconHost={s.source} size={13} chip />
                       <span className="flex-1 truncate text-[13px] text-white/85">{s.label}</span>
                       <button
                         type="button"

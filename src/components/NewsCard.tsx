@@ -85,7 +85,7 @@ export default function NewsCard({ article, index, onOpen }: Props) {
             style={{ transform: 'translateZ(40px)' }}
             className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/50 py-1 pl-1.5 pr-2.5 text-[11px] font-medium text-white backdrop-blur-md"
           >
-            <CategoryIcon tagId={tag.id} emoji={tag.emoji} size={11} />
+            <CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={11} />
             {tag.label}
           </span>
         )}

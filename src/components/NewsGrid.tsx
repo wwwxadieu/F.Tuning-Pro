@@ -57,7 +57,7 @@ export default function NewsGrid({
               className="mb-5 flex items-center justify-between"
             >
               <h2 className="flex items-center gap-2.5 text-xl font-semibold tracking-tight sm:text-2xl">
-                <CategoryIcon tagId={tag.id} emoji={tag.emoji} size={18} chip />
+                <CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={18} chip />
                 {tag.label}
               </h2>
               <span className="text-[12px] text-white/35">{tag.source}</span>
