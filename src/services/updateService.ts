@@ -8,6 +8,8 @@ export interface ReleaseInfo {
   version: string
   url: string
   publishedAt: string
+  /** Direct download URL for the Windows installer, or null if the release has no matching .exe asset. */
+  downloadUrl: string | null
 }
 
 interface GhRelease {
@@ -16,7 +18,7 @@ interface GhRelease {
   published_at: string
   draft: boolean
   prerelease: boolean
-  assets?: { name: string }[]
+  assets?: { name: string; browser_download_url: string }[]
 }
 
 export async function fetchLatestRelease(signal?: AbortSignal): Promise<ReleaseInfo | null> {
@@ -29,10 +31,13 @@ export async function fetchLatestRelease(signal?: AbortSignal): Promise<ReleaseI
   )
   if (!match) return null
 
+  const installerAsset = match.assets?.find((a) => a.name.startsWith(ASSET_MARKER) && a.name.endsWith('.exe'))
+
   return {
     version: match.tag_name.replace(/^v/, ''),
     url: match.html_url,
     publishedAt: match.published_at,
+    downloadUrl: installerAsset?.browser_download_url ?? null,
   }
 }
 

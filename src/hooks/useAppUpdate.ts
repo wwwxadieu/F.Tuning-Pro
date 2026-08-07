@@ -2,12 +2,15 @@ import { useCallback, useEffect, useState } from 'react'
 import { fetchLatestRelease, isNewerVersion, type ReleaseInfo } from '../services/updateService'
 
 type UpdateStatus = 'idle' | 'checking' | 'update-available' | 'up-to-date' | 'error'
+type InstallStatus = 'idle' | 'downloading' | 'error'
 
 export function useAppUpdate(autoCheckEnabled: boolean) {
   const [isElectron, setIsElectron] = useState(false)
   const [currentVersion, setCurrentVersion] = useState<string | null>(null)
   const [status, setStatus] = useState<UpdateStatus>('idle')
   const [latest, setLatest] = useState<ReleaseInfo | null>(null)
+  const [installStatus, setInstallStatus] = useState<InstallStatus>('idle')
+  const [installProgress, setInstallProgress] = useState(0)
 
   useEffect(() => {
     if (window.electronAPI?.isElectron) {
@@ -45,5 +48,20 @@ export function useAppUpdate(autoCheckEnabled: boolean) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isElectron, currentVersion])
 
-  return { isElectron, currentVersion, status, latest, check }
+  const install = useCallback(async () => {
+    if (!latest?.downloadUrl || !window.electronAPI) return
+    setInstallStatus('downloading')
+    setInstallProgress(0)
+    const unsubscribe = window.electronAPI.onUpdateProgress(setInstallProgress)
+    try {
+      await window.electronAPI.downloadAndInstallUpdate(latest.downloadUrl)
+      // App quits itself once the installer launches — nothing left to reset here.
+    } catch {
+      setInstallStatus('error')
+    } finally {
+      unsubscribe()
+    }
+  }, [latest])
+
+  return { isElectron, currentVersion, status, latest, check, installStatus, installProgress, install }
 }

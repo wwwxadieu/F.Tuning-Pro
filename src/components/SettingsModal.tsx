@@ -358,7 +358,8 @@ function UpdateSection({
   settings: Settings
   onUpdateSettings: (patch: Partial<Settings>) => void
 }) {
-  const { isElectron, currentVersion, status, latest, check } = useAppUpdate(settings.autoUpdateEnabled)
+  const { isElectron, currentVersion, status, latest, check, installStatus, installProgress, install } =
+    useAppUpdate(settings.autoUpdateEnabled)
 
   return (
     <section className="mb-7">
@@ -408,15 +409,34 @@ function UpdateSection({
         </button>
       </div>
 
-      {status === 'update-available' && latest && (
-        <a
-          href={latest.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-2 flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-[13px] font-semibold text-black transition hover:bg-white/90"
+      {status === 'update-available' && latest && installStatus !== 'downloading' && (
+        <button
+          type="button"
+          onClick={install}
+          disabled={!latest.downloadUrl}
+          className="mt-2 flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-[13px] font-semibold text-black transition hover:bg-white/90 disabled:opacity-40"
         >
-          Tải phiên bản mới
-        </a>
+          {latest.downloadUrl ? 'Cập nhật ngay' : 'Không tìm thấy tệp cài đặt'}
+        </button>
+      )}
+
+      {installStatus === 'downloading' && (
+        <div className="mt-2">
+          <div className="mb-1.5 flex items-center justify-between text-[12px] text-white/60">
+            <span>Đang tải bản cập nhật...</span>
+            <span className="tabular-nums">{installProgress}%</span>
+          </div>
+          <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+            <div
+              className="h-full rounded-full bg-[#0A84FF] transition-[width] duration-200"
+              style={{ width: `${installProgress}%` }}
+            />
+          </div>
+        </div>
+      )}
+
+      {installStatus === 'error' && (
+        <p className="mt-2 text-[12px] text-[#FF375F]">Không thể tải hoặc mở trình cài đặt. Thử lại sau.</p>
       )}
     </section>
   )
