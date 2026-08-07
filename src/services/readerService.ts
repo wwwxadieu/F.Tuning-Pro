@@ -47,14 +47,7 @@ function writeCache(url: string, content: ReaderContent) {
   }
 }
 
-export async function fetchReaderContent(
-  url: string,
-  signal?: AbortSignal,
-  priority?: RequestPriority
-): Promise<ReaderContent> {
-  const cached = readCache(url)
-  if (cached) return cached
-
+async function fetchOnce(url: string, signal?: AbortSignal, priority?: RequestPriority): Promise<ReaderContent> {
   const res = await fetch(`https://r.jina.ai/${url}`, { signal, priority })
   if (!res.ok) throw new Error(`jina HTTP ${res.status}`)
   const text = await res.text()
@@ -77,4 +70,29 @@ export async function fetchReaderContent(
   const content: ReaderContent = { title: titleMatch?.[1]?.trim() ?? null, html }
   writeCache(url, content)
   return content
+}
+
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+export async function fetchReaderContent(
+  url: string,
+  signal?: AbortSignal,
+  priority?: RequestPriority
+): Promise<ReaderContent> {
+  const cached = readCache(url)
+  if (cached) return cached
+
+  try {
+    return await fetchOnce(url, signal, priority)
+  } catch (err) {
+    // The reader proxy occasionally fails on the first attempt (transient
+    // network blip, momentary rate limiting) — one quick retry clears most
+    // of those without the user ever seeing the error state.
+    if (signal?.aborted) throw err
+    await delay(1200)
+    if (signal?.aborted) throw err
+    return await fetchOnce(url, signal, priority)
+  }
 }

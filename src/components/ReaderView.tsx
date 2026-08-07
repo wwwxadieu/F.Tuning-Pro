@@ -12,6 +12,7 @@ import {
   ExternalLinkIcon,
   LinkIcon,
   MoonIcon,
+  RefreshIcon,
   SepiaIcon,
   ShareIcon,
   SunIcon,
@@ -53,6 +54,7 @@ export default function ReaderView({
   const [zoomedImage, setZoomedImage] = useState<string | null>(null)
   const [shareState, setShareState] = useState<'idle' | 'copied' | 'error'>('idle')
   const [shareMenuOpen, setShareMenuOpen] = useState(false)
+  const [retryToken, setRetryToken] = useState(0)
   const shareMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -73,7 +75,7 @@ export default function ReaderView({
       })
 
     return () => controller.abort()
-  }, [article])
+  }, [article, retryToken])
 
   useEffect(() => {
     // The reader is a fixed overlay with its own scroll container — Lenis's
@@ -374,16 +376,27 @@ export default function ReaderView({
                             ? 'Không thể tải toàn bộ nội dung bài viết. Đây là bản tóm tắt.'
                             : 'Không thể tải nội dung bài viết này trong ứng dụng.'}
                         </p>
-                        <a
-                          href={article.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold"
-                          style={{ backgroundColor: theme.text, color: theme.bg }}
-                        >
-                          Mở bản gốc
-                          <ExternalLinkIcon width={13} height={13} />
-                        </a>
+                        <div className="flex gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setRetryToken((t) => t + 1)}
+                            className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold"
+                            style={{ backgroundColor: theme.text, color: theme.bg }}
+                          >
+                            Thử lại
+                            <RefreshIcon width={13} height={13} />
+                          </button>
+                          <a
+                            href={article.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold"
+                            style={{ backgroundColor: `${theme.subtle}22`, color: theme.text }}
+                          >
+                            Mở bản gốc
+                            <ExternalLinkIcon width={13} height={13} />
+                          </a>
+                        </div>
                       </div>
                     </div>
                   )}
