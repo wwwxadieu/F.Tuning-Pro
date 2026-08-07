@@ -5,7 +5,7 @@ import { parseFeedUrl } from '../utils/url'
 import { PlusIcon, XIcon } from './icons'
 
 interface Props {
-  onAddSource: (input: { label: string; feedUrl: string; emoji?: string }) => void
+  onAddSource: (input: { label: string; feedUrl: string; emoji?: string; scrape?: boolean }) => void
 }
 
 export default function QuickAddSourceButton({ onAddSource }: Props) {
@@ -38,7 +38,7 @@ export default function QuickAddSourceButton({ onAddSource }: Props) {
         setValidating(false)
         return
       }
-      onAddSource({ label: name, feedUrl: discovered.feedUrl })
+      onAddSource({ label: name, feedUrl: discovered.feedUrl, scrape: discovered.scrape })
       setLabel('')
       setFeedUrl('')
       setSuccess(true)

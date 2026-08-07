@@ -15,7 +15,7 @@ interface Props {
   settings: Settings
   onUpdateSettings: (patch: Partial<Settings>) => void
   customSources: Tag[]
-  onAddSource: (input: { label: string; feedUrl: string; emoji?: string }) => void
+  onAddSource: (input: { label: string; feedUrl: string; emoji?: string; scrape?: boolean }) => void
   onRemoveSource: (id: string) => void
   onClearCache: () => void
   interests: string[]
@@ -62,7 +62,12 @@ export default function SettingsModal({
         setValidating(false)
         return
       }
-      onAddSource({ label: label.trim(), feedUrl: discovered.feedUrl, emoji: emoji.trim() || undefined })
+      onAddSource({
+        label: label.trim(),
+        feedUrl: discovered.feedUrl,
+        emoji: emoji.trim() || undefined,
+        scrape: discovered.scrape,
+      })
       setLabel('')
       setEmoji('')
       setFeedUrl('')

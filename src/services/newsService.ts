@@ -1,4 +1,5 @@
 import type { Article, Tag } from '../types/news'
+import { scrapeArticles } from './scrapeService'
 import { translateText } from './translateService'
 
 const RSS2JSON_ENDPOINT = 'https://api.rss2json.com/v1/api.json'
@@ -75,16 +76,7 @@ interface FetchOptions {
   forceRefresh?: boolean
 }
 
-export async function fetchArticlesForTag(
-  tag: Tag,
-  signal?: AbortSignal,
-  options?: FetchOptions
-): Promise<Article[]> {
-  if (!options?.forceRefresh) {
-    const cached = readCache(tag.id)
-    if (cached) return cached
-  }
-
+async function fetchViaRss(tag: Tag, signal?: AbortSignal): Promise<Article[]> {
   // rss2json's free tier now rejects the `count` parameter without an API
   // key (HTTP 422) — omit it and take whatever the default page size is.
   const url = `${RSS2JSON_ENDPOINT}?rss_url=${encodeURIComponent(tag.feedUrl)}`
@@ -96,7 +88,7 @@ export async function fetchArticlesForTag(
     throw new Error('rss2json trả về lỗi')
   }
 
-  const articles: Article[] = data.items.map((item, index) => ({
+  return data.items.map((item, index) => ({
     id: `${tag.id}-${index}-${item.link ?? item.title ?? index}`,
     title: cleanText(item.title ?? '') || '(Không có tiêu đề)',
     description: cleanText(item.description ?? ''),
@@ -106,6 +98,19 @@ export async function fetchArticlesForTag(
     source: tag.source,
     tagId: tag.id,
   }))
+}
+
+export async function fetchArticlesForTag(
+  tag: Tag,
+  signal?: AbortSignal,
+  options?: FetchOptions
+): Promise<Article[]> {
+  if (!options?.forceRefresh) {
+    const cached = readCache(tag.id)
+    if (cached) return cached
+  }
+
+  const articles = tag.scrape ? await scrapeArticles(tag, signal) : await fetchViaRss(tag, signal)
 
   if (tag.translate) {
     // Translate before truncating so the model sees whole sentences, not a

@@ -7,6 +7,8 @@ export interface Tag {
   custom?: boolean
   /** Foreign-language source — translate article titles/descriptions to Vietnamese after fetching. */
   translate?: boolean
+  /** No RSS/Atom feed could be found for this source — feedUrl is a plain page to scrape instead. */
+  scrape?: boolean
 }
 
 export interface Article {

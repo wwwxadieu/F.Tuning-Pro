@@ -4,15 +4,18 @@ import { fetchArticlesForTag } from './newsService'
 export interface DiscoveredFeed {
   feedUrl: string
   items: Article[]
+  /** No feed was found — feedUrl is a plain page being scraped instead of an RSS URL. */
+  scrape?: boolean
 }
 
-function probeTag(feedUrl: string, hostname: string): Tag {
+function probeTag(feedUrl: string, hostname: string, scrape?: boolean): Tag {
   return {
     id: 'discover-temp',
     label: '',
     emoji: '📰',
     feedUrl,
     source: hostname,
+    scrape,
   }
 }
 
@@ -20,6 +23,12 @@ async function probe(feedUrl: string, hostname: string): Promise<DiscoveredFeed>
   const items = await fetchArticlesForTag(probeTag(feedUrl, hostname), undefined, { forceRefresh: true })
   if (items.length === 0) throw new Error('empty feed')
   return { feedUrl, items }
+}
+
+async function probeScrape(feedUrl: string, hostname: string): Promise<DiscoveredFeed> {
+  const items = await fetchArticlesForTag(probeTag(feedUrl, hostname, true), undefined, { forceRefresh: true })
+  if (items.length === 0) throw new Error('nothing scraped')
+  return { feedUrl, items, scrape: true }
 }
 
 // A plain site URL isn't a feed — guess the paths most CMSes, blog
@@ -62,8 +71,10 @@ function candidateFeedUrls(url: URL): string[] {
 /**
  * Accepts either a direct RSS/Atom feed URL or a plain website link. Tries
  * the URL as-is first, then races a set of common feed-path conventions
- * (e.g. /rss.xml, /feed) and returns the first one that actually resolves
- * to a non-empty feed.
+ * (e.g. /rss.xml, /feed), and if nothing there looks like a feed at all,
+ * falls back to scraping article links straight out of the page itself
+ * (e.g. tinhte.vn has no discoverable RSS) so the user isn't forced to
+ * find and paste an exact feed URL.
  */
 export async function discoverFeed(url: URL): Promise<DiscoveredFeed | null> {
   try {
@@ -78,5 +89,11 @@ export async function discoverFeed(url: URL): Promise<DiscoveredFeed | null> {
   const success = results.find(
     (r): r is PromiseFulfilledResult<DiscoveredFeed> => r.status === 'fulfilled'
   )
-  return success ? success.value : null
+  if (success) return success.value
+
+  try {
+    return await probeScrape(url.toString(), url.hostname)
+  } catch {
+    return null
+  }
 }

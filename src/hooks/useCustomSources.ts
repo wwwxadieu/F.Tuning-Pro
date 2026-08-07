@@ -35,7 +35,7 @@ export function useCustomSources() {
     }
   }, [sources])
 
-  function addSource(input: { label: string; feedUrl: string; emoji?: string }): Tag {
+  function addSource(input: { label: string; feedUrl: string; emoji?: string; scrape?: boolean }): Tag {
     let hostname = 'Nguồn tuỳ chỉnh'
     try {
       hostname = new URL(input.feedUrl).hostname.replace(/^www\./, '')
@@ -49,6 +49,7 @@ export function useCustomSources() {
       feedUrl: input.feedUrl.trim(),
       source: hostname,
       custom: true,
+      scrape: input.scrape,
     }
     setSources((prev) => [...prev, tag])
     return tag
