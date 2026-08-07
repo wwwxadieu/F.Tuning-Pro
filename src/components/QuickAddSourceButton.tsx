@@ -2,6 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { fetchArticlesForTag } from '../services/newsService'
 import type { Tag } from '../types/news'
+import { parseFeedUrl } from '../utils/url'
 import { PlusIcon, XIcon } from './icons'
 
 interface Props {
@@ -23,10 +24,8 @@ export default function QuickAddSourceButton({ onAddSource }: Props) {
       setError('Vui lòng nhập đường dẫn RSS.')
       return
     }
-    let url: URL
-    try {
-      url = new URL(feedUrl.trim())
-    } catch {
+    const url = parseFeedUrl(feedUrl)
+    if (!url) {
       setError('Đường dẫn RSS không hợp lệ.')
       return
     }
@@ -92,7 +91,7 @@ export default function QuickAddSourceButton({ onAddSource }: Props) {
                 <input
                   value={feedUrl}
                   onChange={(e) => setFeedUrl(e.target.value)}
-                  placeholder="https://vidu.com/rss.xml"
+                  placeholder="vidu.com/rss.xml"
                   autoFocus
                   className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-white/30"
                 />

@@ -44,6 +44,7 @@ export default function HeroScene() {
       camera={{ position: [0, 0, 7], fov: 40 }}
       dpr={[1, 1.75]}
       gl={{ antialias: true, alpha: true }}
+      resize={{ debounce: 200 }}
     >
       <Suspense fallback={null}>
         <ambientLight intensity={0.7} />

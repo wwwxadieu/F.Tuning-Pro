@@ -4,6 +4,7 @@ import { fetchArticlesForTag } from '../services/newsService'
 import { useTags } from '../context/TagsContext'
 import { useAppUpdate } from '../hooks/useAppUpdate'
 import type { Settings, Tag, ReaderTheme, ReaderFont } from '../types/news'
+import { parseFeedUrl } from '../utils/url'
 import CategoryIcon from './CategoryIcon'
 import { XIcon, TrashIcon, PlusIcon, SunIcon, MoonIcon, SepiaIcon, RefreshIcon, TextSizeIcon } from './icons'
 import InterestPicker from './InterestPicker'
@@ -47,10 +48,8 @@ export default function SettingsModal({
       setError('Vui lòng nhập tên và đường dẫn RSS.')
       return
     }
-    let url: URL
-    try {
-      url = new URL(feedUrl.trim())
-    } catch {
+    const url = parseFeedUrl(feedUrl)
+    if (!url) {
       setError('Đường dẫn RSS không hợp lệ.')
       return
     }
@@ -263,7 +262,7 @@ export default function SettingsModal({
                 <input
                   value={feedUrl}
                   onChange={(e) => setFeedUrl(e.target.value)}
-                  placeholder="https://vidu.com/rss.xml"
+                  placeholder="vidu.com/rss.xml"
                   className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-white/30"
                 />
                 {error && <p className="text-[12px] text-[#FF375F]">{error}</p>}
