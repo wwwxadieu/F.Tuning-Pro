@@ -12,7 +12,7 @@ export function useHoverPrefetch(url: string, delayMs = 150) {
   function onMouseEnter() {
     if (timerRef.current) return
     timerRef.current = window.setTimeout(() => {
-      fetchReaderContent(url).catch(() => {})
+      fetchReaderContent(url, undefined, 'high').catch(() => {})
       timerRef.current = null
     }, delayMs)
   }

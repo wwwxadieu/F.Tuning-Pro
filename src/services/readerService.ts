@@ -29,11 +29,15 @@ function writeCache(url: string, content: ReaderContent) {
   }
 }
 
-export async function fetchReaderContent(url: string, signal?: AbortSignal): Promise<ReaderContent> {
+export async function fetchReaderContent(
+  url: string,
+  signal?: AbortSignal,
+  priority?: RequestPriority
+): Promise<ReaderContent> {
   const cached = readCache(url)
   if (cached) return cached
 
-  const res = await fetch(`https://r.jina.ai/${url}`, { signal })
+  const res = await fetch(`https://r.jina.ai/${url}`, { signal, priority })
   if (!res.ok) throw new Error(`jina HTTP ${res.status}`)
   const text = await res.text()
 

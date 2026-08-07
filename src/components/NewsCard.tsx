@@ -3,6 +3,7 @@ import { useRef } from 'react'
 import type { Article } from '../types/news'
 import { useTags } from '../context/TagsContext'
 import { useHoverPrefetch } from '../hooks/useHoverPrefetch'
+import { useViewportPrefetch } from '../hooks/useViewportPrefetch'
 import CategoryIcon from './CategoryIcon'
 import { formatRelativeTime } from '../utils/time'
 
@@ -37,6 +38,7 @@ export default function NewsCard({ article, index, onOpen }: Props) {
   const gradient = GRADIENTS[index % GRADIENTS.length]
   const aspect = ASPECT_RATIOS[index % ASPECT_RATIOS.length]
   const prefetch = useHoverPrefetch(article.link)
+  useViewportPrefetch(article.link, ref)
 
   function handleMouseMove(e: React.MouseEvent<HTMLButtonElement>) {
     const el = ref.current

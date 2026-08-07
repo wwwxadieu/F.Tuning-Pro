@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion'
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import type { Article, Tag } from '../types/news'
 import { useTags } from '../context/TagsContext'
 import { useHoverPrefetch } from '../hooks/useHoverPrefetch'
+import { useViewportPrefetch } from '../hooks/useViewportPrefetch'
 import CategoryIcon from './CategoryIcon'
 import { FlameIcon } from './categoryIcons'
 import { formatRelativeTime } from '../utils/time'
@@ -14,14 +15,20 @@ interface Props {
 }
 
 const DIGEST_SIZE = 5
+// "Nổi bật hôm nay" should read as live and current — cap it to articles from
+// the last 2 days so a category whose feed rarely updates doesn't leave a
+// months-old story sitting at the top just because nothing newer exists yet
+// in that category. Falls back to the plain newest-first list if fewer than
+// DIGEST_SIZE articles are that recent, so the section is never left sparse.
+const MAX_AGE_MS = 2 * 24 * 60 * 60 * 1000
 
 export default function TodayDigest({ articles, loading, onOpenArticle }: Props) {
   const { tagMap } = useTags()
 
   const topStories = useMemo(() => {
-    return [...articles]
-      .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
-      .slice(0, DIGEST_SIZE)
+    const sorted = [...articles].sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
+    const recent = sorted.filter((a) => Date.now() - new Date(a.pubDate).getTime() <= MAX_AGE_MS)
+    return (recent.length >= DIGEST_SIZE ? recent : sorted).slice(0, DIGEST_SIZE)
   }, [articles])
 
   if (!loading && topStories.length === 0) return null
@@ -64,11 +71,14 @@ function DigestRow({
   tag: Tag | undefined
   onOpenArticle: () => void
 }) {
+  const ref = useRef<HTMLButtonElement>(null)
   const prefetch = useHoverPrefetch(article.link)
+  useViewportPrefetch(article.link, ref)
 
   return (
     <motion.button
       type="button"
+      ref={ref}
       onClick={onOpenArticle}
       onMouseEnter={prefetch.onMouseEnter}
       onMouseLeave={prefetch.onMouseLeave}
