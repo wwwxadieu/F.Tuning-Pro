@@ -22,20 +22,38 @@ async function probe(feedUrl: string, hostname: string): Promise<DiscoveredFeed>
   return { feedUrl, items }
 }
 
-// A plain site URL isn't a feed — guess the handful of paths most CMSes and
-// blog platforms actually publish their RSS/Atom feed at.
+// A plain site URL isn't a feed — guess the paths most CMSes, blog
+// platforms, and Vietnamese news sites actually publish their feed at.
 function candidateFeedUrls(url: URL): string[] {
   const origin = url.origin
   const pathname = url.pathname.replace(/\/+$/, '')
+  const lastSegment = pathname.split('/').filter(Boolean).pop()
   const candidates = new Set<string>()
 
-  for (const suffix of ['/rss.xml', '/rss', '/feed.xml', '/feed', '/feed/', '/atom.xml', '/index.xml']) {
+  for (const suffix of [
+    '/rss.xml',
+    '/rss',
+    '/rss/',
+    '/rss/index.xml',
+    '/feed.xml',
+    '/feed',
+    '/feed/',
+    '/atom.xml',
+    '/index.xml',
+    '/feeds/posts/default', // Blogger
+    '/?feed=rss2', // WordPress
+  ]) {
     candidates.add(origin + suffix)
   }
   if (pathname) {
     for (const suffix of ['.rss', '/rss.xml', '/rss', '/feed']) {
       candidates.add(origin + pathname + suffix)
     }
+  }
+  if (lastSegment) {
+    // Common Vietnamese news site convention: a category page's feed lives
+    // under a shared /rss/ folder, e.g. vnexpress.net/thoi-su -> /rss/thoi-su.rss
+    candidates.add(`${origin}/rss/${lastSegment}.rss`)
   }
   candidates.delete(url.toString())
   return Array.from(candidates)

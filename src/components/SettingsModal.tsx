@@ -89,7 +89,7 @@ export default function SettingsModal({
             exit={{ opacity: 0, y: 20, scale: 0.97 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="glass max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl p-6 shadow-[0_30px_80px_rgba(0,0,0,0.7)]"
+            className="glass max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl p-6 shadow-[0_30px_80px_rgba(0,0,0,0.7)] lg:max-w-3xl xl:max-w-4xl"
             data-lenis-prevent
           >
             <div className="mb-6 flex items-center justify-between">
@@ -118,10 +118,11 @@ export default function SettingsModal({
               />
             </section>
 
-            <section className="mb-7">
-              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-white/40">
-                Thông báo
-              </h3>
+            <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
+              <section className="mb-7">
+                <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-white/40">
+                  Thông báo
+                </h3>
               <label className="flex cursor-pointer items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3">
                 <span className="text-[14px] text-white/85">Báo khi có tin mới</span>
                 <input
@@ -272,6 +273,7 @@ export default function SettingsModal({
             </section>
 
             <UpdateSection settings={settings} onUpdateSettings={onUpdateSettings} />
+            </div>
 
             <section>
               <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-white/40">

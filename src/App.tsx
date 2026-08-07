@@ -55,7 +55,7 @@ export default function App() {
     [settings.notificationsEnabled]
   )
 
-  const { articles, statuses, revealCounts, retryTag, loadMore } = useNews(allTags, handleNewArticles)
+  const { articles, statuses, revealCounts, retryTag, loadMore } = useNews(allTags, handleNewArticles, interests)
 
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(() =>
@@ -79,6 +79,11 @@ export default function App() {
     const index = list.findIndex((a) => a.id === article.id)
     setReaderList(list)
     setReaderIndex(index >= 0 ? index : 0)
+  }
+
+  function handleRemoveSource(tagId: string) {
+    removeSource(tagId)
+    setSelectedTag((prev) => (prev === tagId ? null : prev))
   }
 
   function handleClearCache() {
@@ -113,6 +118,7 @@ export default function App() {
           selected={selectedTag}
           onSelect={selectTagAndScroll}
           onOpenSettings={() => setSettingsOpen(true)}
+          onRemoveSource={handleRemoveSource}
         />
 
         {sidebarOpen && (
@@ -154,7 +160,7 @@ export default function App() {
           onUpdateSettings={updateSettings}
           customSources={customSources}
           onAddSource={addSource}
-          onRemoveSource={removeSource}
+          onRemoveSource={handleRemoveSource}
           onClearCache={handleClearCache}
           interests={interests}
           onToggleInterest={(tagId) =>

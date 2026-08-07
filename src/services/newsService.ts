@@ -87,7 +87,7 @@ export async function fetchArticlesForTag(
   // rss2json's free tier now rejects the `count` parameter without an API
   // key (HTTP 422) — omit it and take whatever the default page size is.
   const url = `${RSS2JSON_ENDPOINT}?rss_url=${encodeURIComponent(tag.feedUrl)}`
-  const res = await fetch(url, { signal })
+  const res = await fetch(url, { signal, priority: 'high' })
   if (!res.ok) throw new Error(`rss2json HTTP ${res.status}`)
 
   const data = (await res.json()) as RawFeedResponse

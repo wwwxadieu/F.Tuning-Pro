@@ -2,16 +2,17 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useTags } from '../context/TagsContext'
 import { usePinnedTags } from '../hooks/usePinnedTags'
 import CategoryIcon from './CategoryIcon'
-import { GearIcon, LayersIcon, PinIcon, PlusIcon } from './icons'
+import { GearIcon, LayersIcon, PinIcon, PlusIcon, TrashIcon } from './icons'
 
 interface Props {
   open: boolean
   selected: string | null
   onSelect: (tagId: string | null) => void
   onOpenSettings: () => void
+  onRemoveSource: (tagId: string) => void
 }
 
-export default function Sidebar({ open, selected, onSelect, onOpenSettings }: Props) {
+export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRemoveSource }: Props) {
   const { tags } = useTags()
   const { isPinned, togglePin, pinned } = usePinnedTags(tags)
   const builtInTags = tags.filter((t) => !t.custom)
@@ -47,6 +48,7 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings }: Pr
                       onClick={() => onSelect(tag.id)}
                       pinned
                       onTogglePin={() => togglePin(tag.id)}
+                      onRemove={tag.custom ? () => onRemoveSource(tag.id) : undefined}
                     />
                   ))}
                 </nav>
@@ -97,6 +99,7 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings }: Pr
                   onClick={() => onSelect(tag.id)}
                   pinned={isPinned(tag.id)}
                   onTogglePin={() => togglePin(tag.id)}
+                  onRemove={() => onRemoveSource(tag.id)}
                 />
               ))}
             </nav>
@@ -140,6 +143,7 @@ function SidebarItem({
   pinned,
   onTogglePin,
   showPinButton = true,
+  onRemove,
 }: {
   active: boolean
   icon: React.ReactNode
@@ -148,6 +152,7 @@ function SidebarItem({
   pinned?: boolean
   onTogglePin?: () => void
   showPinButton?: boolean
+  onRemove?: () => void
 }) {
   const pinColor = active
     ? pinned
@@ -181,6 +186,18 @@ function SidebarItem({
           className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg transition ${pinColor} ${pinVisibility}`}
         >
           <PinIcon width={13} height={13} fill={pinned ? 'currentColor' : 'none'} />
+        </button>
+      )}
+      {onRemove && (
+        <button
+          type="button"
+          onClick={onRemove}
+          aria-label={`Xoá ${label}`}
+          className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg opacity-40 transition hover:opacity-100 focus-visible:opacity-100 ${
+            active ? 'text-black/40 hover:bg-black/10 hover:text-[#FF375F]' : 'text-white/40 hover:bg-white/10 hover:text-[#FF375F]'
+          }`}
+        >
+          <TrashIcon width={13} height={13} />
         </button>
       )}
     </div>

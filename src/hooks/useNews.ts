@@ -7,7 +7,11 @@ type TagStatus = 'loading' | 'ok' | 'error'
 const REVEAL_STEP = 6
 const POLL_INTERVAL_MS = 3 * 60 * 1000
 
-export function useNews(tags: Tag[], onNewArticles?: (tag: Tag, newItems: Article[]) => void) {
+export function useNews(
+  tags: Tag[],
+  onNewArticles?: (tag: Tag, newItems: Article[]) => void,
+  priorityTagIds?: string[]
+) {
   const [articles, setArticles] = useState<Article[]>([])
   const [statuses, setStatuses] = useState<Record<string, TagStatus>>({})
   const [revealCounts, setRevealCounts] = useState<Record<string, number>>({})
@@ -54,14 +58,21 @@ export function useNews(tags: Tag[], onNewArticles?: (tag: Tag, newItems: Articl
   }, [])
 
   // Load any tag we haven't fetched yet (initial load, or a newly added custom source).
+  // Tags the user actually cares about (their selected interests) are issued
+  // first so those requests grab available per-origin connection slots
+  // ahead of the rest, instead of loading in arbitrary array order.
   useEffect(() => {
-    tags.forEach((tag) => {
+    const priority = priorityTagIds && priorityTagIds.length > 0 ? new Set(priorityTagIds) : null
+    const ordered = priority
+      ? [...tags].sort((a, b) => Number(priority.has(b.id)) - Number(priority.has(a.id)))
+      : tags
+    ordered.forEach((tag) => {
       if (!(tag.id in statuses)) {
         loadTag(tag, controllerRef.current?.signal)
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tags, loadTag])
+  }, [tags, loadTag, priorityTagIds])
 
   // Background poll for new articles on already-loaded tags.
   useEffect(() => {
