@@ -5,6 +5,8 @@ export interface Tag {
   feedUrl: string
   source: string
   custom?: boolean
+  /** Foreign-language source — translate article titles/descriptions to Vietnamese after fetching. */
+  translate?: boolean
 }
 
 export interface Article {

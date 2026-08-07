@@ -1,14 +1,16 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import type { Article, ReaderTheme, Settings } from '../types/news'
 import { getLenisInstance } from '../lib/lenisInstance'
 import { fetchReaderContent } from '../services/readerService'
 import { formatRelativeTime } from '../utils/time'
+import { PlaneIcon } from './categoryIcons'
 import ImageLightbox from './ImageLightbox'
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ExternalLinkIcon,
+  LinkIcon,
   MoonIcon,
   SepiaIcon,
   ShareIcon,
@@ -50,6 +52,8 @@ export default function ReaderView({
   const [html, setHtml] = useState<string>('')
   const [zoomedImage, setZoomedImage] = useState<string | null>(null)
   const [shareState, setShareState] = useState<'idle' | 'copied' | 'error'>('idle')
+  const [shareMenuOpen, setShareMenuOpen] = useState(false)
+  const shareMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!article) return
@@ -90,34 +94,83 @@ export default function ReaderView({
     if (!article) return
     function onKeyDown(e: KeyboardEvent) {
       if (zoomedImage) return // let the lightbox handle its own Escape/zoom keys
-      if (e.key === 'Escape') onClose()
-      else if (e.key === 'ArrowLeft' && hasPrev) onPrev()
+      if (e.key === 'Escape') {
+        if (shareMenuOpen) setShareMenuOpen(false)
+        else onClose()
+      } else if (e.key === 'ArrowLeft' && hasPrev) onPrev()
       else if (e.key === 'ArrowRight' && hasNext) onNext()
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
-  }, [article, hasPrev, hasNext, onPrev, onNext, onClose, zoomedImage])
+  }, [article, hasPrev, hasNext, onPrev, onNext, onClose, zoomedImage, shareMenuOpen])
 
-  async function handleShare() {
-    if (!article) return
-    const shareData = { title: article.title, text: article.description, url: article.link }
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData)
-        return
-      } catch (err) {
-        if (err instanceof DOMException && err.name === 'AbortError') return
-      }
+  useEffect(() => {
+    if (!shareMenuOpen) return
+    function onClickOutside(e: MouseEvent) {
+      if (shareMenuRef.current && !shareMenuRef.current.contains(e.target as Node)) setShareMenuOpen(false)
     }
+    document.addEventListener('mousedown', onClickOutside)
+    return () => document.removeEventListener('mousedown', onClickOutside)
+  }, [shareMenuOpen])
 
+  function flashShareState(next: 'copied' | 'error') {
+    setShareState(next)
+    setTimeout(() => setShareState('idle'), 2000)
+  }
+
+  async function copyText(text: string) {
     try {
-      await navigator.clipboard.writeText(article.link)
-      setShareState('copied')
+      await navigator.clipboard.writeText(text)
+      flashShareState('copied')
     } catch {
-      setShareState('error')
-    } finally {
-      setTimeout(() => setShareState('idle'), 2000)
+      flashShareState('error')
+    }
+  }
+
+  function openSharePopup(url: string) {
+    window.open(url, '_blank', 'noopener,noreferrer,width=600,height=520')
+    setShareMenuOpen(false)
+  }
+
+  function shareToFacebook() {
+    if (!article) return
+    openSharePopup(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(article.link)}`)
+  }
+
+  function shareToX() {
+    if (!article) return
+    openSharePopup(
+      `https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(article.link)}`
+    )
+  }
+
+  function shareToTelegram() {
+    if (!article) return
+    openSharePopup(
+      `https://t.me/share/url?url=${encodeURIComponent(article.link)}&text=${encodeURIComponent(article.title)}`
+    )
+  }
+
+  async function shareToDiscord() {
+    // Discord has no web share intent — copy a message formatted for pasting into a channel.
+    if (!article) return
+    setShareMenuOpen(false)
+    await copyText(`${article.title}\n${article.link}`)
+  }
+
+  async function handleCopyLink() {
+    if (!article) return
+    setShareMenuOpen(false)
+    await copyText(article.link)
+  }
+
+  async function handleNativeShare() {
+    if (!article) return
+    setShareMenuOpen(false)
+    try {
+      await navigator.share({ title: article.title, text: article.description, url: article.link })
+    } catch (err) {
+      if (err instanceof DOMException && err.name === 'AbortError') return
     }
   }
 
@@ -192,12 +245,52 @@ export default function ReaderView({
                 </span>
               </ToolbarButton>
               <div className="mx-1 h-5 w-px" style={{ backgroundColor: `${theme.text}1a` }} />
-              <div className="relative">
-                <ToolbarButton onClick={handleShare} label="Chia sẻ" style={{ color: theme.subtle }}>
+              <div className="relative" ref={shareMenuRef}>
+                <ToolbarButton
+                  onClick={() => setShareMenuOpen((v) => !v)}
+                  label="Chia sẻ"
+                  style={{ color: theme.subtle }}
+                >
                   <ShareIcon width={16} height={16} />
                 </ToolbarButton>
                 <AnimatePresence>
-                  {shareState !== 'idle' && (
+                  {shareMenuOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -6, scale: 0.97 }}
+                      transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                      className="absolute right-0 top-full z-10 mt-2 w-56 overflow-hidden rounded-2xl p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.35)]"
+                      style={{ backgroundColor: theme.card, color: theme.text }}
+                      data-lenis-prevent
+                    >
+                      <ShareMenuItem label="Facebook" color="#1877F2" badge="f" onClick={shareToFacebook} />
+                      <ShareMenuItem label="X (Twitter)" color="#000000" badge="X" onClick={shareToX} />
+                      <ShareMenuItem
+                        label="Telegram"
+                        color="#26A5E4"
+                        icon={<PlaneIcon width={13} height={13} style={{ color: '#fff' }} />}
+                        onClick={shareToTelegram}
+                      />
+                      <ShareMenuItem label="Discord" color="#5865F2" badge="D" onClick={shareToDiscord} />
+                      <div className="my-1.5 h-px" style={{ backgroundColor: `${theme.text}1a` }} />
+                      <ShareMenuItem
+                        label="Sao chép liên kết"
+                        icon={<LinkIcon width={14} height={14} />}
+                        onClick={handleCopyLink}
+                      />
+                      {typeof navigator.share === 'function' && (
+                        <ShareMenuItem
+                          label="Chia sẻ khác..."
+                          icon={<ShareIcon width={14} height={14} />}
+                          onClick={handleNativeShare}
+                        />
+                      )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+                <AnimatePresence>
+                  {shareState !== 'idle' && !shareMenuOpen && (
                     <motion.div
                       initial={{ opacity: 0, y: -4 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -205,7 +298,7 @@ export default function ReaderView({
                       className="absolute right-0 top-full mt-2 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-[11px] font-medium shadow-lg"
                       style={{ backgroundColor: theme.text, color: theme.bg }}
                     >
-                      {shareState === 'copied' ? 'Đã sao chép liên kết' : 'Không thể sao chép liên kết'}
+                      {shareState === 'copied' ? 'Đã sao chép!' : 'Không thể sao chép'}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -221,54 +314,61 @@ export default function ReaderView({
           </div>
 
           <div className="flex-1 overflow-y-auto" data-lenis-prevent>
-            <article
-              className="mx-auto max-w-[72ch] px-6 py-10 sm:px-8"
-              style={{ fontSize: `${settings.readerFontSize}px` }}
-            >
-              {article.image && (
-                <img
-                  src={article.image}
-                  alt=""
-                  className="mb-6 aspect-video w-full cursor-zoom-in rounded-2xl object-cover transition hover:opacity-90"
-                  onClick={() => setZoomedImage(article.image)}
-                  onError={(e) => {
-                    ;(e.currentTarget as HTMLImageElement).style.display = 'none'
-                  }}
-                />
-              )}
-              <h1 className="text-[1.7em] font-bold leading-tight tracking-tight" style={{ fontSize: `${settings.readerFontSize * 1.55}px` }}>
-                {article.title}
-              </h1>
-              <p className="mb-8 mt-3 text-[13px]" style={{ color: theme.subtle }}>
-                {article.source} · {formatRelativeTime(article.pubDate)}
-              </p>
-
-              {state === 'loading' && <ReaderSkeleton color={theme.card} />}
-
-              {state === 'ok' && (
-                <div
-                  className={`reader-content ${settings.readerFont === 'sans' ? 'font-sans' : ''}`}
-                  style={{ fontSize: `${settings.readerFontSize}px`, lineHeight: 1.7 }}
-                  dangerouslySetInnerHTML={{ __html: html }}
-                  onClick={(e) => {
-                    const target = e.target as HTMLElement
-                    if (target.tagName === 'IMG') {
-                      e.preventDefault()
-                      setZoomedImage((target as HTMLImageElement).src)
-                    }
-                  }}
-                />
-              )}
-
-              {state === 'error' && (
-                <div>
-                  <p style={{ fontSize: `${settings.readerFontSize}px`, lineHeight: 1.7 }}>{article.description}</p>
-                  <p className="mt-6 rounded-xl px-4 py-3 text-[13px]" style={{ backgroundColor: theme.card, color: theme.subtle }}>
-                    Không thể tải toàn bộ nội dung bài viết. Đây là bản tóm tắt — bấm biểu tượng{' '}
-                    <ExternalLinkIcon width={12} height={12} style={{ display: 'inline' }} /> để mở bản đầy đủ.
-                  </p>
+            <article className="mx-auto max-w-[1180px] px-6 py-10 sm:px-8">
+              <div className="lg:grid lg:grid-cols-[minmax(260px,360px)_minmax(0,1fr)] lg:items-start lg:gap-12">
+                <div className="lg:sticky lg:top-8">
+                  {article.image && (
+                    <img
+                      src={article.image}
+                      alt=""
+                      className="mb-6 aspect-video w-full cursor-zoom-in rounded-2xl object-cover transition hover:opacity-90 lg:mb-0 lg:aspect-[4/5]"
+                      onClick={() => setZoomedImage(article.image)}
+                      onError={(e) => {
+                        ;(e.currentTarget as HTMLImageElement).style.display = 'none'
+                      }}
+                    />
+                  )}
                 </div>
-              )}
+
+                <div style={{ fontSize: `${settings.readerFontSize}px` }}>
+                  <h1
+                    className="text-[1.7em] font-bold leading-tight tracking-tight"
+                    style={{ fontSize: `${settings.readerFontSize * 1.55}px` }}
+                  >
+                    {article.title}
+                  </h1>
+                  <p className="mb-8 mt-3 text-[13px]" style={{ color: theme.subtle }}>
+                    {article.source} · {formatRelativeTime(article.pubDate)}
+                  </p>
+
+                  {state === 'loading' && <ReaderSkeleton color={theme.card} />}
+
+                  {state === 'ok' && (
+                    <div
+                      className={`reader-content max-w-[70ch] ${settings.readerFont === 'sans' ? 'font-sans' : ''}`}
+                      style={{ fontSize: `${settings.readerFontSize}px`, lineHeight: 1.7 }}
+                      dangerouslySetInnerHTML={{ __html: html }}
+                      onClick={(e) => {
+                        const target = e.target as HTMLElement
+                        if (target.tagName === 'IMG') {
+                          e.preventDefault()
+                          setZoomedImage((target as HTMLImageElement).src)
+                        }
+                      }}
+                    />
+                  )}
+
+                  {state === 'error' && (
+                    <div className="max-w-[70ch]">
+                      <p style={{ fontSize: `${settings.readerFontSize}px`, lineHeight: 1.7 }}>{article.description}</p>
+                      <p className="mt-6 rounded-xl px-4 py-3 text-[13px]" style={{ backgroundColor: theme.card, color: theme.subtle }}>
+                        Không thể tải toàn bộ nội dung bài viết. Đây là bản tóm tắt — bấm biểu tượng{' '}
+                        <ExternalLinkIcon width={12} height={12} style={{ display: 'inline' }} /> để mở bản đầy đủ.
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
             </article>
           </div>
 
@@ -276,6 +376,36 @@ export default function ReaderView({
         </motion.div>
       )}
     </AnimatePresence>
+  )
+}
+
+function ShareMenuItem({
+  label,
+  color,
+  badge,
+  icon,
+  onClick,
+}: {
+  label: string
+  color?: string
+  badge?: string
+  icon?: React.ReactNode
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex w-full items-center gap-2.5 rounded-xl px-2.5 py-2 text-left text-[13px] font-medium transition hover:bg-black/[0.06] dark:hover:bg-white/10"
+    >
+      <span
+        className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white"
+        style={{ backgroundColor: color ?? '#8E8E93' }}
+      >
+        {icon ?? badge}
+      </span>
+      {label}
+    </button>
   )
 }
 

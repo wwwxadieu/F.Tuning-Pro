@@ -193,3 +193,13 @@ export function ShareIcon(props: IconProps) {
     </svg>
   )
 }
+
+export function LinkIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M9.5 14.5l5-5" />
+      <path d="M11 6.5l1-1a3.5 3.5 0 0 1 5 5l-1 1" />
+      <path d="M13 17.5l-1 1a3.5 3.5 0 0 1-5-5l1-1" />
+    </svg>
+  )
+}

@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import { useEffect, useRef } from 'react'
 import { useTags } from '../context/TagsContext'
 import type { Article } from '../types/news'
 import CategoryIcon from './CategoryIcon'
@@ -98,22 +99,42 @@ export default function NewsGrid({
                     </div>
                   ))}
                 </div>
-                {hasMore && (
-                  <div className="mt-6 flex justify-center">
-                    <button
-                      type="button"
-                      onClick={() => onLoadMore(tag.id)}
-                      className="rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-[13px] font-medium text-white/80 transition hover:bg-white/10 hover:text-white"
-                    >
-                      Tải thêm tin tức
-                    </button>
-                  </div>
-                )}
+                {hasMore && <LoadMoreSentinel onTrigger={() => onLoadMore(tag.id)} />}
               </>
             )}
           </section>
         )
       })}
+    </div>
+  )
+}
+
+function LoadMoreSentinel({ onTrigger }: { onTrigger: () => void }) {
+  const ref = useRef<HTMLDivElement>(null)
+  const firedRef = useRef(false)
+
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0]?.isIntersecting && !firedRef.current) {
+          firedRef.current = true
+          onTrigger()
+          setTimeout(() => {
+            firedRef.current = false
+          }, 600)
+        }
+      },
+      { rootMargin: '0px' }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [onTrigger])
+
+  return (
+    <div ref={ref} className="mt-6 flex justify-center py-6">
+      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/15 border-t-white/50" />
     </div>
   )
 }

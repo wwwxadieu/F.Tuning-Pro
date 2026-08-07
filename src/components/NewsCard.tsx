@@ -2,6 +2,7 @@ import { motion, useMotionTemplate, useSpring } from 'framer-motion'
 import { useRef } from 'react'
 import type { Article } from '../types/news'
 import { useTags } from '../context/TagsContext'
+import { useHoverPrefetch } from '../hooks/useHoverPrefetch'
 import CategoryIcon from './CategoryIcon'
 import { formatRelativeTime } from '../utils/time'
 
@@ -35,6 +36,7 @@ export default function NewsCard({ article, index, onOpen }: Props) {
   const tag = tagMap.get(article.tagId)
   const gradient = GRADIENTS[index % GRADIENTS.length]
   const aspect = ASPECT_RATIOS[index % ASPECT_RATIOS.length]
+  const prefetch = useHoverPrefetch(article.link)
 
   function handleMouseMove(e: React.MouseEvent<HTMLButtonElement>) {
     const el = ref.current
@@ -46,10 +48,16 @@ export default function NewsCard({ article, index, onOpen }: Props) {
     rotateX.set(-py * 14)
   }
 
+  function handleMouseEnter() {
+    scale.set(1.03)
+    prefetch.onMouseEnter()
+  }
+
   function handleMouseLeave() {
     rotateX.set(0)
     rotateY.set(0)
     scale.set(1)
+    prefetch.onMouseLeave()
   }
 
   return (
@@ -59,7 +67,7 @@ export default function NewsCard({ article, index, onOpen }: Props) {
       onClick={() => onOpen(article)}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      onMouseEnter={() => scale.set(1.03)}
+      onMouseEnter={handleMouseEnter}
       style={{ transform, transformStyle: 'preserve-3d' }}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}

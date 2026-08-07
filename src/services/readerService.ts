@@ -39,8 +39,13 @@ export async function fetchReaderContent(url: string, signal?: AbortSignal): Pro
 
   const titleMatch = text.match(/^Title:\s*(.+)$/m)
   const markerIdx = text.indexOf('Markdown Content:')
-  const markdown = markerIdx >= 0 ? text.slice(markerIdx + 'Markdown Content:'.length).trim() : text.trim()
+  let markdown = markerIdx >= 0 ? text.slice(markerIdx + 'Markdown Content:'.length).trim() : text.trim()
   if (!markdown) throw new Error('Nội dung rỗng')
+
+  // jina.ai's extraction almost always repeats the article's own headline as
+  // the first line of the markdown (# Headline) — we already render the
+  // title separately above the content, so strip it to avoid a duplicate.
+  markdown = markdown.replace(/^#{1,2}[ \t]+.+(?:\r?\n)+/, '')
 
   const rawHtml = await marked.parse(markdown, { async: true })
   const html = DOMPurify.sanitize(rawHtml, { ADD_ATTR: ['target'] })

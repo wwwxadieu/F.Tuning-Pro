@@ -160,3 +160,24 @@ export function GridIcon(props: IconProps) {
     </svg>
   )
 }
+
+export function CpuIcon(props: IconProps) {
+  return (
+    <svg {...iconBase(props)}>
+      <rect x="6" y="6" width="12" height="12" rx="2" />
+      <rect x="9.5" y="9.5" width="5" height="5" rx="1" />
+      <line x1="9" y1="2.5" x2="9" y2="6" />
+      <line x1="12" y1="2.5" x2="12" y2="6" />
+      <line x1="15" y1="2.5" x2="15" y2="6" />
+      <line x1="9" y1="18" x2="9" y2="21.5" />
+      <line x1="12" y1="18" x2="12" y2="21.5" />
+      <line x1="15" y1="18" x2="15" y2="21.5" />
+      <line x1="18" y1="9" x2="21.5" y2="9" />
+      <line x1="18" y1="12" x2="21.5" y2="12" />
+      <line x1="18" y1="15" x2="21.5" y2="15" />
+      <line x1="2.5" y1="9" x2="6" y2="9" />
+      <line x1="2.5" y1="12" x2="6" y2="12" />
+      <line x1="2.5" y1="15" x2="6" y2="15" />
+    </svg>
+  )
+}

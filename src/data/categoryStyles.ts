@@ -3,6 +3,7 @@ import {
   BriefcaseIcon,
   CarIcon,
   ClapperboardIcon,
+  CpuIcon,
   GamepadIcon,
   GlobeIcon,
   GraduationCapIcon,
@@ -39,6 +40,7 @@ export const CATEGORY_STYLES: Record<string, CategoryStyle> = {
   xe: { icon: CarIcon, color: '#FF453A' },
   'may-tinh': { icon: LaptopIcon, color: '#8E8E93' },
   gaming: { icon: GamepadIcon, color: '#66D4CF' },
+  'tech-quocte': { icon: CpuIcon, color: '#FFB340' },
 }
 
 export const DEFAULT_CATEGORY_STYLE: CategoryStyle = { icon: RssIcon, color: '#8E8E93' }

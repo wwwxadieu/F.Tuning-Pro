@@ -85,6 +85,14 @@ export const TAGS: Tag[] = [
     feedUrl: 'https://gamek.vn/rss.rss',
     source: 'GameK',
   },
+  {
+    id: 'tech-quocte',
+    label: 'Công nghệ quốc tế',
+    emoji: '🌐',
+    feedUrl: 'https://techcrunch.com/feed/',
+    source: 'TechCrunch',
+    translate: true,
+  },
 ]
 
 export const TAG_MAP = new Map(TAGS.map((t) => [t.id, t]))

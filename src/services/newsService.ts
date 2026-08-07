@@ -1,4 +1,5 @@
 import type { Article, Tag } from '../types/news'
+import { translateText } from './translateService'
 
 const RSS2JSON_ENDPOINT = 'https://api.rss2json.com/v1/api.json'
 const CACHE_PREFIX = 'luong:feed:'
@@ -98,13 +99,29 @@ export async function fetchArticlesForTag(
   const articles: Article[] = data.items.map((item, index) => ({
     id: `${tag.id}-${index}-${item.link ?? item.title ?? index}`,
     title: cleanText(item.title ?? '') || '(Không có tiêu đề)',
-    description: cleanText(item.description ?? '').slice(0, 220),
+    description: cleanText(item.description ?? ''),
     link: item.link ?? '#',
     image: extractImage(item),
     pubDate: item.pubDate ?? '',
     source: tag.source,
     tagId: tag.id,
   }))
+
+  if (tag.translate) {
+    // Translate before truncating so the model sees whole sentences, not a
+    // mid-word English fragment that a naive slice would otherwise produce.
+    await Promise.all(
+      articles.map(async (a) => {
+        const [title, description] = await Promise.all([translateText(a.title), translateText(a.description)])
+        a.title = title
+        a.description = description
+      })
+    )
+  }
+
+  for (const a of articles) {
+    a.description = a.description.slice(0, 220)
+  }
 
   writeCache(tag.id, articles)
   return articles
