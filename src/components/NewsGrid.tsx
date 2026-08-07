@@ -10,6 +10,7 @@ interface Props {
   articles: Article[]
   statuses: Record<string, 'loading' | 'ok' | 'error'>
   revealCounts: Record<string, number>
+  supplementing: Record<string, boolean>
   selected: string | null
   interests: string[]
   retryTag: (tagId: string) => void
@@ -23,6 +24,7 @@ export default function NewsGrid({
   articles,
   statuses,
   revealCounts,
+  supplementing,
   selected,
   interests,
   retryTag,
@@ -46,7 +48,7 @@ export default function NewsGrid({
         const status = statuses[tag.id]
         const revealCount = revealCounts[tag.id] ?? 6
         const visibleItems = items.slice(0, revealCount)
-        const hasMore = items.length > revealCount
+        const hasMore = items.length > revealCount || supplementing[tag.id] === true
 
         return (
           <section key={tag.id}>

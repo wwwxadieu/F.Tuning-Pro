@@ -60,7 +60,7 @@ export default function App() {
     [settings.notificationsEnabled]
   )
 
-  const { articles, statuses, revealCounts, retryTag, loadMore, refreshAll, refreshing } = useNews(
+  const { articles, statuses, revealCounts, retryTag, loadMore, refreshAll, refreshing, supplementing } = useNews(
     allTags,
     handleNewArticles,
     interests
@@ -149,6 +149,7 @@ export default function App() {
               articles={articles}
               statuses={statuses}
               revealCounts={revealCounts}
+              supplementing={supplementing}
               selected={selectedTag}
               interests={interests}
               retryTag={retryTag}
