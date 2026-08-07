@@ -9,6 +9,20 @@ interface ScrapedLink {
   url: string
 }
 
+// Pages built around a feed of user avatars/thumbnails (forums, "social"
+// homepages like tinhte.vn) nest an image inside the link text itself —
+// `[![alt](avatar.jpg)](/profile/x)` — which breaks a naive `[text](url)`
+// scan: `[^\]]+` stops at the image's own `]`, so the "title" it captures is
+// a mangled `![alt` fragment and the "url" it captures is the avatar image,
+// not the link's real destination. Stripping all image markdown first
+// collapses those down to `[](url)`, which the title-length filter below
+// then correctly discards as noise instead of surfacing as garbage.
+const IMAGE_MARKDOWN_RE = /!\[[^\]]*\]\([^)]*\)/g
+
+// Common non-article routes that still carry a long enough "title" (nav
+// label, button text) to otherwise pass the length filter.
+const NON_ARTICLE_PATH_RE = /\/(login|register|signup|signin|profile|search|contact|terms|privacy)(\/|$)/i
+
 // A homepage's extracted markdown is full of `[text](url)` links — nav,
 // footer, social share, ads — mixed in with the actual article links we
 // want. Keep only links that point back at the site itself with a
@@ -16,15 +30,13 @@ interface ScrapedLink {
 // without needing to understand the page's actual HTML structure.
 function extractLinks(markdown: string, siteHostname: string): ScrapedLink[] {
   const bareHost = siteHostname.replace(/^www\./, '')
+  const withoutImages = markdown.replace(IMAGE_MARKDOWN_RE, '')
   const linkPattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g
   const seen = new Set<string>()
   const links: ScrapedLink[] = []
   let match: RegExpExecArray | null
 
-  while ((match = linkPattern.exec(markdown))) {
-    const isImageLink = match.index > 0 && markdown[match.index - 1] === '!'
-    if (isImageLink) continue
-
+  while ((match = linkPattern.exec(withoutImages))) {
     const title = match[1].trim()
     if (title.length < MIN_TITLE_LENGTH) continue
 
@@ -35,6 +47,8 @@ function extractLinks(markdown: string, siteHostname: string): ScrapedLink[] {
       continue
     }
     if (!linkUrl.hostname.replace(/^www\./, '').endsWith(bareHost)) continue
+    if (!linkUrl.pathname || linkUrl.pathname === '/') continue
+    if (NON_ARTICLE_PATH_RE.test(linkUrl.pathname)) continue
 
     const normalized = linkUrl.toString()
     if (seen.has(normalized)) continue
