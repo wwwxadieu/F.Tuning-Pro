@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { MenuIcon } from './icons'
+import { MenuIcon, RefreshIcon } from './icons'
 import NotificationBell from './NotificationBell'
 import LiveClock from './LiveClock'
 import { smoothScrollTo } from '../lib/lenisInstance'
@@ -11,6 +11,8 @@ interface Props {
   unreadCount: number
   onReadNotifications: () => void
   onSelectNotification: (tagId: string) => void
+  onRefresh: () => void
+  refreshing: boolean
 }
 
 export default function Header({
@@ -19,6 +21,8 @@ export default function Header({
   unreadCount,
   onReadNotifications,
   onSelectNotification,
+  onRefresh,
+  refreshing,
 }: Props) {
   return (
     <motion.header
@@ -60,6 +64,16 @@ export default function Header({
         </div>
 
         <div className="flex items-center gap-1">
+          <button
+            type="button"
+            onClick={onRefresh}
+            disabled={refreshing}
+            aria-label="Làm mới tin tức"
+            title="Làm mới tin tức"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--text-2)] transition hover:bg-[var(--surface-2)] hover:text-[var(--text-1)] disabled:opacity-50"
+          >
+            <RefreshIcon width={16} height={16} className={refreshing ? 'animate-spin' : ''} />
+          </button>
           <NotificationBell
             notifications={notifications}
             unreadCount={unreadCount}

@@ -98,5 +98,15 @@ export function useNews(
     setRevealCounts((prev) => ({ ...prev, [tagId]: (prev[tagId] ?? REVEAL_STEP) + REVEAL_STEP }))
   }, [])
 
-  return { articles, statuses, revealCounts, retryTag, loadMore }
+  const refreshAll = useCallback(() => {
+    tagsRef.current.forEach((tag) => {
+      if (loadedOnceRef.current.has(tag.id)) {
+        loadTag(tag, controllerRef.current?.signal, { forceRefresh: true })
+      }
+    })
+  }, [loadTag])
+
+  const refreshing = articles.length > 0 && Object.values(statuses).some((s) => s === 'loading')
+
+  return { articles, statuses, revealCounts, retryTag, loadMore, refreshAll, refreshing }
 }

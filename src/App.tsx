@@ -60,7 +60,11 @@ export default function App() {
     [settings.notificationsEnabled]
   )
 
-  const { articles, statuses, revealCounts, retryTag, loadMore } = useNews(allTags, handleNewArticles, interests)
+  const { articles, statuses, revealCounts, retryTag, loadMore, refreshAll, refreshing } = useNews(
+    allTags,
+    handleNewArticles,
+    interests
+  )
 
   const [selectedTag, setSelectedTag] = useState<string | null>(null)
   const [sidebarOpen, setSidebarOpen] = useState(() =>
@@ -116,6 +120,8 @@ export default function App() {
           unreadCount={unreadCount}
           onReadNotifications={handleReadNotifications}
           onSelectNotification={selectTagAndScroll}
+          onRefresh={refreshAll}
+          refreshing={refreshing}
         />
 
         <Sidebar

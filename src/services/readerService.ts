@@ -9,6 +9,24 @@ export interface ReaderContent {
 const CACHE_PREFIX = 'luong:reader:'
 const CACHE_TTL_MS = 60 * 60 * 1000 // 1 hour
 
+// Forum/community threads (XenForo, Discourse, WordPress author archives, ...)
+// repeat an avatar-photo-wrapped-in-a-profile-link "author card" once for the
+// original post and again for every reply beneath it. When that pattern shows
+// up more than once, the actual article always sits between the first card
+// (the author) and the second (the first reply) — slicing there drops both
+// the site's nav/search clutter above the post and the entire comment thread
+// below it, without needing any site-specific selectors.
+const AUTHOR_CARD_RE = /\[!\[[^\]]*\]\([^)]*\)\]\((https?:\/\/[^)]*\/(?:profile|user|author|u)\/[^)]*)\)/g
+
+function isolateOriginalPost(markdown: string): string {
+  const matches = [...markdown.matchAll(AUTHOR_CARD_RE)]
+  if (matches.length < 2) return markdown
+  const start = matches[0].index! + matches[0][0].length
+  const end = matches[1].index!
+  const isolated = markdown.slice(start, end).trim()
+  return isolated || markdown
+}
+
 function readCache(url: string): ReaderContent | null {
   try {
     const raw = sessionStorage.getItem(CACHE_PREFIX + url)
@@ -45,6 +63,8 @@ export async function fetchReaderContent(
   const markerIdx = text.indexOf('Markdown Content:')
   let markdown = markerIdx >= 0 ? text.slice(markerIdx + 'Markdown Content:'.length).trim() : text.trim()
   if (!markdown) throw new Error('Nội dung rỗng')
+
+  markdown = isolateOriginalPost(markdown)
 
   // jina.ai's extraction almost always repeats the article's own headline as
   // the first line of the markdown (# Headline) — we already render the
