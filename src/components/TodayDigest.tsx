@@ -40,10 +40,10 @@ export default function TodayDigest({ articles, loading, onOpenArticle }: Props)
           <FlameIcon width={19} height={19} style={{ color: '#FF9F0A' }} />
           Nổi bật hôm nay
         </h2>
-        <span className="text-[12px] text-white/35">Tổng hợp tin mới nhất từ mọi chuyên mục</span>
+        <span className="text-[12px] text-[var(--text-4)]">Tổng hợp tin mới nhất từ mọi chuyên mục</span>
       </div>
 
-      <div className="glass flex flex-col divide-y divide-white/8 overflow-hidden rounded-2xl">
+      <div className="glass flex flex-col divide-y divide-[var(--border-1)] overflow-hidden rounded-2xl">
         {loading && topStories.length === 0
           ? Array.from({ length: DIGEST_SIZE }).map((_, i) => <DigestSkeleton key={i} />)
           : topStories.map((article, i) => (
@@ -85,9 +85,9 @@ function DigestRow({
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.35, delay: Math.min(index * 0.06, 0.3) }}
-      className="flex w-full items-center gap-4 px-4 py-3 text-left transition hover:bg-white/5"
+      className="flex w-full items-center gap-4 px-4 py-3 text-left transition hover:bg-[var(--surface-1)]"
     >
-      <span className="w-5 shrink-0 text-center text-[15px] font-bold text-white/20">{index + 1}</span>
+      <span className="w-5 shrink-0 text-center text-[15px] font-bold text-[var(--text-4)]">{index + 1}</span>
       <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-[#0A84FF]/40 to-[#BF5AF2]/40">
         {article.image && (
           <img
@@ -102,17 +102,17 @@ function DigestRow({
         )}
       </div>
       <div className="min-w-0 flex-1">
-        <h3 className="line-clamp-1 text-[14px] font-semibold leading-snug text-white sm:line-clamp-2">
+        <h3 className="line-clamp-1 text-[14px] font-semibold leading-snug text-[var(--text-1)] sm:line-clamp-2">
           {article.title}
         </h3>
-        <div className="mt-1 flex items-center gap-1.5 text-[11px] text-white/40">
+        <div className="mt-1 flex items-center gap-1.5 text-[11px] text-[var(--text-3)]">
           {tag && (
             <span className="flex items-center gap-1">
               <CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={11} />
               {tag.label}
             </span>
           )}
-          <span className="text-white/20">·</span>
+          <span className="text-[var(--text-4)]">·</span>
           <span>{formatRelativeTime(article.pubDate)}</span>
         </div>
       </div>

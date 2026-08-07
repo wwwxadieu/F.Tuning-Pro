@@ -37,7 +37,7 @@ export default function NotificationBell({ notifications, unreadCount, onOpen, o
         type="button"
         onClick={toggle}
         aria-label="Thông báo"
-        className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white/60 transition hover:bg-white/10 hover:text-white"
+        className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--text-2)] transition hover:bg-[var(--surface-2)] hover:text-[var(--text-1)]"
       >
         <BellIcon width={18} height={18} />
         {unreadCount > 0 && (
@@ -57,9 +57,9 @@ export default function NotificationBell({ notifications, unreadCount, onOpen, o
             className="glass absolute right-0 top-11 z-50 max-h-[70vh] w-80 overflow-y-auto rounded-2xl p-2 shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
             data-lenis-prevent
           >
-            <div className="px-2 py-1.5 text-[13px] font-semibold text-white">Thông báo</div>
+            <div className="px-2 py-1.5 text-[13px] font-semibold text-[var(--text-1)]">Thông báo</div>
             {notifications.length === 0 ? (
-              <p className="px-2 py-6 text-center text-[13px] text-white/40">
+              <p className="px-2 py-6 text-center text-[13px] text-[var(--text-3)]">
                 Chưa có thông báo nào.
               </p>
             ) : (
@@ -72,7 +72,7 @@ export default function NotificationBell({ notifications, unreadCount, onOpen, o
                         onSelect(n.tagId)
                         setOpen(false)
                       }}
-                      className="flex w-full items-start gap-2.5 rounded-xl px-2 py-2 text-left transition hover:bg-white/10"
+                      className="flex w-full items-start gap-2.5 rounded-xl px-2 py-2 text-left transition hover:bg-[var(--surface-2)]"
                     >
                       <CategoryIcon
                         tagId={n.tagId}
@@ -83,11 +83,11 @@ export default function NotificationBell({ notifications, unreadCount, onOpen, o
                         className="mt-0.5"
                       />
                       <span className="flex-1">
-                        <span className="block text-[13px] text-white/90">
+                        <span className="block text-[13px] text-[var(--text-1)]">
                           <strong className="font-semibold">{n.count}</strong> tin mới trong{' '}
                           <strong className="font-semibold">{n.tagLabel}</strong>
                         </span>
-                        <span className="mt-0.5 block text-[11px] text-white/40">
+                        <span className="mt-0.5 block text-[11px] text-[var(--text-3)]">
                           {formatTime(n.timestamp)}
                         </span>
                       </span>

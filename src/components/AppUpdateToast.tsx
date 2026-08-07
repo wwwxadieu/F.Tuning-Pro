@@ -28,8 +28,8 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
                 <RefreshIcon width={14} height={14} style={{ color: '#fff' }} />
               </span>
               <div className="flex-1">
-                <p className="text-[13px] font-semibold text-white">Có bản cập nhật mới</p>
-                <p className="mt-0.5 text-[12px] text-white/60">
+                <p className="text-[13px] font-semibold text-[var(--text-1)]">Có bản cập nhật mới</p>
+                <p className="mt-0.5 text-[12px] text-[var(--text-2)]">
                   F.VNN v{latest?.version} đã sẵn sàng để cài đặt.
                 </p>
               </div>
@@ -38,7 +38,7 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
                   type="button"
                   onClick={onDismiss}
                   aria-label="Để sau"
-                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-white/40 transition hover:bg-white/10 hover:text-white"
+                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-[var(--text-3)] transition hover:bg-[var(--surface-2)] hover:text-[var(--text-1)]"
                 >
                   <XIcon width={12} height={12} />
                 </button>
@@ -47,11 +47,11 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
 
             {installStatus === 'downloading' ? (
               <div>
-                <div className="mb-1.5 flex items-center justify-between text-[11px] text-white/50">
+                <div className="mb-1.5 flex items-center justify-between text-[11px] text-[var(--text-3)]">
                   <span>Đang tải bản cập nhật...</span>
                   <span className="tabular-nums">{installProgress}%</span>
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+                <div className="h-1.5 overflow-hidden rounded-full bg-[var(--surface-2)]">
                   <div
                     className="h-full rounded-full bg-[#0A84FF] transition-[width] duration-200"
                     style={{ width: `${installProgress}%` }}
@@ -63,7 +63,7 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
                 <button
                   type="button"
                   onClick={onDismiss}
-                  className="flex-1 rounded-xl bg-white/10 px-3 py-2 text-[12px] font-medium text-white transition hover:bg-white/20"
+                  className="flex-1 rounded-xl bg-[var(--surface-2)] px-3 py-2 text-[12px] font-medium text-[var(--text-1)] transition hover:bg-[var(--surface-3)]"
                 >
                   Để sau
                 </button>
@@ -71,7 +71,7 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
                   type="button"
                   onClick={install}
                   disabled={!latest?.downloadUrl}
-                  className="flex-1 rounded-xl bg-white px-3 py-2 text-[12px] font-semibold text-black transition hover:bg-white/90 disabled:opacity-40"
+                  className="flex-1 rounded-xl bg-[var(--text-1)] px-3 py-2 text-[12px] font-semibold text-[var(--bg)] transition hover:opacity-90 disabled:opacity-40"
                 >
                   Cập nhật ngay
                 </button>

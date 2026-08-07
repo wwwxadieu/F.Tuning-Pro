@@ -19,7 +19,7 @@ interface Props {
 function EmojiGlyph({ emoji, size, chip, className }: { emoji: string; size: number; chip: boolean; className: string }) {
   return chip ? (
     <span
-      className={`inline-flex shrink-0 items-center justify-center rounded-lg bg-white/10 ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-lg bg-[var(--surface-2)] ${className}`}
       style={{ width: size * 1.75, height: size * 1.75, fontSize: size * 0.85, lineHeight: 1 }}
     >
       {emoji}
@@ -82,7 +82,7 @@ function FaviconGlyph({
 
   return chip ? (
     <span
-      className={`inline-flex shrink-0 items-center justify-center rounded-lg bg-white/10 ${className}`}
+      className={`inline-flex shrink-0 items-center justify-center rounded-lg bg-[var(--surface-2)] ${className}`}
       style={{ width: size * 1.75, height: size * 1.75 }}
     >
       {img}

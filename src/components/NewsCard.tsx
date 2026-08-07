@@ -102,13 +102,13 @@ export default function NewsCard({ article, index, onOpen }: Props) {
       </div>
 
       <div className="flex flex-1 flex-col gap-2 p-4" style={{ transform: 'translateZ(20px)' }}>
-        <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug tracking-tight text-white">
+        <h3 className="line-clamp-2 text-[15px] font-semibold leading-snug tracking-tight text-[var(--text-1)]">
           {article.title}
         </h3>
-        <p className="line-clamp-2 flex-1 text-[13px] leading-relaxed text-white/50">
+        <p className="line-clamp-2 flex-1 text-[13px] leading-relaxed text-[var(--text-3)]">
           {article.description}
         </p>
-        <div className="mt-1 flex items-center justify-between text-[11px] text-white/35">
+        <div className="mt-1 flex items-center justify-between text-[11px] text-[var(--text-4)]">
           <span>{article.source}</span>
           <span>{formatRelativeTime(article.pubDate)}</span>
         </div>

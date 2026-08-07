@@ -33,6 +33,7 @@ export interface Notification {
 
 export type ReaderTheme = 'light' | 'sepia' | 'dark'
 export type ReaderFont = 'serif' | 'sans'
+export type AppTheme = 'dark' | 'light'
 
 export interface Settings {
   notificationsEnabled: boolean
@@ -40,4 +41,5 @@ export interface Settings {
   readerTheme: ReaderTheme
   readerFont: ReaderFont
   autoUpdateEnabled: boolean
+  appTheme: AppTheme
 }

@@ -29,13 +29,13 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRe
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: -260, opacity: 0 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed bottom-0 left-0 top-0 z-40 flex w-64 shrink-0 flex-col overflow-y-auto border-r border-white/10 bg-black/60 pb-6 pt-24 backdrop-blur-2xl"
+          className="fixed bottom-0 left-0 top-0 z-40 flex w-64 shrink-0 flex-col overflow-y-auto border-r border-[var(--border-1)] bg-[var(--bg)]/80 pb-6 pt-24 backdrop-blur-2xl"
           data-lenis-prevent
         >
           {pinnedTags.length > 0 && (
             <>
               <div className="px-3">
-                <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wide text-white/30">
+                <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-4)]">
                   Đã ghim
                 </p>
                 <nav className="flex flex-col gap-0.5">
@@ -53,12 +53,12 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRe
                   ))}
                 </nav>
               </div>
-              <div className="my-4 mx-5 h-px shrink-0 bg-white/10" />
+              <div className="my-4 mx-5 h-px shrink-0 bg-[var(--border-1)]" />
             </>
           )}
 
           <div className="px-3">
-            <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wide text-white/30">
+            <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-4)]">
               Loại tin tức
             </p>
             <nav className="flex flex-col gap-0.5">
@@ -83,10 +83,10 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRe
             </nav>
           </div>
 
-          <div className="my-4 mx-5 h-px shrink-0 bg-white/10" />
+          <div className="my-4 mx-5 h-px shrink-0 bg-[var(--border-1)]" />
 
           <div className="px-3">
-            <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wide text-white/30">
+            <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-4)]">
               Nguồn tin tức
             </p>
             <nav className="flex flex-col gap-0.5">
@@ -107,7 +107,7 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRe
             <button
               type="button"
               onClick={onOpenSettings}
-              className="mt-1 flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium text-white/40 transition hover:bg-white/5 hover:text-white/70"
+              className="mt-1 flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13px] font-medium text-[var(--text-3)] transition hover:bg-[var(--surface-1)] hover:text-[var(--text-2)]"
             >
               <PlusIcon width={15} height={15} />
               Thêm nguồn tin
@@ -115,16 +115,16 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRe
           </div>
 
           <div className="mt-auto px-3 pt-4">
-            <div className="h-px bg-white/10" />
+            <div className="h-px bg-[var(--border-1)]" />
             <button
               type="button"
               onClick={onOpenSettings}
-              className="mt-3 flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13.5px] font-medium text-white/70 transition hover:bg-white/10 hover:text-white"
+              className="mt-3 flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13.5px] font-medium text-[var(--text-2)] transition hover:bg-[var(--surface-2)] hover:text-[var(--text-1)]"
             >
               <GearIcon width={16} height={16} />
               Cài đặt
             </button>
-            <div className="mt-2 flex items-center gap-2 px-3 text-[11px] text-white/25">
+            <div className="mt-2 flex items-center gap-2 px-3 text-[11px] text-[var(--text-4)]">
               <LayersIcon width={13} height={13} />
               {tags.length} chuyên mục
             </div>
@@ -156,17 +156,19 @@ function SidebarItem({
 }) {
   const pinColor = active
     ? pinned
-      ? 'text-black'
-      : 'text-black/40 hover:text-black'
-    : pinned
       ? 'text-white'
-      : 'text-white/40 hover:text-white'
+      : 'text-white/60 hover:text-white'
+    : pinned
+      ? 'text-[var(--text-1)]'
+      : 'text-[var(--text-3)] hover:text-[var(--text-1)]'
   const pinVisibility = pinned ? 'opacity-100' : 'opacity-40 group-hover:opacity-100 focus-visible:opacity-100'
 
   return (
     <div
       className={`group flex items-center gap-1 rounded-xl pr-1 transition ${
-        active ? 'bg-white text-black' : 'text-white/70 hover:bg-white/10 hover:text-white'
+        active
+          ? 'bg-[#0A84FF] text-white'
+          : 'text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text-1)]'
       }`}
     >
       <button
@@ -194,7 +196,9 @@ function SidebarItem({
           onClick={onRemove}
           aria-label={`Xoá ${label}`}
           className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg opacity-40 transition hover:opacity-100 focus-visible:opacity-100 ${
-            active ? 'text-black/40 hover:bg-black/10 hover:text-[#FF375F]' : 'text-white/40 hover:bg-white/10 hover:text-[#FF375F]'
+            active
+              ? 'text-white/60 hover:bg-white/15 hover:text-[#FF375F]'
+              : 'text-[var(--text-3)] hover:bg-[var(--surface-2)] hover:text-[#FF375F]'
           }`}
         >
           <TrashIcon width={13} height={13} />

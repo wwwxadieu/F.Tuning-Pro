@@ -33,7 +33,7 @@ export default function Header({
             type="button"
             onClick={onToggleSidebar}
             aria-label="Đóng/mở danh mục"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white/60 transition hover:bg-white/10 hover:text-white"
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[var(--text-2)] transition hover:bg-[var(--surface-2)] hover:text-[var(--text-1)]"
           >
             <MenuIcon width={18} height={18} />
           </button>
@@ -53,7 +53,7 @@ export default function Header({
           <LiveClock />
           <span
             aria-hidden="true"
-            className="lock-select rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-medium text-white/50"
+            className="lock-select rounded-full border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-1 text-[11px] font-medium text-[var(--text-3)]"
           >
             Cập nhật trực tiếp
           </span>

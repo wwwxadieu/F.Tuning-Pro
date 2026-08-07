@@ -13,7 +13,7 @@ export default function Hero() {
         </Suspense>
       </div>
 
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-black" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/10 via-black/40 to-[var(--bg)]" />
 
       <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center">
         <motion.p

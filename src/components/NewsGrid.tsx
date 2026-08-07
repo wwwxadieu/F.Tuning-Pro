@@ -61,15 +61,15 @@ export default function NewsGrid({
                 <CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={18} chip />
                 {tag.label}
               </h2>
-              <span className="text-[12px] text-white/35">{tag.source}</span>
+              <span className="text-[12px] text-[var(--text-4)]">{tag.source}</span>
             </motion.div>
 
             {status === 'error' && items.length === 0 && (
               <div className="glass flex flex-col items-center gap-3 rounded-2xl px-6 py-10 text-center">
-                <p className="text-sm text-white/50">Không thể tải tin cho chủ đề này lúc này.</p>
+                <p className="text-sm text-[var(--text-3)]">Không thể tải tin cho chủ đề này lúc này.</p>
                 <button
                   onClick={() => retryTag(tag.id)}
-                  className="rounded-full bg-white/10 px-4 py-1.5 text-[13px] font-medium text-white transition hover:bg-white/20"
+                  className="rounded-full bg-[var(--surface-2)] px-4 py-1.5 text-[13px] font-medium text-[var(--text-1)] transition hover:bg-[var(--surface-3)]"
                 >
                   Thử lại
                 </button>
@@ -134,7 +134,7 @@ function LoadMoreSentinel({ onTrigger }: { onTrigger: () => void }) {
 
   return (
     <div ref={ref} className="mt-6 flex justify-center py-6">
-      <div className="h-5 w-5 animate-spin rounded-full border-2 border-white/15 border-t-white/50" />
+      <div className="h-5 w-5 animate-spin rounded-full border-2 border-[var(--border-1)] border-t-[var(--text-3)]" />
     </div>
   )
 }

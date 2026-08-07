@@ -105,17 +105,37 @@ export default function SettingsModal({
                 type="button"
                 onClick={onClose}
                 aria-label="Đóng cài đặt"
-                className="flex h-8 w-8 items-center justify-center rounded-lg text-white/50 transition hover:bg-white/10 hover:text-white"
+                className="flex h-8 w-8 items-center justify-center rounded-lg text-[var(--text-3)] transition hover:bg-[var(--surface-2)] hover:text-[var(--text-1)]"
               >
                 <XIcon width={16} height={16} />
               </button>
             </div>
 
             <section className="mb-7">
-              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-white/40">
+              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
+                Giao diện
+              </h3>
+              <div className="flex gap-2">
+                <ThemeSwatch
+                  active={settings.appTheme === 'dark'}
+                  label="Tối"
+                  icon={<MoonIcon width={15} height={15} />}
+                  onClick={() => onUpdateSettings({ appTheme: 'dark' })}
+                />
+                <ThemeSwatch
+                  active={settings.appTheme === 'light'}
+                  label="Sáng"
+                  icon={<SunIcon width={15} height={15} />}
+                  onClick={() => onUpdateSettings({ appTheme: 'light' })}
+                />
+              </div>
+            </section>
+
+            <section className="mb-7">
+              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
                 Sở thích của bạn
               </h3>
-              <p className="mb-3 text-[12px] text-white/40">
+              <p className="mb-3 text-[12px] text-[var(--text-3)]">
                 Trang chủ sẽ ưu tiên hiển thị các chủ đề bạn chọn ở đây. Bỏ chọn hết để xem tất cả.
               </p>
               <InterestPicker
@@ -127,11 +147,11 @@ export default function SettingsModal({
 
             <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
               <section className="mb-7">
-                <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-white/40">
+                <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
                   Thông báo
                 </h3>
-              <label className="flex cursor-pointer items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                <span className="text-[14px] text-white/85">Báo khi có tin mới</span>
+              <label className="flex cursor-pointer items-center justify-between rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-4 py-3">
+                <span className="text-[14px] text-[var(--text-1)]">Báo khi có tin mới</span>
                 <input
                   type="checkbox"
                   checked={settings.notificationsEnabled}
@@ -142,7 +162,7 @@ export default function SettingsModal({
             </section>
 
             <section className="mb-7">
-              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-white/40">
+              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
                 Chế độ đọc mặc định
               </h3>
               <div className="flex gap-2">
@@ -183,8 +203,8 @@ export default function SettingsModal({
                 />
               </div>
 
-              <div className="mt-4 flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-                <span className="flex items-center gap-2 text-[14px] text-white/85">
+              <div className="mt-4 flex items-center justify-between rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-4 py-3">
+                <span className="flex items-center gap-2 text-[14px] text-[var(--text-1)]">
                   <TextSizeIcon width={15} height={15} />
                   Cỡ chữ
                 </span>
@@ -196,11 +216,11 @@ export default function SettingsModal({
                     }
                     disabled={settings.readerFontSize <= 14}
                     aria-label="Giảm cỡ chữ"
-                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10 text-white transition hover:bg-white/20 disabled:opacity-30"
+                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--surface-2)] text-[var(--text-1)] transition hover:bg-[var(--surface-3)] disabled:opacity-30"
                   >
                     −
                   </button>
-                  <span className="w-8 text-center text-[13px] tabular-nums text-white/70">
+                  <span className="w-8 text-center text-[13px] tabular-nums text-[var(--text-2)]">
                     {settings.readerFontSize}
                   </span>
                   <button
@@ -210,7 +230,7 @@ export default function SettingsModal({
                     }
                     disabled={settings.readerFontSize >= 26}
                     aria-label="Tăng cỡ chữ"
-                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10 text-white transition hover:bg-white/20 disabled:opacity-30"
+                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--surface-2)] text-[var(--text-1)] transition hover:bg-[var(--surface-3)] disabled:opacity-30"
                   >
                     +
                   </button>
@@ -219,7 +239,7 @@ export default function SettingsModal({
             </section>
 
             <section className="mb-7">
-              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-white/40">
+              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
                 Nguồn tin của bạn
               </h3>
 
@@ -228,15 +248,15 @@ export default function SettingsModal({
                   {customSources.map((s) => (
                     <li
                       key={s.id}
-                      className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2"
+                      className="flex items-center gap-2.5 rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-2"
                     >
                       <CategoryIcon tagId={s.id} emoji={s.emoji} faviconHost={s.source} size={13} chip />
-                      <span className="flex-1 truncate text-[13px] text-white/85">{s.label}</span>
+                      <span className="flex-1 truncate text-[13px] text-[var(--text-1)]">{s.label}</span>
                       <button
                         type="button"
                         onClick={() => onRemoveSource(s.id)}
                         aria-label={`Xoá ${s.label}`}
-                        className="flex h-7 w-7 items-center justify-center rounded-lg text-white/40 transition hover:bg-white/10 hover:text-[#FF375F]"
+                        className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-3)] transition hover:bg-[var(--surface-2)] hover:text-[#FF375F]"
                       >
                         <TrashIcon width={14} height={14} />
                       </button>
@@ -252,26 +272,26 @@ export default function SettingsModal({
                     onChange={(e) => setEmoji(e.target.value)}
                     placeholder="📰"
                     maxLength={4}
-                    className="w-14 rounded-xl border border-white/10 bg-white/5 px-2 py-2 text-center text-sm outline-none focus:border-white/30"
+                    className="w-14 rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-2 py-2 text-center text-sm text-[var(--text-1)] outline-none focus:border-[var(--text-3)]"
                   />
                   <input
                     value={label}
                     onChange={(e) => setLabel(e.target.value)}
                     placeholder="Tên chuyên mục"
-                    className="flex-1 rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-white/30"
+                    className="flex-1 rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-1)] outline-none focus:border-[var(--text-3)]"
                   />
                 </div>
                 <input
                   value={feedUrl}
                   onChange={(e) => setFeedUrl(e.target.value)}
                   placeholder="vidu.com/rss.xml"
-                  className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-white/30"
+                  className="rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-1)] outline-none focus:border-[var(--text-3)]"
                 />
                 {error && <p className="text-[12px] text-[#FF375F]">{error}</p>}
                 <button
                   type="submit"
                   disabled={validating}
-                  className="flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-[13px] font-semibold text-black transition hover:bg-white/90 disabled:opacity-50"
+                  className="flex items-center justify-center gap-1.5 rounded-xl bg-[var(--text-1)] px-4 py-2.5 text-[13px] font-semibold text-[var(--bg)] transition hover:opacity-90 disabled:opacity-50"
                 >
                   <PlusIcon width={14} height={14} />
                   {validating ? 'Đang kiểm tra...' : 'Thêm nguồn RSS'}
@@ -283,13 +303,13 @@ export default function SettingsModal({
             </div>
 
             <section>
-              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-white/40">
+              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
                 Khác
               </h3>
               <button
                 type="button"
                 onClick={onClearCache}
-                className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-[13px] font-medium text-white/70 transition hover:bg-white/10 hover:text-white"
+                className="w-full rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-4 py-2.5 text-[13px] font-medium text-[var(--text-2)] transition hover:bg-[var(--surface-2)] hover:text-[var(--text-1)]"
               >
                 Xoá bộ nhớ đệm tin tức
               </button>
@@ -317,7 +337,9 @@ function ThemeSwatch({
       type="button"
       onClick={onClick}
       className={`flex flex-1 flex-col items-center gap-1.5 rounded-xl border px-3 py-3 text-[12px] font-medium transition ${
-        active ? 'border-white bg-white text-black' : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10'
+        active
+          ? 'border-[var(--text-1)] bg-[var(--text-1)] text-[var(--bg)]'
+          : 'border-[var(--border-1)] bg-[var(--surface-1)] text-[var(--text-2)] hover:bg-[var(--surface-2)]'
       }`}
     >
       {icon}
@@ -344,7 +366,9 @@ function FontSwatch({
       type="button"
       onClick={onClick}
       className={`flex flex-1 items-center gap-2.5 rounded-xl border px-3 py-2.5 text-[12px] font-medium transition ${
-        active ? 'border-white bg-white text-black' : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10'
+        active
+          ? 'border-[var(--text-1)] bg-[var(--text-1)] text-[var(--bg)]'
+          : 'border-[var(--border-1)] bg-[var(--surface-1)] text-[var(--text-2)] hover:bg-[var(--surface-2)]'
       }`}
     >
       <span className={`text-lg leading-none ${sampleClassName}`}>{sample}</span>
@@ -366,18 +390,18 @@ function UpdateSection({
 
   return (
     <section className="mb-7">
-      <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-white/40">
+      <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
         Cập nhật ứng dụng
       </h3>
 
       {!isElectron && (
-        <p className="mb-3 text-[12px] text-white/40">
+        <p className="mb-3 text-[12px] text-[var(--text-3)]">
           Kiểm tra cập nhật chỉ khả dụng trên bản cài đặt desktop.
         </p>
       )}
 
-      <label className="mb-2 flex cursor-pointer items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-        <span className="text-[14px] text-white/85">Tự động kiểm tra khi mở ứng dụng</span>
+      <label className="mb-2 flex cursor-pointer items-center justify-between rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-4 py-3">
+        <span className="text-[14px] text-[var(--text-1)]">Tự động kiểm tra khi mở ứng dụng</span>
         <input
           type="checkbox"
           checked={settings.autoUpdateEnabled}
@@ -386,11 +410,11 @@ function UpdateSection({
         />
       </label>
 
-      <div className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
-        <div className="text-[13px] text-white/60">
+      <div className="flex items-center justify-between gap-3 rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-4 py-3">
+        <div className="text-[13px] text-[var(--text-2)]">
           {currentVersion ? (
             <>
-              Phiên bản hiện tại: <span className="text-white/85">{currentVersion}</span>
+              Phiên bản hiện tại: <span className="text-[var(--text-1)]">{currentVersion}</span>
             </>
           ) : (
             'Không xác định phiên bản'
@@ -398,14 +422,14 @@ function UpdateSection({
           {status === 'update-available' && latest && (
             <p className="mt-1 text-[#30D158]">Có bản mới: v{latest.version}</p>
           )}
-          {status === 'up-to-date' && <p className="mt-1 text-white/40">Bạn đang dùng bản mới nhất.</p>}
+          {status === 'up-to-date' && <p className="mt-1 text-[var(--text-3)]">Bạn đang dùng bản mới nhất.</p>}
           {status === 'error' && <p className="mt-1 text-[#FF375F]">Không thể kiểm tra lúc này.</p>}
         </div>
         <button
           type="button"
           onClick={check}
           disabled={!isElectron || status === 'checking'}
-          className="flex shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-2 text-[12px] font-medium text-white transition hover:bg-white/20 disabled:opacity-40"
+          className="flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--surface-2)] px-3.5 py-2 text-[12px] font-medium text-[var(--text-1)] transition hover:bg-[var(--surface-3)] disabled:opacity-40"
         >
           <RefreshIcon width={13} height={13} />
           {status === 'checking' ? 'Đang kiểm tra...' : 'Kiểm tra ngay'}
@@ -417,7 +441,7 @@ function UpdateSection({
           type="button"
           onClick={install}
           disabled={!latest.downloadUrl}
-          className="mt-2 flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-[13px] font-semibold text-black transition hover:bg-white/90 disabled:opacity-40"
+          className="mt-2 flex items-center justify-center gap-1.5 rounded-xl bg-[var(--text-1)] px-4 py-2.5 text-[13px] font-semibold text-[var(--bg)] transition hover:opacity-90 disabled:opacity-40"
         >
           {latest.downloadUrl ? 'Cập nhật ngay' : 'Không tìm thấy tệp cài đặt'}
         </button>
@@ -425,11 +449,11 @@ function UpdateSection({
 
       {installStatus === 'downloading' && (
         <div className="mt-2">
-          <div className="mb-1.5 flex items-center justify-between text-[12px] text-white/60">
+          <div className="mb-1.5 flex items-center justify-between text-[12px] text-[var(--text-2)]">
             <span>Đang tải bản cập nhật...</span>
             <span className="tabular-nums">{installProgress}%</span>
           </div>
-          <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+          <div className="h-1.5 overflow-hidden rounded-full bg-[var(--surface-2)]">
             <div
               className="h-full rounded-full bg-[#0A84FF] transition-[width] duration-200"
               style={{ width: `${installProgress}%` }}

@@ -38,8 +38,8 @@ export default function UpdateBanner({ toast, onDismiss, onClick }: Props) {
               />
             </span>
             <span className="flex-1">
-              <span className="block text-[13px] font-semibold text-white">Có tin mới</span>
-              <span className="mt-0.5 block text-[12px] text-white/60">
+              <span className="block text-[13px] font-semibold text-[var(--text-1)]">Có tin mới</span>
+              <span className="mt-0.5 block text-[12px] text-[var(--text-2)]">
                 {toast.count} bài viết mới trong {toast.tagLabel}
               </span>
             </span>

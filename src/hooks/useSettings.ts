@@ -9,6 +9,7 @@ const DEFAULT_SETTINGS: Settings = {
   readerTheme: 'dark',
   readerFont: 'serif',
   autoUpdateEnabled: true,
+  appTheme: 'dark',
 }
 
 function readInitial(): Settings {
@@ -31,6 +32,10 @@ export function useSettings() {
       // storage unavailable — settings just won't persist
     }
   }, [settings])
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', settings.appTheme)
+  }, [settings.appTheme])
 
   function update(patch: Partial<Settings>) {
     setSettings((prev) => ({ ...prev, ...patch }))

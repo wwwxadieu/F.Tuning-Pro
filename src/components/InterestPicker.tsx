@@ -21,8 +21,8 @@ export default function InterestPicker({ tags, selected, onToggle }: Props) {
             whileTap={{ scale: 0.96 }}
             className={`flex flex-col items-center gap-2 rounded-2xl border px-4 py-5 text-center transition ${
               active
-                ? 'border-white bg-white text-black'
-                : 'border-white/10 bg-white/5 text-white/80 hover:bg-white/10'
+                ? 'border-[var(--text-1)] bg-[var(--text-1)] text-[var(--bg)]'
+                : 'border-[var(--border-1)] bg-[var(--surface-1)] text-[var(--text-2)] hover:bg-[var(--surface-2)]'
             }`}
           >
             <CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={20} chip className="!h-11 !w-11" />

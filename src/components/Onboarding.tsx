@@ -25,7 +25,7 @@ export default function Onboarding({ onComplete }: Props) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black px-6 py-10"
+      className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-[var(--bg)] px-6 py-10"
       data-lenis-prevent
     >
       <motion.div
@@ -41,7 +41,7 @@ export default function Onboarding({ onComplete }: Props) {
           <h1 className="text-gradient text-3xl font-semibold tracking-tight sm:text-4xl">
             Bạn quan tâm điều gì?
           </h1>
-          <p className="mx-auto mt-3 max-w-md text-[15px] text-white/50">
+          <p className="mx-auto mt-3 max-w-md text-[15px] text-[var(--text-3)]">
             Chọn một vài chủ đề để F.VNN ưu tiên hiển thị tin tức phù hợp với bạn. Bạn có thể thay đổi
             bất cứ lúc nào trong phần Cài đặt.
           </p>
@@ -56,14 +56,14 @@ export default function Onboarding({ onComplete }: Props) {
             disabled={selected.size === 0}
             whileHover={{ scale: selected.size > 0 ? 1.03 : 1 }}
             whileTap={{ scale: selected.size > 0 ? 0.97 : 1 }}
-            className="w-full max-w-xs rounded-full bg-white px-7 py-3 text-[15px] font-semibold text-black shadow-[0_8px_30px_rgba(255,255,255,0.15)] transition disabled:cursor-not-allowed disabled:opacity-30 sm:w-auto"
+            className="w-full max-w-xs rounded-full bg-[var(--text-1)] px-7 py-3 text-[15px] font-semibold text-[var(--bg)] shadow-[0_8px_30px_rgba(255,255,255,0.15)] transition disabled:cursor-not-allowed disabled:opacity-30 sm:w-auto"
           >
             {selected.size === 0 ? 'Chọn ít nhất 1 chủ đề' : `Bắt đầu với ${selected.size} chủ đề`}
           </motion.button>
           <button
             type="button"
             onClick={() => onComplete([])}
-            className="text-[13px] font-medium text-white/40 transition hover:text-white/70"
+            className="text-[13px] font-medium text-[var(--text-3)] transition hover:text-[var(--text-2)]"
           >
             Bỏ qua, hiển thị tất cả
           </button>

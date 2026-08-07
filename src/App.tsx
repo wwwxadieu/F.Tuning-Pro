@@ -107,7 +107,7 @@ export default function App() {
 
   return (
     <TagsProvider customTags={customSources}>
-      <div className="min-h-screen bg-black">
+      <div className="min-h-screen bg-[var(--bg)]">
         <AnimatePresence>{!onboarded && <Onboarding onComplete={completeOnboarding} />}</AnimatePresence>
 
         <Header

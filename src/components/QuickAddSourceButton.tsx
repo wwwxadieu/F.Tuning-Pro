@@ -65,12 +65,12 @@ export default function QuickAddSourceButton({ onAddSource }: Props) {
             className="glass w-80 rounded-2xl p-4 shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
           >
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-[14px] font-semibold text-white">Thêm nguồn tin nhanh</h3>
+              <h3 className="text-[14px] font-semibold text-[var(--text-1)]">Thêm nguồn tin nhanh</h3>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Đóng"
-                className="flex h-6 w-6 items-center justify-center rounded-lg text-white/40 transition hover:bg-white/10 hover:text-white"
+                className="flex h-6 w-6 items-center justify-center rounded-lg text-[var(--text-3)] transition hover:bg-[var(--surface-2)] hover:text-[var(--text-1)]"
               >
                 <XIcon width={13} height={13} />
               </button>
@@ -85,19 +85,19 @@ export default function QuickAddSourceButton({ onAddSource }: Props) {
                   onChange={(e) => setFeedUrl(e.target.value)}
                   placeholder="vidu.com/rss.xml"
                   autoFocus
-                  className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-white/30"
+                  className="rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-1)] outline-none focus:border-[var(--text-3)]"
                 />
                 <input
                   value={label}
                   onChange={(e) => setLabel(e.target.value)}
                   placeholder="Tên chuyên mục (tuỳ chọn)"
-                  className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm outline-none focus:border-white/30"
+                  className="rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-1)] outline-none focus:border-[var(--text-3)]"
                 />
                 {error && <p className="text-[12px] text-[#FF375F]">{error}</p>}
                 <button
                   type="submit"
                   disabled={validating}
-                  className="flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-[13px] font-semibold text-black transition hover:bg-white/90 disabled:opacity-50"
+                  className="flex items-center justify-center gap-1.5 rounded-xl bg-[var(--text-1)] px-4 py-2.5 text-[13px] font-semibold text-[var(--bg)] transition hover:opacity-90 disabled:opacity-50"
                 >
                   <PlusIcon width={14} height={14} />
                   {validating ? 'Đang kiểm tra...' : 'Thêm nguồn'}
