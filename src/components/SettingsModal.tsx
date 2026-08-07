@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { discoverFeed } from '../services/feedDiscovery'
 import { useTags } from '../context/TagsContext'
-import { useAppUpdate } from '../hooks/useAppUpdate'
+import type { AppUpdateState } from '../hooks/useAppUpdate'
 import type { Settings, Tag, ReaderTheme, ReaderFont } from '../types/news'
 import { parseFeedUrl } from '../utils/url'
 import CategoryIcon from './CategoryIcon'
@@ -20,6 +20,7 @@ interface Props {
   onClearCache: () => void
   interests: string[]
   onToggleInterest: (tagId: string) => void
+  appUpdate: AppUpdateState
 }
 
 export default function SettingsModal({
@@ -33,6 +34,7 @@ export default function SettingsModal({
   onClearCache,
   interests,
   onToggleInterest,
+  appUpdate,
 }: Props) {
   const { tags } = useTags()
   const [label, setLabel] = useState('')
@@ -277,7 +279,7 @@ export default function SettingsModal({
               </form>
             </section>
 
-            <UpdateSection settings={settings} onUpdateSettings={onUpdateSettings} />
+            <UpdateSection settings={settings} onUpdateSettings={onUpdateSettings} appUpdate={appUpdate} />
             </div>
 
             <section>
@@ -354,12 +356,13 @@ function FontSwatch({
 function UpdateSection({
   settings,
   onUpdateSettings,
+  appUpdate,
 }: {
   settings: Settings
   onUpdateSettings: (patch: Partial<Settings>) => void
+  appUpdate: AppUpdateState
 }) {
-  const { isElectron, currentVersion, status, latest, check, installStatus, installProgress, install } =
-    useAppUpdate(settings.autoUpdateEnabled)
+  const { isElectron, currentVersion, status, latest, check, installStatus, installProgress, install } = appUpdate
 
   return (
     <section className="mb-7">

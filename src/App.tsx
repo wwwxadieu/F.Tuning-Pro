@@ -7,6 +7,7 @@ import NewsGrid from './components/NewsGrid'
 import Footer from './components/Footer'
 import SettingsModal from './components/SettingsModal'
 import UpdateBanner from './components/UpdateBanner'
+import AppUpdateToast from './components/AppUpdateToast'
 import ReaderView from './components/ReaderView'
 import Onboarding from './components/Onboarding'
 import TodayDigest from './components/TodayDigest'
@@ -16,6 +17,7 @@ import { useSettings } from './hooks/useSettings'
 import { useCustomSources } from './hooks/useCustomSources'
 import { useSmoothScroll } from './hooks/useSmoothScroll'
 import { useInterests } from './hooks/useInterests'
+import { useAppUpdate } from './hooks/useAppUpdate'
 import { TagsProvider } from './context/TagsContext'
 import { TAGS as BUILT_IN_TAGS } from './data/tags'
 import { smoothScrollTo } from './lib/lenisInstance'
@@ -31,6 +33,9 @@ export default function App() {
   const { sources: customSources, addSource, removeSource } = useCustomSources()
   const { onboarded, interests, setInterests, completeOnboarding } = useInterests()
   const allTags: Tag[] = useMemo(() => [...BUILT_IN_TAGS, ...customSources], [customSources])
+
+  const appUpdate = useAppUpdate(settings.autoUpdateEnabled)
+  const [dismissedUpdateVersion, setDismissedUpdateVersion] = useState<string | null>(null)
 
   const [notifications, setNotifications] = useState<Notification[]>([])
   const [toast, setToast] = useState<Notification | null>(null)
@@ -151,6 +156,12 @@ export default function App() {
 
         <UpdateBanner toast={toast} onDismiss={() => setToast(null)} onClick={selectTagAndScroll} />
 
+        <AppUpdateToast
+          appUpdate={appUpdate}
+          dismissed={dismissedUpdateVersion === appUpdate.latest?.version}
+          onDismiss={() => setDismissedUpdateVersion(appUpdate.latest?.version ?? null)}
+        />
+
         <QuickAddSourceButton onAddSource={addSource} />
 
         <SettingsModal
@@ -168,6 +179,7 @@ export default function App() {
               prev.includes(tagId) ? prev.filter((i) => i !== tagId) : [...prev, tagId]
             )
           }
+          appUpdate={appUpdate}
         />
 
         <ReaderView

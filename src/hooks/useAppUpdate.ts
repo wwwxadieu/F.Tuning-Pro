@@ -65,3 +65,5 @@ export function useAppUpdate(autoCheckEnabled: boolean) {
 
   return { isElectron, currentVersion, status, latest, check, installStatus, installProgress, install }
 }
+
+export type AppUpdateState = ReturnType<typeof useAppUpdate>
