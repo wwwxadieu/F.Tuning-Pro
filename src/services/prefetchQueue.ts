@@ -10,9 +10,10 @@ const MAX_CONCURRENT = 2
 const scheduled = new Set<string>()
 const queue: string[] = []
 let active = 0
+let paused = false
 
 function runNext() {
-  if (active >= MAX_CONCURRENT) return
+  if (paused || active >= MAX_CONCURRENT) return
   const url = queue.shift()
   if (!url) return
   active++
@@ -29,4 +30,19 @@ export function schedulePrefetch(url: string) {
   scheduled.add(url)
   queue.push(url)
   runNext()
+}
+
+// The reader competes with in-flight prefetches for the same proxy, and on
+// slow-to-render sources (heavy forum pages, etc.) that contention can be
+// the difference between the article the user actually asked for loading in
+// a few seconds versus timing out. Pausing admission of new prefetches while
+// the reader is open — already-started ones are left to finish — clears the
+// field for the one fetch that actually matters right now.
+export function pausePrefetch() {
+  paused = true
+}
+
+export function resumePrefetch() {
+  paused = false
+  for (let i = 0; i < MAX_CONCURRENT; i++) runNext()
 }

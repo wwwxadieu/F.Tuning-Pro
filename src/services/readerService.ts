@@ -47,8 +47,14 @@ function writeCache(url: string, content: ReaderContent) {
   }
 }
 
+// Heavy, JS-rendered pages (forum threads, etc.) can take the reader proxy
+// 8-12+ seconds to render on a cold fetch — long, but a real success, not a
+// hang. This bounds the wait instead of leaving it open-ended.
+const FETCH_TIMEOUT_MS = 20_000
+
 async function fetchOnce(url: string, signal?: AbortSignal, priority?: RequestPriority): Promise<ReaderContent> {
-  const res = await fetch(`https://r.jina.ai/${url}`, { signal, priority })
+  const combinedSignal = signal ? AbortSignal.any([signal, AbortSignal.timeout(FETCH_TIMEOUT_MS)]) : AbortSignal.timeout(FETCH_TIMEOUT_MS)
+  const res = await fetch(`https://r.jina.ai/${url}`, { signal: combinedSignal, priority })
   if (!res.ok) throw new Error(`jina HTTP ${res.status}`)
   const text = await res.text()
 

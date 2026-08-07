@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { Article, ReaderTheme, Settings } from '../types/news'
 import { getLenisInstance } from '../lib/lenisInstance'
 import { fetchReaderContent } from '../services/readerService'
+import { pausePrefetch, resumePrefetch } from '../services/prefetchQueue'
 import { formatRelativeTime } from '../utils/time'
 import { PlaneIcon } from './categoryIcons'
 import ImageLightbox from './ImageLightbox'
@@ -64,7 +65,7 @@ export default function ReaderView({
     setZoomedImage(null)
     const controller = new AbortController()
 
-    fetchReaderContent(article.link, controller.signal)
+    fetchReaderContent(article.link, controller.signal, 'high')
       .then((content) => {
         setHtml(content.html)
         setState('ok')
@@ -76,6 +77,16 @@ export default function ReaderView({
 
     return () => controller.abort()
   }, [article, retryToken])
+
+  useEffect(() => {
+    // Background prefetches share the same proxy as the article the user is
+    // actually waiting on — pausing new ones (in-flight requests are left to
+    // finish) while the reader is open keeps that contention out of the way
+    // for exactly as long as it matters.
+    if (article) pausePrefetch()
+    else resumePrefetch()
+    return () => resumePrefetch()
+  }, [article])
 
   useEffect(() => {
     // The reader is a fixed overlay with its own scroll container — Lenis's
