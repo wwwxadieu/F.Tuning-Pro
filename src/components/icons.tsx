@@ -173,3 +173,23 @@ export function LayersIcon(props: IconProps) {
     </svg>
   )
 }
+
+export function PinIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <line x1="7" y1="4" x2="17" y2="4" />
+      <path d="M9 4v6l-3 4v2h12v-2l-3-4V4" />
+      <line x1="12" y1="16" x2="12" y2="21" />
+    </svg>
+  )
+}
+
+export function ShareIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M12 16V4" />
+      <polyline points="7 9 12 4 17 9" />
+      <path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6" />
+    </svg>
+  )
+}

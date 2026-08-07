@@ -10,6 +10,7 @@ import {
   ExternalLinkIcon,
   MoonIcon,
   SepiaIcon,
+  ShareIcon,
   SunIcon,
   TextSizeIcon,
   XIcon,
@@ -47,6 +48,7 @@ export default function ReaderView({
   const [state, setState] = useState<LoadState>('loading')
   const [html, setHtml] = useState<string>('')
   const [zoomedImage, setZoomedImage] = useState<string | null>(null)
+  const [shareState, setShareState] = useState<'idle' | 'copied' | 'error'>('idle')
 
   useEffect(() => {
     if (!article) return
@@ -79,6 +81,29 @@ export default function ReaderView({
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [article, hasPrev, hasNext, onPrev, onNext, onClose, zoomedImage])
+
+  async function handleShare() {
+    if (!article) return
+    const shareData = { title: article.title, text: article.description, url: article.link }
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData)
+        return
+      } catch (err) {
+        if (err instanceof DOMException && err.name === 'AbortError') return
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(article.link)
+      setShareState('copied')
+    } catch {
+      setShareState('error')
+    } finally {
+      setTimeout(() => setShareState('idle'), 2000)
+    }
+  }
 
   const theme = THEME_STYLES[settings.readerTheme]
 
@@ -151,6 +176,24 @@ export default function ReaderView({
                 </span>
               </ToolbarButton>
               <div className="mx-1 h-5 w-px" style={{ backgroundColor: `${theme.text}1a` }} />
+              <div className="relative">
+                <ToolbarButton onClick={handleShare} label="Chia sẻ" style={{ color: theme.subtle }}>
+                  <ShareIcon width={16} height={16} />
+                </ToolbarButton>
+                <AnimatePresence>
+                  {shareState !== 'idle' && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute right-0 top-full mt-2 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-[11px] font-medium shadow-lg"
+                      style={{ backgroundColor: theme.text, color: theme.bg }}
+                    >
+                      {shareState === 'copied' ? 'Đã sao chép liên kết' : 'Không thể sao chép liên kết'}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
               <ToolbarButton
                 onClick={() => window.open(article.link, '_blank', 'noopener,noreferrer')}
                 label="Mở bản gốc"
