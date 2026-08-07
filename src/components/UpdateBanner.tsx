@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Notification } from '../types/news'
+import CategoryIcon from './CategoryIcon'
 
 interface Props {
   toast: Notification | null
@@ -25,8 +26,8 @@ export default function UpdateBanner({ toast, onDismiss, onClick }: Props) {
             }}
             className="glass pointer-events-auto flex items-start gap-3 rounded-2xl p-3.5 text-left shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
           >
-            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#0A84FF] to-[#BF5AF2] text-base">
-              {toast.tagEmoji}
+            <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#0A84FF] to-[#BF5AF2]">
+              <CategoryIcon tagId={toast.tagId} size={15} color="#ffffff" />
             </span>
             <span className="flex-1">
               <span className="block text-[13px] font-semibold text-white">Có tin mới</span>

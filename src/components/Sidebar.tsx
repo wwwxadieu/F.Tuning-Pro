@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTags } from '../context/TagsContext'
+import CategoryIcon from './CategoryIcon'
 import { GearIcon, LayersIcon, PlusIcon } from './icons'
 
 interface Props {
@@ -31,7 +32,7 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings }: Pr
             <nav className="flex flex-col gap-0.5">
               <SidebarItem
                 active={selected === null}
-                emoji="📰"
+                icon={<CategoryIcon tagId="all" size={13} chip />}
                 label="Tất cả"
                 onClick={() => onSelect(null)}
               />
@@ -39,7 +40,7 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings }: Pr
                 <SidebarItem
                   key={tag.id}
                   active={selected === tag.id}
-                  emoji={tag.emoji}
+                  icon={<CategoryIcon tagId={tag.id} size={13} chip />}
                   label={tag.label}
                   onClick={() => onSelect(tag.id)}
                 />
@@ -58,7 +59,7 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings }: Pr
                 <SidebarItem
                   key={tag.id}
                   active={selected === tag.id}
-                  emoji={tag.emoji}
+                  icon={<CategoryIcon tagId={tag.id} emoji={tag.emoji} size={13} chip />}
                   label={tag.label}
                   onClick={() => onSelect(tag.id)}
                 />
@@ -98,12 +99,12 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings }: Pr
 
 function SidebarItem({
   active,
-  emoji,
+  icon,
   label,
   onClick,
 }: {
   active: boolean
-  emoji: string
+  icon: React.ReactNode
   label: string
   onClick: () => void
 }) {
@@ -115,7 +116,7 @@ function SidebarItem({
         active ? 'bg-white text-black' : 'text-white/70 hover:bg-white/10 hover:text-white'
       }`}
     >
-      <span className="text-base leading-none">{emoji}</span>
+      {icon}
       <span className="truncate">{label}</span>
     </button>
   )

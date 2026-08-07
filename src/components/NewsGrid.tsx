@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { useTags } from '../context/TagsContext'
 import type { Article } from '../types/news'
+import CategoryIcon from './CategoryIcon'
 import NewsCard from './NewsCard'
 import CardSkeleton from './CardSkeleton'
 
@@ -55,8 +56,8 @@ export default function NewsGrid({
               transition={{ duration: 0.5 }}
               className="mb-5 flex items-center justify-between"
             >
-              <h2 className="flex items-center gap-2 text-xl font-semibold tracking-tight sm:text-2xl">
-                <span>{tag.emoji}</span>
+              <h2 className="flex items-center gap-2.5 text-xl font-semibold tracking-tight sm:text-2xl">
+                <CategoryIcon tagId={tag.id} emoji={tag.emoji} size={18} chip />
                 {tag.label}
               </h2>
               <span className="text-[12px] text-white/35">{tag.source}</span>

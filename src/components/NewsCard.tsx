@@ -2,6 +2,7 @@ import { motion, useMotionTemplate, useSpring } from 'framer-motion'
 import { useRef } from 'react'
 import type { Article } from '../types/news'
 import { useTags } from '../context/TagsContext'
+import CategoryIcon from './CategoryIcon'
 import { formatRelativeTime } from '../utils/time'
 
 interface Props {
@@ -82,9 +83,10 @@ export default function NewsCard({ article, index, onOpen }: Props) {
         {tag && (
           <span
             style={{ transform: 'translateZ(40px)' }}
-            className="absolute left-3 top-3 rounded-full bg-black/50 px-2.5 py-1 text-[11px] font-medium text-white backdrop-blur-md"
+            className="absolute left-3 top-3 flex items-center gap-1.5 rounded-full bg-black/50 py-1 pl-1.5 pr-2.5 text-[11px] font-medium text-white backdrop-blur-md"
           >
-            {tag.emoji} {tag.label}
+            <CategoryIcon tagId={tag.id} emoji={tag.emoji} size={11} />
+            {tag.label}
           </span>
         )}
       </div>

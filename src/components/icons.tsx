@@ -1,20 +1,24 @@
 import type { SVGProps } from 'react'
 
-type IconProps = SVGProps<SVGSVGElement>
+export type IconProps = SVGProps<SVGSVGElement>
 
-function base(props: IconProps) {
+// Shared premium icon language: a lighter 1.75px stroke (vs. the old 2px)
+// reads closer to SF Symbols' regular weight at the small sizes used here.
+export function iconBase(props: IconProps) {
   return {
     width: 18,
     height: 18,
     viewBox: '0 0 24 24',
     fill: 'none',
     stroke: 'currentColor',
-    strokeWidth: 2,
+    strokeWidth: 1.75,
     strokeLinecap: 'round' as const,
     strokeLinejoin: 'round' as const,
     ...props,
   }
 }
+
+const base = iconBase
 
 export function MenuIcon(props: IconProps) {
   return (
@@ -73,6 +77,14 @@ export function PlusIcon(props: IconProps) {
   return (
     <svg {...base(props)}>
       <line x1="12" y1="5" x2="12" y2="19" />
+      <line x1="5" y1="12" x2="19" y2="12" />
+    </svg>
+  )
+}
+
+export function MinusIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
       <line x1="5" y1="12" x2="19" y2="12" />
     </svg>
   )

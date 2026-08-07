@@ -4,6 +4,7 @@ import { fetchArticlesForTag } from '../services/newsService'
 import { useTags } from '../context/TagsContext'
 import { useAppUpdate } from '../hooks/useAppUpdate'
 import type { Settings, Tag, ReaderTheme, ReaderFont } from '../types/news'
+import CategoryIcon from './CategoryIcon'
 import { XIcon, TrashIcon, PlusIcon, SunIcon, MoonIcon, SepiaIcon, RefreshIcon, TextSizeIcon } from './icons'
 import InterestPicker from './InterestPicker'
 
@@ -228,7 +229,7 @@ export default function SettingsModal({
                       key={s.id}
                       className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-white/5 px-3 py-2"
                     >
-                      <span className="text-base">{s.emoji}</span>
+                      <CategoryIcon tagId={s.id} emoji={s.emoji} size={13} chip />
                       <span className="flex-1 truncate text-[13px] text-white/85">{s.label}</span>
                       <button
                         type="button"

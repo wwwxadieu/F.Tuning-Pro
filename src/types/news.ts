@@ -22,7 +22,6 @@ export interface Notification {
   id: string
   tagId: string
   tagLabel: string
-  tagEmoji: string
   count: number
   timestamp: number
   read: boolean

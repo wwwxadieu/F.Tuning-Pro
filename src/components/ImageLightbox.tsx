@@ -1,6 +1,6 @@
 import { AnimatePresence, motion, useMotionValue } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { PlusIcon, XIcon } from './icons'
+import { MinusIcon, PlusIcon, XIcon } from './icons'
 
 interface Props {
   src: string | null
@@ -81,7 +81,7 @@ export default function ImageLightbox({ src, onClose }: Props) {
               aria-label="Thu nhỏ"
               className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 disabled:opacity-30"
             >
-              <span className="text-lg leading-none">−</span>
+              <MinusIcon width={15} height={15} />
             </button>
             <span className="w-12 text-center text-[12px] tabular-nums text-white/60">
               {Math.round(scale * 100)}%

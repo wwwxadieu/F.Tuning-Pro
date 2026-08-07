@@ -42,7 +42,6 @@ export default function App() {
         id: `${tag.id}-${Date.now()}`,
         tagId: tag.id,
         tagLabel: tag.label,
-        tagEmoji: tag.emoji,
         count: newItems.length,
         timestamp: Date.now(),
         read: false,

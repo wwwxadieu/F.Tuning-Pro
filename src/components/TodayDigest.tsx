@@ -2,6 +2,8 @@ import { motion } from 'framer-motion'
 import { useMemo } from 'react'
 import type { Article } from '../types/news'
 import { useTags } from '../context/TagsContext'
+import CategoryIcon from './CategoryIcon'
+import { FlameIcon } from './categoryIcons'
 import { formatRelativeTime } from '../utils/time'
 
 interface Props {
@@ -25,8 +27,11 @@ export default function TodayDigest({ articles, loading, onOpenArticle }: Props)
 
   return (
     <section className="mx-auto max-w-[1600px] px-6 pb-2 pt-10 sm:px-8">
-      <div className="mb-4 flex items-baseline gap-2.5">
-        <h2 className="text-lg font-semibold tracking-tight sm:text-xl">🔥 Nổi bật hôm nay</h2>
+      <div className="mb-4 flex items-center gap-2.5">
+        <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
+          <FlameIcon width={19} height={19} style={{ color: '#FF9F0A' }} />
+          Nổi bật hôm nay
+        </h2>
         <span className="text-[12px] text-white/35">Tổng hợp tin mới nhất từ mọi chuyên mục</span>
       </div>
 
@@ -66,9 +71,12 @@ export default function TodayDigest({ articles, loading, onOpenArticle }: Props)
                       {article.title}
                     </h3>
                     <div className="mt-1 flex items-center gap-1.5 text-[11px] text-white/40">
-                      <span>
-                        {tag?.emoji} {tag?.label}
-                      </span>
+                      {tag && (
+                        <span className="flex items-center gap-1">
+                          <CategoryIcon tagId={tag.id} emoji={tag.emoji} size={11} />
+                          {tag.label}
+                        </span>
+                      )}
                       <span className="text-white/20">·</span>
                       <span>{formatRelativeTime(article.pubDate)}</span>
                     </div>

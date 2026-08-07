@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import type { Tag } from '../types/news'
+import CategoryIcon from './CategoryIcon'
 
 interface Props {
   tags: Tag[]
@@ -24,7 +25,7 @@ export default function InterestPicker({ tags, selected, onToggle }: Props) {
                 : 'border-white/10 bg-white/5 text-white/80 hover:bg-white/10'
             }`}
           >
-            <span className="text-2xl">{tag.emoji}</span>
+            <CategoryIcon tagId={tag.id} emoji={tag.emoji} size={20} chip className="!h-11 !w-11" />
             <span className="text-[13px] font-medium leading-tight">{tag.label}</span>
           </motion.button>
         )

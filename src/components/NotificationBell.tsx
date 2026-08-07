@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
+import CategoryIcon from './CategoryIcon'
 import { BellIcon } from './icons'
 import type { Notification } from '../types/news'
 
@@ -70,7 +71,7 @@ export default function NotificationBell({ notifications, unreadCount, onOpen, o
                       }}
                       className="flex w-full items-start gap-2.5 rounded-xl px-2 py-2 text-left transition hover:bg-white/10"
                     >
-                      <span className="mt-0.5 text-base">{n.tagEmoji}</span>
+                      <CategoryIcon tagId={n.tagId} size={13} chip className="mt-0.5" />
                       <span className="flex-1">
                         <span className="block text-[13px] text-white/90">
                           <strong className="font-semibold">{n.count}</strong> tin mới trong{' '}

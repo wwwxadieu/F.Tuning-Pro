@@ -35,7 +35,7 @@ export default function Onboarding({ onComplete }: Props) {
       >
         <div className="mb-8 text-center">
           <span className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0A84FF] to-[#BF5AF2] text-xl font-bold shadow-lg shadow-blue-500/20">
-            L
+            F
           </span>
           <h1 className="text-gradient text-3xl font-semibold tracking-tight sm:text-4xl">
             Bạn quan tâm điều gì?
