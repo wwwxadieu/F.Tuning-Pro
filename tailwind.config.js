@@ -4,6 +4,9 @@ export default {
   darkMode: 'class',
   theme: {
     extend: {
+      screens: {
+        '3xl': '1800px',
+      },
       fontFamily: {
         sans: [
           '-apple-system',

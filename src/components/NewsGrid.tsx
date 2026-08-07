@@ -16,7 +16,7 @@ interface Props {
   onOpenArticle: (article: Article, list: Article[]) => void
 }
 
-const MASONRY_COLS = 'columns-1 sm:columns-2 lg:columns-3 xl:columns-4'
+const MASONRY_COLS = 'columns-1 sm:columns-2 lg:columns-3 xl:columns-4 3xl:columns-5'
 
 export default function NewsGrid({
   articles,

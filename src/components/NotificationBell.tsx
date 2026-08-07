@@ -55,6 +55,7 @@ export default function NotificationBell({ notifications, unreadCount, onOpen, o
             exit={{ opacity: 0, y: -8, scale: 0.97 }}
             transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="glass absolute right-0 top-11 z-50 max-h-[70vh] w-80 overflow-y-auto rounded-2xl p-2 shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
+            data-lenis-prevent
           >
             <div className="px-2 py-1.5 text-[13px] font-semibold text-white">Thông báo</div>
             {notifications.length === 0 ? (

@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
-import { fetchArticlesForTag } from '../services/newsService'
-import type { Tag } from '../types/news'
+import { discoverFeed } from '../services/feedDiscovery'
 import { parseFeedUrl } from '../utils/url'
 import { PlusIcon, XIcon } from './icons'
 
@@ -21,32 +20,25 @@ export default function QuickAddSourceButton({ onAddSource }: Props) {
     e.preventDefault()
     setError(null)
     if (!feedUrl.trim()) {
-      setError('Vui lòng nhập đường dẫn RSS.')
+      setError('Vui lòng nhập đường dẫn trang tin hoặc RSS.')
       return
     }
     const url = parseFeedUrl(feedUrl)
     if (!url) {
-      setError('Đường dẫn RSS không hợp lệ.')
+      setError('Đường dẫn không hợp lệ.')
       return
     }
 
     setValidating(true)
     try {
       const name = label.trim() || url.hostname.replace(/^www\./, '')
-      const tempTag: Tag = {
-        id: 'validate-temp',
-        label: name,
-        emoji: '📰',
-        feedUrl: url.toString(),
-        source: url.hostname,
-      }
-      const items = await fetchArticlesForTag(tempTag, undefined, { forceRefresh: true })
-      if (items.length === 0) {
-        setError('Nguồn này không có bài viết nào, hoặc không phải RSS hợp lệ.')
+      const discovered = await discoverFeed(url)
+      if (!discovered) {
+        setError('Không tìm thấy nguồn tin RSS từ đường dẫn này.')
         setValidating(false)
         return
       }
-      onAddSource({ label: name, feedUrl: url.toString() })
+      onAddSource({ label: name, feedUrl: discovered.feedUrl })
       setLabel('')
       setFeedUrl('')
       setSuccess(true)
@@ -55,7 +47,7 @@ export default function QuickAddSourceButton({ onAddSource }: Props) {
         setSuccess(false)
       }, 1200)
     } catch {
-      setError('Không thể đọc nguồn RSS này. Kiểm tra lại đường dẫn.')
+      setError('Không thể đọc nguồn tin này. Kiểm tra lại đường dẫn.')
     } finally {
       setValidating(false)
     }

@@ -26,7 +26,7 @@ export default function TodayDigest({ articles, loading, onOpenArticle }: Props)
   if (!loading && topStories.length === 0) return null
 
   return (
-    <section className="mx-auto max-w-[1600px] px-6 pb-2 pt-10 sm:px-8">
+    <section className="mx-auto max-w-[1900px] px-6 pb-2 pt-10 sm:px-8">
       <div className="mb-4 flex items-center gap-2.5">
         <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
           <FlameIcon width={19} height={19} style={{ color: '#FF9F0A' }} />

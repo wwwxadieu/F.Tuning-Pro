@@ -26,6 +26,7 @@ export default function Onboarding({ onComplete }: Props) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black px-6 py-10"
+      data-lenis-prevent
     >
       <motion.div
         initial={{ opacity: 0, y: 24 }}

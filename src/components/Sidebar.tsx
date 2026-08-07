@@ -29,6 +29,7 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings }: Pr
           exit={{ x: -260, opacity: 0 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="fixed bottom-0 left-0 top-0 z-40 flex w-64 shrink-0 flex-col overflow-y-auto border-r border-white/10 bg-black/60 pb-6 pt-24 backdrop-blur-2xl"
+          data-lenis-prevent
         >
           {pinnedTags.length > 0 && (
             <>

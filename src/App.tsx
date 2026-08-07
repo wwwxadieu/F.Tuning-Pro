@@ -127,7 +127,7 @@ export default function App() {
 
           <TodayDigest articles={articles} loading={digestLoading} onOpenArticle={handleOpenArticle} />
 
-          <main className="mx-auto max-w-[1600px] px-6 pb-10 pt-16 sm:px-8">
+          <main className="mx-auto max-w-[1900px] px-6 pb-10 pt-16 sm:px-8">
             <NewsGrid
               articles={articles}
               statuses={statuses}

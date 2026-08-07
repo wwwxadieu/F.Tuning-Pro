@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import type { Article, ReaderTheme, Settings } from '../types/news'
+import { getLenisInstance } from '../lib/lenisInstance'
 import { fetchReaderContent } from '../services/readerService'
 import { formatRelativeTime } from '../utils/time'
 import ImageLightbox from './ImageLightbox'
@@ -69,6 +70,21 @@ export default function ReaderView({
 
     return () => controller.abort()
   }, [article])
+
+  useEffect(() => {
+    // The reader is a fixed overlay with its own scroll container — Lenis's
+    // default global wheel handling otherwise hijacks scroll input meant
+    // for it and tries to scroll the (hidden) page behind it instead.
+    const lenis = getLenisInstance()
+    if (article) lenis?.stop()
+    else lenis?.start()
+  }, [article])
+
+  useEffect(() => {
+    return () => {
+      getLenisInstance()?.start()
+    }
+  }, [])
 
   useEffect(() => {
     if (!article) return
@@ -204,8 +220,11 @@ export default function ReaderView({
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto">
-            <article className="mx-auto max-w-[680px] px-6 py-10 sm:px-8">
+          <div className="flex-1 overflow-y-auto" data-lenis-prevent>
+            <article
+              className="mx-auto max-w-[72ch] px-6 py-10 sm:px-8"
+              style={{ fontSize: `${settings.readerFontSize}px` }}
+            >
               {article.image && (
                 <img
                   src={article.image}

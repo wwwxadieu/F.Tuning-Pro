@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
-import { fetchArticlesForTag } from '../services/newsService'
+import { discoverFeed } from '../services/feedDiscovery'
 import { useTags } from '../context/TagsContext'
 import { useAppUpdate } from '../hooks/useAppUpdate'
 import type { Settings, Tag, ReaderTheme, ReaderFont } from '../types/news'
@@ -45,36 +45,29 @@ export default function SettingsModal({
     e.preventDefault()
     setError(null)
     if (!label.trim() || !feedUrl.trim()) {
-      setError('Vui lòng nhập tên và đường dẫn RSS.')
+      setError('Vui lòng nhập tên và đường dẫn.')
       return
     }
     const url = parseFeedUrl(feedUrl)
     if (!url) {
-      setError('Đường dẫn RSS không hợp lệ.')
+      setError('Đường dẫn không hợp lệ.')
       return
     }
 
     setValidating(true)
     try {
-      const tempTag: Tag = {
-        id: 'validate-temp',
-        label: label.trim(),
-        emoji: emoji.trim() || '📰',
-        feedUrl: url.toString(),
-        source: url.hostname,
-      }
-      const items = await fetchArticlesForTag(tempTag, undefined, { forceRefresh: true })
-      if (items.length === 0) {
-        setError('Nguồn này không có bài viết nào, hoặc không phải RSS hợp lệ.')
+      const discovered = await discoverFeed(url)
+      if (!discovered) {
+        setError('Không tìm thấy nguồn tin RSS từ đường dẫn này.')
         setValidating(false)
         return
       }
-      onAddSource({ label: label.trim(), feedUrl: url.toString(), emoji: emoji.trim() || undefined })
+      onAddSource({ label: label.trim(), feedUrl: discovered.feedUrl, emoji: emoji.trim() || undefined })
       setLabel('')
       setEmoji('')
       setFeedUrl('')
     } catch {
-      setError('Không thể đọc nguồn RSS này. Kiểm tra lại đường dẫn.')
+      setError('Không thể đọc nguồn tin này. Kiểm tra lại đường dẫn.')
     } finally {
       setValidating(false)
     }
@@ -97,6 +90,7 @@ export default function SettingsModal({
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
             className="glass max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl p-6 shadow-[0_30px_80px_rgba(0,0,0,0.7)]"
+            data-lenis-prevent
           >
             <div className="mb-6 flex items-center justify-between">
               <h2 className="text-lg font-semibold tracking-tight">Cài đặt</h2>
