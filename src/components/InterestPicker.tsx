@@ -21,7 +21,7 @@ export default function InterestPicker({ tags, selected, onToggle }: Props) {
             whileTap={{ scale: 0.96 }}
             className={`flex flex-col items-center gap-2 rounded-2xl border px-4 py-5 text-center transition ${
               active
-                ? 'border-[var(--text-1)] bg-[var(--text-1)] text-[var(--bg)]'
+                ? 'border-[#0A84FF] bg-[#0A84FF] text-white'
                 : 'border-[var(--border-1)] bg-[var(--surface-1)] text-[var(--text-2)] hover:bg-[var(--surface-2)]'
             }`}
           >

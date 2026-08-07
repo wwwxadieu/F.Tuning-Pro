@@ -6,7 +6,17 @@ import type { AppUpdateState } from '../hooks/useAppUpdate'
 import type { Settings, Tag, ReaderTheme, ReaderFont } from '../types/news'
 import { parseFeedUrl } from '../utils/url'
 import CategoryIcon from './CategoryIcon'
-import { XIcon, TrashIcon, PlusIcon, SunIcon, MoonIcon, SepiaIcon, RefreshIcon, TextSizeIcon } from './icons'
+import {
+  XIcon,
+  TrashIcon,
+  PlusIcon,
+  SunIcon,
+  MoonIcon,
+  SepiaIcon,
+  RefreshIcon,
+  TextSizeIcon,
+  ChevronDownIcon,
+} from './icons'
 import InterestPicker from './InterestPicker'
 
 interface Props {
@@ -42,6 +52,7 @@ export default function SettingsModal({
   const [feedUrl, setFeedUrl] = useState('')
   const [validating, setValidating] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [interestsOpen, setInterestsOpen] = useState(false)
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
@@ -96,7 +107,7 @@ export default function SettingsModal({
             exit={{ opacity: 0, y: 20, scale: 0.97 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="glass max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl p-6 shadow-[0_30px_80px_rgba(0,0,0,0.7)] lg:max-w-3xl xl:max-w-4xl"
+            className="glass max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl p-6 shadow-[0_30px_80px_rgba(0,0,0,0.7)] lg:max-w-3xl xl:max-w-5xl 2xl:max-w-6xl"
             data-lenis-prevent
           >
             <div className="mb-6 flex items-center justify-between">
@@ -111,41 +122,56 @@ export default function SettingsModal({
               </button>
             </div>
 
-            <section className="mb-7">
-              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
-                Giao diện
-              </h3>
-              <div className="flex gap-2">
-                <ThemeSwatch
-                  active={settings.appTheme === 'dark'}
-                  label="Tối"
-                  icon={<MoonIcon width={15} height={15} />}
-                  onClick={() => onUpdateSettings({ appTheme: 'dark' })}
-                />
-                <ThemeSwatch
-                  active={settings.appTheme === 'light'}
-                  label="Sáng"
-                  icon={<SunIcon width={15} height={15} />}
-                  onClick={() => onUpdateSettings({ appTheme: 'light' })}
-                />
-              </div>
-            </section>
+            <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8 xl:grid-cols-3">
+              <section className="mb-7">
+                <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
+                  Giao diện
+                </h3>
+                <div className="flex gap-2">
+                  <ThemeSwatch
+                    active={settings.appTheme === 'dark'}
+                    label="Tối"
+                    icon={<MoonIcon width={15} height={15} />}
+                    onClick={() => onUpdateSettings({ appTheme: 'dark' })}
+                  />
+                  <ThemeSwatch
+                    active={settings.appTheme === 'light'}
+                    label="Sáng"
+                    icon={<SunIcon width={15} height={15} />}
+                    onClick={() => onUpdateSettings({ appTheme: 'light' })}
+                  />
+                </div>
+              </section>
 
-            <section className="mb-7">
-              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
-                Sở thích của bạn
-              </h3>
-              <p className="mb-3 text-[12px] text-[var(--text-3)]">
-                Trang chủ sẽ ưu tiên hiển thị các chủ đề bạn chọn ở đây. Bỏ chọn hết để xem tất cả.
-              </p>
-              <InterestPicker
-                tags={tags}
-                selected={new Set(interests)}
-                onToggle={onToggleInterest}
-              />
-            </section>
+              <section className={`mb-7 ${interestsOpen ? 'lg:col-span-2 xl:col-span-3' : ''}`}>
+                <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
+                  Sở thích của bạn
+                </h3>
+                <button
+                  type="button"
+                  onClick={() => setInterestsOpen((v) => !v)}
+                  aria-expanded={interestsOpen}
+                  className="flex w-full items-center justify-between rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-4 py-3 text-left transition hover:bg-[var(--surface-2)]"
+                >
+                  <span className="text-[14px] text-[var(--text-1)]">
+                    {interests.length > 0 ? `${interests.length} chủ đề đã chọn` : 'Hiển thị tất cả chủ đề'}
+                  </span>
+                  <ChevronDownIcon
+                    width={15}
+                    height={15}
+                    className={`shrink-0 text-[var(--text-3)] transition-transform ${interestsOpen ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                {interestsOpen && (
+                  <div className="mt-3">
+                    <p className="mb-3 text-[12px] text-[var(--text-3)]">
+                      Trang chủ sẽ ưu tiên hiển thị các chủ đề bạn chọn ở đây. Bỏ chọn hết để xem tất cả.
+                    </p>
+                    <InterestPicker tags={tags} selected={new Set(interests)} onToggle={onToggleInterest} />
+                  </div>
+                )}
+              </section>
 
-            <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8">
               <section className="mb-7">
                 <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
                   Thông báo
@@ -300,9 +326,8 @@ export default function SettingsModal({
             </section>
 
             <UpdateSection settings={settings} onUpdateSettings={onUpdateSettings} appUpdate={appUpdate} />
-            </div>
 
-            <section>
+            <section className="mb-7">
               <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
                 Khác
               </h3>
@@ -314,6 +339,7 @@ export default function SettingsModal({
                 Xoá bộ nhớ đệm tin tức
               </button>
             </section>
+            </div>
           </motion.div>
         </motion.div>
       )}
@@ -338,7 +364,7 @@ function ThemeSwatch({
       onClick={onClick}
       className={`flex flex-1 flex-col items-center gap-1.5 rounded-xl border px-3 py-3 text-[12px] font-medium transition ${
         active
-          ? 'border-[var(--text-1)] bg-[var(--text-1)] text-[var(--bg)]'
+          ? 'border-[#0A84FF] bg-[#0A84FF] text-white'
           : 'border-[var(--border-1)] bg-[var(--surface-1)] text-[var(--text-2)] hover:bg-[var(--surface-2)]'
       }`}
     >
@@ -367,7 +393,7 @@ function FontSwatch({
       onClick={onClick}
       className={`flex flex-1 items-center gap-2.5 rounded-xl border px-3 py-2.5 text-[12px] font-medium transition ${
         active
-          ? 'border-[var(--text-1)] bg-[var(--text-1)] text-[var(--bg)]'
+          ? 'border-[#0A84FF] bg-[#0A84FF] text-white'
           : 'border-[var(--border-1)] bg-[var(--surface-1)] text-[var(--text-2)] hover:bg-[var(--surface-2)]'
       }`}
     >

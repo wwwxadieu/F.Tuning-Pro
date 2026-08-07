@@ -360,11 +360,31 @@ export default function ReaderView({
 
                   {state === 'error' && (
                     <div className="max-w-[70ch]">
-                      <p style={{ fontSize: `${settings.readerFontSize}px`, lineHeight: 1.7 }}>{article.description}</p>
-                      <p className="mt-6 rounded-xl px-4 py-3 text-[13px]" style={{ backgroundColor: theme.card, color: theme.subtle }}>
-                        Không thể tải toàn bộ nội dung bài viết. Đây là bản tóm tắt — bấm biểu tượng{' '}
-                        <ExternalLinkIcon width={12} height={12} style={{ display: 'inline' }} /> để mở bản đầy đủ.
-                      </p>
+                      {article.description && (
+                        <p style={{ fontSize: `${settings.readerFontSize}px`, lineHeight: 1.7 }}>
+                          {article.description}
+                        </p>
+                      )}
+                      <div
+                        className="mt-6 flex flex-col items-start gap-3 rounded-xl px-4 py-4 text-[13px]"
+                        style={{ backgroundColor: theme.card, color: theme.subtle }}
+                      >
+                        <p>
+                          {article.description
+                            ? 'Không thể tải toàn bộ nội dung bài viết. Đây là bản tóm tắt.'
+                            : 'Không thể tải nội dung bài viết này trong ứng dụng.'}
+                        </p>
+                        <a
+                          href={article.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold"
+                          style={{ backgroundColor: theme.text, color: theme.bg }}
+                        >
+                          Mở bản gốc
+                          <ExternalLinkIcon width={13} height={13} />
+                        </a>
+                      </div>
                     </div>
                   )}
                 </div>
