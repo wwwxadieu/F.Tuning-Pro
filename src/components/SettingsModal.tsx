@@ -2,8 +2,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useState } from 'react'
 import { fetchArticlesForTag } from '../services/newsService'
 import { useTags } from '../context/TagsContext'
-import type { Settings, Tag, ReaderTheme } from '../types/news'
-import { XIcon, TrashIcon, PlusIcon, SunIcon, MoonIcon, SepiaIcon } from './icons'
+import { useAppUpdate } from '../hooks/useAppUpdate'
+import type { Settings, Tag, ReaderTheme, ReaderFont } from '../types/news'
+import { XIcon, TrashIcon, PlusIcon, SunIcon, MoonIcon, SepiaIcon, RefreshIcon, TextSizeIcon } from './icons'
 import InterestPicker from './InterestPicker'
 
 interface Props {
@@ -162,6 +163,57 @@ export default function SettingsModal({
                   onClick={() => onUpdateSettings({ readerTheme: 'dark' as ReaderTheme })}
                 />
               </div>
+
+              <div className="mt-4 flex gap-2">
+                <FontSwatch
+                  active={settings.readerFont === 'serif'}
+                  label="Chữ có chân"
+                  sample="Aa"
+                  sampleClassName="font-serif"
+                  onClick={() => onUpdateSettings({ readerFont: 'serif' as ReaderFont })}
+                />
+                <FontSwatch
+                  active={settings.readerFont === 'sans'}
+                  label="Chữ không chân"
+                  sample="Aa"
+                  sampleClassName="font-sans"
+                  onClick={() => onUpdateSettings({ readerFont: 'sans' as ReaderFont })}
+                />
+              </div>
+
+              <div className="mt-4 flex items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+                <span className="flex items-center gap-2 text-[14px] text-white/85">
+                  <TextSizeIcon width={15} height={15} />
+                  Cỡ chữ
+                </span>
+                <div className="flex items-center gap-3">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onUpdateSettings({ readerFontSize: Math.max(14, settings.readerFontSize - 1) })
+                    }
+                    disabled={settings.readerFontSize <= 14}
+                    aria-label="Giảm cỡ chữ"
+                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10 text-white transition hover:bg-white/20 disabled:opacity-30"
+                  >
+                    −
+                  </button>
+                  <span className="w-8 text-center text-[13px] tabular-nums text-white/70">
+                    {settings.readerFontSize}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      onUpdateSettings({ readerFontSize: Math.min(26, settings.readerFontSize + 1) })
+                    }
+                    disabled={settings.readerFontSize >= 26}
+                    aria-label="Tăng cỡ chữ"
+                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-white/10 text-white transition hover:bg-white/20 disabled:opacity-30"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
             </section>
 
             <section className="mb-7">
@@ -225,6 +277,8 @@ export default function SettingsModal({
               </form>
             </section>
 
+            <UpdateSection settings={settings} onUpdateSettings={onUpdateSettings} />
+
             <section>
               <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-white/40">
                 Khác
@@ -266,5 +320,103 @@ function ThemeSwatch({
       {icon}
       {label}
     </button>
+  )
+}
+
+function FontSwatch({
+  active,
+  label,
+  sample,
+  sampleClassName,
+  onClick,
+}: {
+  active: boolean
+  label: string
+  sample: string
+  sampleClassName: string
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex flex-1 items-center gap-2.5 rounded-xl border px-3 py-2.5 text-[12px] font-medium transition ${
+        active ? 'border-white bg-white text-black' : 'border-white/10 bg-white/5 text-white/60 hover:bg-white/10'
+      }`}
+    >
+      <span className={`text-lg leading-none ${sampleClassName}`}>{sample}</span>
+      {label}
+    </button>
+  )
+}
+
+function UpdateSection({
+  settings,
+  onUpdateSettings,
+}: {
+  settings: Settings
+  onUpdateSettings: (patch: Partial<Settings>) => void
+}) {
+  const { isElectron, currentVersion, status, latest, check } = useAppUpdate(settings.autoUpdateEnabled)
+
+  return (
+    <section className="mb-7">
+      <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-white/40">
+        Cập nhật ứng dụng
+      </h3>
+
+      {!isElectron && (
+        <p className="mb-3 text-[12px] text-white/40">
+          Kiểm tra cập nhật chỉ khả dụng trên bản cài đặt desktop.
+        </p>
+      )}
+
+      <label className="mb-2 flex cursor-pointer items-center justify-between rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+        <span className="text-[14px] text-white/85">Tự động kiểm tra khi mở ứng dụng</span>
+        <input
+          type="checkbox"
+          checked={settings.autoUpdateEnabled}
+          onChange={(e) => onUpdateSettings({ autoUpdateEnabled: e.target.checked })}
+          className="h-5 w-5 accent-[#0A84FF]"
+        />
+      </label>
+
+      <div className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3">
+        <div className="text-[13px] text-white/60">
+          {currentVersion ? (
+            <>
+              Phiên bản hiện tại: <span className="text-white/85">{currentVersion}</span>
+            </>
+          ) : (
+            'Không xác định phiên bản'
+          )}
+          {status === 'update-available' && latest && (
+            <p className="mt-1 text-[#30D158]">Có bản mới: v{latest.version}</p>
+          )}
+          {status === 'up-to-date' && <p className="mt-1 text-white/40">Bạn đang dùng bản mới nhất.</p>}
+          {status === 'error' && <p className="mt-1 text-[#FF375F]">Không thể kiểm tra lúc này.</p>}
+        </div>
+        <button
+          type="button"
+          onClick={check}
+          disabled={!isElectron || status === 'checking'}
+          className="flex shrink-0 items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-2 text-[12px] font-medium text-white transition hover:bg-white/20 disabled:opacity-40"
+        >
+          <RefreshIcon width={13} height={13} />
+          {status === 'checking' ? 'Đang kiểm tra...' : 'Kiểm tra ngay'}
+        </button>
+      </div>
+
+      {status === 'update-available' && latest && (
+        <a
+          href={latest.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-2 flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-[13px] font-semibold text-black transition hover:bg-white/90"
+        >
+          Tải phiên bản mới
+        </a>
+      )}
+    </section>
   )
 }

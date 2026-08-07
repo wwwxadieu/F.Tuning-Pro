@@ -10,6 +10,7 @@ import UpdateBanner from './components/UpdateBanner'
 import ReaderView from './components/ReaderView'
 import Onboarding from './components/Onboarding'
 import TodayDigest from './components/TodayDigest'
+import QuickAddSourceButton from './components/QuickAddSourceButton'
 import { useNews } from './hooks/useNews'
 import { useSettings } from './hooks/useSettings'
 import { useCustomSources } from './hooks/useCustomSources'
@@ -102,7 +103,6 @@ export default function App() {
 
         <Header
           onToggleSidebar={() => setSidebarOpen((v) => !v)}
-          onOpenSettings={() => setSettingsOpen(true)}
           notifications={notifications}
           unreadCount={unreadCount}
           onReadNotifications={handleReadNotifications}
@@ -145,6 +145,8 @@ export default function App() {
         </div>
 
         <UpdateBanner toast={toast} onDismiss={() => setToast(null)} onClick={selectTagAndScroll} />
+
+        <QuickAddSourceButton onAddSource={addSource} />
 
         <SettingsModal
           open={settingsOpen}

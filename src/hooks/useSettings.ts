@@ -7,6 +7,8 @@ const DEFAULT_SETTINGS: Settings = {
   notificationsEnabled: true,
   readerFontSize: 18,
   readerTheme: 'dark',
+  readerFont: 'serif',
+  autoUpdateEnabled: true,
 }
 
 function readInitial(): Settings {

@@ -185,7 +185,7 @@ export default function ReaderView({
 
               {state === 'ok' && (
                 <div
-                  className="reader-content"
+                  className={`reader-content ${settings.readerFont === 'sans' ? 'font-sans' : ''}`}
                   style={{ fontSize: `${settings.readerFontSize}px`, lineHeight: 1.7 }}
                   dangerouslySetInnerHTML={{ __html: html }}
                   onClick={(e) => {

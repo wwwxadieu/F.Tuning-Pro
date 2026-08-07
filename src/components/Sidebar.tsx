@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useTags } from '../context/TagsContext'
-import { LayersIcon, PlusIcon } from './icons'
+import { GearIcon, LayersIcon, PlusIcon } from './icons'
 
 interface Props {
   open: boolean
@@ -75,9 +75,20 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings }: Pr
             </button>
           </div>
 
-          <div className="mt-auto flex items-center gap-2 px-6 pt-4 text-[11px] text-white/25">
-            <LayersIcon width={13} height={13} />
-            {tags.length} chuyên mục
+          <div className="mt-auto px-3 pt-4">
+            <div className="h-px bg-white/10" />
+            <button
+              type="button"
+              onClick={onOpenSettings}
+              className="mt-3 flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-left text-[13.5px] font-medium text-white/70 transition hover:bg-white/10 hover:text-white"
+            >
+              <GearIcon width={16} height={16} />
+              Cài đặt
+            </button>
+            <div className="mt-2 flex items-center gap-2 px-3 text-[11px] text-white/25">
+              <LayersIcon width={13} height={13} />
+              {tags.length} chuyên mục
+            </div>
           </div>
         </motion.aside>
       )}

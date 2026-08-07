@@ -29,9 +29,12 @@ export interface Notification {
 }
 
 export type ReaderTheme = 'light' | 'sepia' | 'dark'
+export type ReaderFont = 'serif' | 'sans'
 
 export interface Settings {
   notificationsEnabled: boolean
   readerFontSize: number
   readerTheme: ReaderTheme
+  readerFont: ReaderFont
+  autoUpdateEnabled: boolean
 }

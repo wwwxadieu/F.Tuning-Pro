@@ -1,5 +1,7 @@
-const { app, BrowserWindow, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, shell } = require('electron')
 const path = require('node:path')
+
+ipcMain.handle('app:get-version', () => app.getVersion())
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -12,6 +14,7 @@ function createWindow() {
     webPreferences: {
       contextIsolation: true,
       nodeIntegration: false,
+      preload: path.join(__dirname, 'preload.cjs'),
     },
   })
 

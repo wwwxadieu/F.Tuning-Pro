@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { MenuIcon, GearIcon } from './icons'
+import { MenuIcon } from './icons'
 import NotificationBell from './NotificationBell'
 import LiveClock from './LiveClock'
 import { smoothScrollTo } from '../lib/lenisInstance'
@@ -7,7 +7,6 @@ import type { Notification } from '../types/news'
 
 interface Props {
   onToggleSidebar: () => void
-  onOpenSettings: () => void
   notifications: Notification[]
   unreadCount: number
   onReadNotifications: () => void
@@ -16,7 +15,6 @@ interface Props {
 
 export default function Header({
   onToggleSidebar,
-  onOpenSettings,
   notifications,
   unreadCount,
   onReadNotifications,
@@ -68,14 +66,6 @@ export default function Header({
             onOpen={onReadNotifications}
             onSelect={onSelectNotification}
           />
-          <button
-            type="button"
-            onClick={onOpenSettings}
-            aria-label="Cài đặt"
-            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-white/60 transition hover:bg-white/10 hover:text-white"
-          >
-            <GearIcon width={18} height={18} />
-          </button>
         </div>
       </div>
     </motion.header>

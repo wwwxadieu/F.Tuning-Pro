@@ -79,6 +79,9 @@ body {
 .reader-content {
   font-family: 'New York', Georgia, 'Times New Roman', serif;
 }
+.reader-content.font-sans {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, sans-serif;
+}
 .reader-content p {
   margin: 0 0 1.2em;
 }
