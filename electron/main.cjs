@@ -1,5 +1,4 @@
 const { app, BrowserWindow, ipcMain, shell, net } = require('electron')
-const { spawn } = require('node:child_process')
 const path = require('node:path')
 const fs = require('node:fs')
 const os = require('node:os')
@@ -114,30 +113,22 @@ function downloadFile(url, dest, onProgress) {
   })
 }
 
-// Downloads the Windows installer, passes progress, runs installer silently /S,
-// and automatically re-launches appExePath when installer finishes.
+// Downloads the Windows installer, launches it via shell.openPath, and quits current app
 ipcMain.handle('update:download-and-install', async (event, downloadUrl) => {
-  const dest = path.join(os.tmpdir(), `FVNN-Update-${Date.now()}.exe`)
+  const dest = path.join(os.tmpdir(), `FVNN-Setup-${Date.now()}.exe`)
   await downloadFile(downloadUrl, dest, (progressInfo) => {
     event.sender.send('update:progress', progressInfo)
   })
 
-  const appExePath = app.getPath('exe')
-
   try {
-    const cmd = `start "" /wait "${dest}" /S && start "" "${appExePath}"`
-    spawn('cmd.exe', ['/c', cmd], {
-      detached: true,
-      stdio: 'ignore',
-      windowsHide: true,
-    }).unref()
-  } catch (err) {
     await shell.openPath(dest)
+  } catch (err) {
+    // fallback
   }
 
   setTimeout(() => {
     app.quit()
-  }, 600)
+  }, 800)
 })
 
 function createWindow() {
