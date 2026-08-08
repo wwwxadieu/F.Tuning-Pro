@@ -22,7 +22,8 @@ interface RawFeedResponse {
 }
 
 function stripTags(html: string): string {
-  return html.replace(/<script\b[^<]*>([\s\S]*?)<\/script>/gi, '')
+  return html
+    .replace(/<script\b[^<]*>([\s\S]*?)<\/script>/gi, '')
     .replace(/<style\b[^<]*>([\s\S]*?)<\/style>/gi, '')
     .replace(/<[^>]*>/g, ' ')
 }
@@ -37,10 +38,8 @@ function cleanText(html: string): string {
   return decodeHtmlEntities(stripTags(html)).replace(/\s+/g, ' ').trim()
 }
 
-function extractImage(item: RawFeedItem): string | null {
-  if (item.thumbnail && item.thumbnail.startsWith('http')) return item.thumbnail
-  if (item.enclosure?.link && item.enclosure.link.startsWith('http')) return item.enclosure.link
-  const html = item.content ?? item.description ?? ''
+function extractImageFromHtml(html: string): string | null {
+  if (!html) return null
   const match = html.match(/<img[^>]+src=["']([^"']+)["']/i)
   if (match && match[1]) {
     const src = decodeHtmlEntities(match[1])
@@ -82,63 +81,96 @@ interface FetchOptions {
   forceRefresh?: boolean
 }
 
-async function fetchViaRss(tag: Tag, signal?: AbortSignal): Promise<Article[]> {
-  try {
-    const url = `${RSS2JSON_ENDPOINT}?rss_url=${encodeURIComponent(tag.feedUrl)}`
-    const res = await fetch(url, { signal, priority: 'high' })
-    if (res.ok) {
-      const data = (await res.json()) as RawFeedResponse
-      if (data.status === 'ok' && data.items && data.items.length > 0) {
-        return data.items.map((item, index) => ({
-          id: `${tag.id}-${index}-${item.link ?? item.title ?? index}`,
-          title: cleanText(item.title ?? '') || '(Không có tiêu đề)',
-          description: cleanText(item.description ?? ''),
-          link: item.link ?? '#',
-          image: extractImage(item),
-          pubDate: item.pubDate ?? new Date().toISOString(),
+async function fetchViaXmlProxy(tag: Tag, signal?: AbortSignal): Promise<Article[]> {
+  const proxyUrls = [
+    `https://api.allorigins.win/get?url=${encodeURIComponent(tag.feedUrl)}`,
+    `https://corsproxy.io/?url=${encodeURIComponent(tag.feedUrl)}`,
+  ]
+
+  for (const proxyUrl of proxyUrls) {
+    try {
+      const res = await fetch(proxyUrl, { signal: signal || AbortSignal.timeout(8000) })
+      if (!res.ok) continue
+
+      let xmlText = ''
+      if (proxyUrl.includes('allorigins')) {
+        const data = await res.json()
+        xmlText = data.contents || ''
+      } else {
+        xmlText = await res.text()
+      }
+
+      if (!xmlText || (!xmlText.includes('<rss') && !xmlText.includes('<feed') && !xmlText.includes('<xml'))) {
+        continue
+      }
+
+      const parser = new DOMParser()
+      const doc = parser.parseFromString(xmlText, 'text/xml')
+      const items = Array.from(doc.querySelectorAll('item, entry'))
+
+      if (items.length === 0) continue
+
+      return items.slice(0, 40).map((item, index) => {
+        const title = item.querySelector('title')?.textContent ?? '(Không có tiêu đề)'
+        const description =
+          item.querySelector('content\\:encoded, encoded, description, summary, content')?.textContent ?? ''
+        
+        let link = item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent || '#'
+        if (link.includes('api.allorigins.win') || link.includes('corsproxy.io')) {
+          link = tag.feedUrl
+        }
+
+        const pubDate = item.querySelector('pubDate, updated, date, published')?.textContent || new Date().toISOString()
+        
+        // Extract image from media:content, media:thumbnail, enclosure, or HTML content
+        let thumb = item.querySelector('media\\:thumbnail, thumbnail')?.getAttribute('url') ||
+          item.querySelector('media\\:content, content')?.getAttribute('url') ||
+          item.querySelector('enclosure')?.getAttribute('url') ||
+          item.querySelector('og\\:image, image url')?.textContent || null
+
+        if (!thumb || !thumb.startsWith('http')) {
+          thumb = extractImageFromHtml(description) || extractImageFromHtml(item.innerHTML)
+        }
+
+        return {
+          id: `${tag.id}-${index}-${link}`,
+          title: cleanText(title),
+          description: cleanText(description),
+          link,
+          image: thumb,
+          pubDate,
           source: tag.source,
           tagId: tag.id,
-        }))
-      }
+        }
+      })
+    } catch {
+      // try next proxy
     }
-  } catch {
-    // fallback to proxy
   }
 
-  // Fallback RSS proxy using allorigins
-  try {
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(tag.feedUrl)}`
-    const res = await fetch(proxyUrl, { signal })
-    if (!res.ok) throw new Error(`proxy HTTP ${res.status}`)
-    const data = await res.json()
-    const xmlText = data.contents
-    if (!xmlText) throw new Error('Proxy returned empty content')
+  throw new Error('Proxy XML fetch failed')
+}
 
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(xmlText, 'text/xml')
-    const items = Array.from(doc.querySelectorAll('item, entry'))
+async function fetchViaRss2Json(tag: Tag, signal?: AbortSignal): Promise<Article[]> {
+  const url = `${RSS2JSON_ENDPOINT}?rss_url=${encodeURIComponent(tag.feedUrl)}`
+  const res = await fetch(url, { signal: signal || AbortSignal.timeout(7000), priority: 'high' })
+  if (!res.ok) throw new Error(`rss2json HTTP ${res.status}`)
 
-    return items.slice(0, 30).map((item, index) => {
-      const title = item.querySelector('title')?.textContent ?? '(Không có tiêu đề)'
-      const description = item.querySelector('description, summary, content')?.textContent ?? ''
-      const link = item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent || '#'
-      const pubDate = item.querySelector('pubDate, updated, date')?.textContent || new Date().toISOString()
-      const thumb = item.querySelector('thumbnail, content, enclosure')?.getAttribute('url') || null
-
-      return {
-        id: `${tag.id}-${index}-${link}`,
-        title: cleanText(title),
-        description: cleanText(description),
-        link,
-        image: thumb || extractImage({ description }),
-        pubDate,
-        source: tag.source,
-        tagId: tag.id,
-      }
-    })
-  } catch (err) {
-    throw new Error(`Không thể nạp RSS từ ${tag.source}`)
+  const data = (await res.json()) as RawFeedResponse
+  if (data.status !== 'ok' || !data.items || data.items.length === 0) {
+    throw new Error('rss2json returned empty or error')
   }
+
+  return data.items.map((item, index) => ({
+    id: `${tag.id}-${index}-${item.link ?? item.title ?? index}`,
+    title: cleanText(item.title ?? '') || '(Không có tiêu đề)',
+    description: cleanText(item.description ?? ''),
+    link: item.link ?? '#',
+    image: item.thumbnail || item.enclosure?.link || extractImageFromHtml(item.content || item.description || ''),
+    pubDate: item.pubDate ?? new Date().toISOString(),
+    source: tag.source,
+    tagId: tag.id,
+  }))
 }
 
 export async function fetchArticlesForTag(
@@ -151,7 +183,28 @@ export async function fetchArticlesForTag(
     if (cached) return cached
   }
 
-  let articles = tag.scrape ? await scrapeArticles(tag, signal) : await fetchViaRss(tag, signal)
+  let articles: Article[] = []
+
+  if (tag.scrape) {
+    articles = await scrapeArticles(tag, signal)
+  } else {
+    // Try full XML CORS fetch first for 30-40 articles per feed!
+    try {
+      articles = await fetchViaXmlProxy(tag, signal)
+    } catch {
+      // Fallback to rss2json
+      try {
+        articles = await fetchViaRss2Json(tag, signal)
+      } catch {
+        // Fallback to scrape if available
+        try {
+          articles = await scrapeArticles(tag, signal)
+        } catch {
+          articles = []
+        }
+      }
+    }
+  }
 
   // Filter out articles older than 14 days (14 * 24 * 60 * 60 * 1000)
   const nowMs = Date.now()
@@ -161,7 +214,6 @@ export async function fetchArticlesForTag(
     return nowMs - pubMs <= fourteenDaysMs
   })
 
-  // Fallback to original articles if filter returned too few
   if (freshArticles.length >= 3) {
     articles = freshArticles
   }

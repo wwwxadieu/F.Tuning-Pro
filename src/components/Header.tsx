@@ -54,9 +54,7 @@ export default function Header({
         </div>
 
         <div className="hidden items-center gap-2.5 sm:flex">
-          <div className="flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-3.5 py-1 text-xs font-semibold text-white/90">
-            <LiveClock />
-          </div>
+          <LiveClock />
           <span
             aria-hidden="true"
             className="lock-select rounded-full border border-blue-500/30 bg-blue-500/15 px-3 py-1 text-[11px] font-semibold text-blue-300"
