@@ -10,6 +10,7 @@ interface Props {
   notifications: Notification[]
   unreadCount: number
   onReadNotifications: () => void
+  onNotificationsOpenChange?: (open: boolean) => void
   onSelectNotification: (tagId: string) => void
   onRefresh: () => void
   refreshing: boolean
@@ -20,6 +21,7 @@ export default function Header({
   notifications,
   unreadCount,
   onReadNotifications,
+  onNotificationsOpenChange,
   onSelectNotification,
   onRefresh,
   refreshing,
@@ -88,6 +90,7 @@ export default function Header({
             notifications={notifications}
             unreadCount={unreadCount}
             onOpen={onReadNotifications}
+            onOpenChange={onNotificationsOpenChange}
             onSelect={onSelectNotification}
           />
         </div>

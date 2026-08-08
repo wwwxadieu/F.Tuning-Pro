@@ -19,6 +19,10 @@
   --border-1: rgba(255, 255, 255, 0.12);
   --glass-bg: rgba(255, 255, 255, 0.08);
   --glass-bg-modal: rgba(18, 20, 26, 0.95);
+  /* Floating popovers sit directly over article cards. An 8% wash plus blur
+     leaves their text legible through the panel, so these need a real
+     backing rather than a tint. */
+  --popover-bg: rgba(22, 24, 30, 0.97);
   --glass-border: rgba(255, 255, 255, 0.12);
   --modal-bg: #12141a;
   --card-bg: rgba(255, 255, 255, 0.04);
@@ -45,6 +49,7 @@
   --border-1: rgba(0, 0, 0, 0.12);
   --glass-bg: rgba(255, 255, 255, 0.82);
   --glass-bg-modal: rgba(255, 255, 255, 0.95);
+  --popover-bg: rgba(252, 252, 253, 0.98);
   --glass-border: rgba(0, 0, 0, 0.12);
   --modal-bg: #ffffff;
   --card-bg: rgba(255, 255, 255, 0.88);
@@ -98,6 +103,13 @@ body {
   background: var(--glass-bg);
   backdrop-filter: blur(32px) saturate(180%);
   -webkit-backdrop-filter: blur(32px) saturate(180%);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-panel {
+  background: var(--popover-bg);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   border: 1px solid var(--glass-border);
 }
 

@@ -26,7 +26,7 @@ export default function UpdateBanner({ toast, onDismiss, onClick }: Props) {
               onClick(toast.tagId)
               onDismiss()
             }}
-            className="glass pointer-events-auto flex items-start gap-3 rounded-2xl p-3.5 text-left shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
+            className="glass-panel pointer-events-auto flex items-start gap-3 rounded-2xl p-3.5 text-left shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
           >
             <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-[#0A84FF] to-[#BF5AF2]">
               <CategoryIcon

@@ -75,6 +75,7 @@ export default function App() {
   )
   const [settingsOpen, setSettingsOpen] = useState(false)
 
+  const [notificationsOpen, setNotificationsOpen] = useState(false)
   const [readerList, setReaderList] = useState<Article[] | null>(null)
   const [readerIndex, setReaderIndex] = useState(0)
 
@@ -127,6 +128,7 @@ export default function App() {
           notifications={notifications}
           unreadCount={unreadCount}
           onReadNotifications={handleReadNotifications}
+          onNotificationsOpenChange={setNotificationsOpen}
           onSelectNotification={selectTagAndScroll}
           onRefresh={refreshAll}
           refreshing={refreshing}
@@ -174,7 +176,14 @@ export default function App() {
           <Footer />
         </div>
 
-        <UpdateBanner toast={toast} onDismiss={() => setToast(null)} onClick={selectTagAndScroll} />
+        {/* The toast and the notification panel share the top-right corner,
+            and the toast sits above it — so stacked, both became unreadable.
+            The panel already lists everything the toast would say. */}
+        <UpdateBanner
+          toast={notificationsOpen ? null : toast}
+          onDismiss={() => setToast(null)}
+          onClick={selectTagAndScroll}
+        />
 
         <AppUpdateToast
           appUpdate={appUpdate}

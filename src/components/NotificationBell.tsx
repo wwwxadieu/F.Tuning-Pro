@@ -10,16 +10,21 @@ interface Props {
   unreadCount: number
   onOpen: () => void
   onSelect: (tagId: string) => void
+  /** The toast lives in the same corner; it hides while this panel is open. */
+  onOpenChange?: (open: boolean) => void
 }
 
-export default function NotificationBell({ notifications, unreadCount, onOpen, onSelect }: Props) {
+export default function NotificationBell({ notifications, unreadCount, onOpen, onSelect, onOpenChange }: Props) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const { tagMap } = useTags()
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false)
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false)
+        onOpenChange?.(false)
+      }
     }
     document.addEventListener('mousedown', handleClick)
     return () => document.removeEventListener('mousedown', handleClick)
@@ -28,6 +33,7 @@ export default function NotificationBell({ notifications, unreadCount, onOpen, o
   function toggle() {
     const next = !open
     setOpen(next)
+    onOpenChange?.(next)
     if (next && unreadCount > 0) onOpen()
   }
 
@@ -54,7 +60,7 @@ export default function NotificationBell({ notifications, unreadCount, onOpen, o
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.97 }}
             transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
-            className="glass absolute right-0 top-11 z-50 max-h-[70vh] w-80 overflow-y-auto rounded-2xl p-2 shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
+            className="glass-panel absolute right-0 top-11 z-50 max-h-[70vh] w-80 overflow-y-auto rounded-2xl p-2 shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
             data-lenis-prevent
           >
             <div className="px-2 py-1.5 text-[13px] font-semibold text-[var(--text-1)]">Thông báo</div>
