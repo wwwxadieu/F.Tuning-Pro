@@ -108,6 +108,17 @@ export function TrashIcon(props: IconProps) {
   )
 }
 
+export function SummaryIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M4 6h16" />
+      <path d="M4 11h12" />
+      <path d="M4 16h7" />
+      <path d="m16.5 15.5 1.2 2.4 2.4 1.2-2.4 1.2-1.2 2.4-1.2-2.4-2.4-1.2 2.4-1.2z" />
+    </svg>
+  )
+}
+
 export function TranslateIcon(props: IconProps) {
   return (
     <svg {...base(props)}>

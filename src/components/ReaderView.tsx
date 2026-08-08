@@ -1,14 +1,16 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import type { Article, ReaderTheme, Settings } from '../types/news'
 import { getLenisInstance } from '../lib/lenisInstance'
 import { fetchReaderContent } from '../services/readerService'
 import { looksVietnamese, translateArticleHtml, translateText } from '../services/translateService'
+import { summarize } from '../services/summaryService'
 import { pausePrefetch, resumePrefetch } from '../services/prefetchQueue'
 import { formatRelativeTime } from '../utils/time'
 import { PlaneIcon } from './categoryIcons'
 import ImageLightbox from './ImageLightbox'
 import {
+  ChevronDownIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ExternalLinkIcon,
@@ -19,6 +21,7 @@ import {
   RefreshIcon,
   SepiaIcon,
   ShareIcon,
+  SummaryIcon,
   SunIcon,
   TextSizeIcon,
   TranslateIcon,
@@ -78,6 +81,7 @@ export default function ReaderView({
   const [shareMenuOpen, setShareMenuOpen] = useState(false)
   const [retryToken, setRetryToken] = useState(0)
   const [isExpanded, setIsExpanded] = useState(false)
+  const [summaryOpen, setSummaryOpen] = useState(true)
   const shareMenuRef = useRef<HTMLDivElement>(null)
 
   const [translation, setTranslation] = useState<TranslationState>(EMPTY_TRANSLATION)
@@ -169,6 +173,17 @@ export default function ReaderView({
   const displayedHtml = showingTranslation ? (translation.html as string) : html
   const displayedTitle =
     showingTranslation && translation.title ? translation.title : article?.title
+
+  // Derived from whichever version is on screen, so translating the article
+  // re-summarises it in Vietnamese without any extra plumbing. Scoring is
+  // pure string work over a few thousand characters, so it costs nothing.
+  const summary = useMemo(
+    () =>
+      state === 'ok' && displayedHtml
+        ? summarize(displayedHtml, displayedTitle ?? '')
+        : { sentences: [], usable: false },
+    [state, displayedHtml, displayedTitle]
+  )
 
   useEffect(() => {
     const lenis = getLenisInstance()
@@ -456,6 +471,61 @@ export default function ReaderView({
                   >
                     {displayedTitle}
                   </h1>
+
+                  {summary.usable && (
+                    <div
+                      className="mt-5 rounded-2xl border px-4 py-3.5"
+                      style={{
+                        backgroundColor: theme.card,
+                        borderColor: `${theme.text}12`,
+                      }}
+                    >
+                      <button
+                        type="button"
+                        onClick={() => setSummaryOpen((v) => !v)}
+                        className="flex w-full items-center gap-2 text-left"
+                        aria-expanded={summaryOpen}
+                      >
+                        <SummaryIcon width={14} height={14} style={{ color: '#0A84FF' }} />
+                        <span
+                          className="text-[12px] font-bold uppercase tracking-wide"
+                          style={{ color: theme.text }}
+                        >
+                          Tóm tắt nhanh
+                        </span>
+                        <span className="text-[11px]" style={{ color: theme.subtle }}>
+                          {summary.sentences.length} ý chính
+                        </span>
+                        <ChevronDownIcon
+                          width={14}
+                          height={14}
+                          className={`ml-auto shrink-0 transition-transform ${summaryOpen ? '' : '-rotate-90'}`}
+                          style={{ color: theme.subtle }}
+                        />
+                      </button>
+
+                      {summaryOpen && (
+                        <ul className="mt-3 flex flex-col gap-2">
+                          {summary.sentences.map((sentence, i) => (
+                            <li
+                              key={i}
+                              className="flex gap-2.5 leading-relaxed"
+                              style={{
+                                fontSize: `${Math.max(13, settings.readerFontSize - 3)}px`,
+                                color: theme.text,
+                              }}
+                            >
+                              <span
+                                className="mt-[0.55em] h-1.5 w-1.5 shrink-0 rounded-full"
+                                style={{ backgroundColor: '#0A84FF' }}
+                              />
+                              <span>{sentence}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </div>
+                  )}
                 </header>
 
                 {article.image && (
