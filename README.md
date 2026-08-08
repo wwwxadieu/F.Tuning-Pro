@@ -1,4 +1,4 @@
-# TechWave
+# F.VNN
 
 Ứng dụng web desktop tổng hợp tin tức công nghệ theo thời gian thực, giao diện lấy cảm hứng từ Apple.
 
