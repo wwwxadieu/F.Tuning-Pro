@@ -19,13 +19,14 @@ export default function QuickAddSourceButton({ onAddSource }: Props) {
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
-    if (!feedUrl.trim()) {
+    const trimmedInput = feedUrl.trim()
+    if (!trimmedInput) {
       setError('Vui lòng nhập đường dẫn trang tin hoặc RSS.')
       return
     }
-    const url = parseFeedUrl(feedUrl)
+    const url = parseFeedUrl(trimmedInput)
     if (!url) {
-      setError('Đường dẫn không hợp lệ.')
+      setError('Đường dẫn không hợp lệ. Hãy thử nhập tên miền (ví dụ: 9to5mac.com).')
       return
     }
 
@@ -62,45 +63,63 @@ export default function QuickAddSourceButton({ onAddSource }: Props) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.95 }}
             transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="glass w-80 rounded-2xl p-4 shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
+            className="soft-glass w-84 rounded-2xl p-5 shadow-[0_25px_60px_rgba(0,0,0,0.8)] border border-white/15 bg-[#12141a]/95 text-white"
           >
-            <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-[14px] font-semibold text-[var(--text-1)]">Thêm nguồn tin nhanh</h3>
+            <div className="mb-3 flex items-center justify-between border-b border-white/10 pb-2.5">
+              <h3 className="text-[15px] font-bold text-white">Thêm nguồn tin nhanh</h3>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
                 aria-label="Đóng"
-                className="flex h-6 w-6 items-center justify-center rounded-lg text-[var(--text-3)] transition hover:bg-[var(--surface-2)] hover:text-[var(--text-1)]"
+                className="flex h-6 w-6 items-center justify-center rounded-lg bg-white/10 text-white/70 transition hover:bg-white/20 hover:text-white"
               >
                 <XIcon width={13} height={13} />
               </button>
             </div>
 
             {success ? (
-              <p className="py-4 text-center text-[13px] text-[#30D158]">Đã thêm nguồn tin!</p>
+              <p className="py-4 text-center text-[13px] font-semibold text-[#30D158]">Đã thêm nguồn tin!</p>
             ) : (
-              <form onSubmit={handleAdd} className="flex flex-col gap-2">
-                <input
-                  value={feedUrl}
-                  onChange={(e) => setFeedUrl(e.target.value)}
-                  placeholder="vidu.com/rss.xml"
-                  autoFocus
-                  className="rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-1)] outline-none focus:border-[var(--text-3)]"
-                />
-                <input
-                  value={label}
-                  onChange={(e) => setLabel(e.target.value)}
-                  placeholder="Tên chuyên mục (tuỳ chọn)"
-                  className="rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-1)] outline-none focus:border-[var(--text-3)]"
-                />
-                {error && <p className="text-[12px] text-[#FF375F]">{error}</p>}
+              <form onSubmit={handleAdd} className="flex flex-col gap-3">
+                <div>
+                  <label className="mb-1 block text-[11px] font-semibold text-white/70">
+                    Tên miền hoặc RSS (Ví dụ: 9to5mac.com)
+                  </label>
+                  <input
+                    value={feedUrl}
+                    onChange={(e) => setFeedUrl(e.target.value)}
+                    placeholder="9to5mac.com hoặc vnexpress.net"
+                    autoFocus
+                    className="w-full rounded-xl border border-white/20 bg-black/70 px-3.5 py-2.5 text-sm text-white placeholder-white/40 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
+                  />
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-[11px] font-semibold text-white/70">
+                    Tên hiển thị (Tùy chọn)
+                  </label>
+                  <input
+                    value={label}
+                    onChange={(e) => setLabel(e.target.value)}
+                    placeholder="Tên nguồn (tuỳ chọn)"
+                    className="w-full rounded-xl border border-white/20 bg-black/70 px-3.5 py-2.5 text-sm text-white placeholder-white/40 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30"
+                  />
+                </div>
+
+                {error && (
+                  <div className="flex items-center gap-2 rounded-xl border border-red-500/40 bg-red-500/20 p-3 text-xs font-semibold text-red-200">
+                    <span className="shrink-0 text-base">⚠️</span>
+                    <span>{error}</span>
+                  </div>
+                )}
+
                 <button
                   type="submit"
                   disabled={validating}
-                  className="flex items-center justify-center gap-1.5 rounded-xl bg-[var(--text-1)] px-4 py-2.5 text-[13px] font-semibold text-[var(--bg)] transition hover:opacity-90 disabled:opacity-50"
+                  className="mt-1 flex items-center justify-center gap-1.5 rounded-xl bg-white px-4 py-2.5 text-[13px] font-bold text-black transition hover:bg-white/90 active:scale-95 disabled:opacity-50"
                 >
                   <PlusIcon width={14} height={14} />
-                  {validating ? 'Đang kiểm tra...' : 'Thêm nguồn'}
+                  {validating ? 'Đang kiểm tra RSS...' : 'Thêm nguồn'}
                 </button>
               </form>
             )}

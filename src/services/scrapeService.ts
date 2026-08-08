@@ -1,34 +1,19 @@
 import type { Article, Tag } from '../types/news'
 
 const READER_PROXY = 'https://r.jina.ai/'
-const MAX_ITEMS = 24
+const MAX_ITEMS = 30
 const MIN_TITLE_LENGTH = 12
 
 interface ScrapedLink {
   title: string
   url: string
+  image?: string | null
 }
 
-// Pages built around a feed of user avatars/thumbnails (forums, "social"
-// homepages like tinhte.vn) nest an image inside the link text itself —
-// `[![alt](avatar.jpg)](/profile/x)` — which breaks a naive `[text](url)`
-// scan: `[^\]]+` stops at the image's own `]`, so the "title" it captures is
-// a mangled `![alt` fragment and the "url" it captures is the avatar image,
-// not the link's real destination. Stripping all image markdown first
-// collapses those down to `[](url)`, which the title-length filter below
-// then correctly discards as noise instead of surfacing as garbage.
 const IMAGE_MARKDOWN_RE = /!\[[^\]]*\]\([^)]*\)/g
+const NON_ARTICLE_PATH_RE = /\/(login|register|signup|signin|profile|search|contact|terms|privacy|about)(\/|$)/i
 
-// Common non-article routes that still carry a long enough "title" (nav
-// label, button text) to otherwise pass the length filter.
-const NON_ARTICLE_PATH_RE = /\/(login|register|signup|signin|profile|search|contact|terms|privacy)(\/|$)/i
-
-// A homepage's extracted markdown is full of `[text](url)` links — nav,
-// footer, social share, ads — mixed in with the actual article links we
-// want. Keep only links that point back at the site itself with a
-// reasonably long title, which filters out most non-article chrome
-// without needing to understand the page's actual HTML structure.
-function extractLinks(markdown: string, siteHostname: string): ScrapedLink[] {
+function extractLinksFromMarkdown(markdown: string, siteHostname: string): ScrapedLink[] {
   const bareHost = siteHostname.replace(/^www\./, '')
   const withoutImages = markdown.replace(IMAGE_MARKDOWN_RE, '')
   const linkPattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g
@@ -61,34 +46,87 @@ function extractLinks(markdown: string, siteHostname: string): ScrapedLink[] {
   return links
 }
 
-/**
- * Builds a synthetic article list for a source that has no discoverable
- * RSS/Atom feed by fetching its homepage through the same reader proxy used
- * for full-article extraction, then pulling article-looking links out of
- * the resulting markdown. There's no structured pubDate/description from a
- * homepage scrape, so pubDate is faked as a strictly decreasing sequence to
- * preserve the page's own front-to-back ordering in date-sorted views.
- */
+async function scrapeViaNativeElectron(tag: Tag): Promise<Article[]> {
+  if (!window.electronAPI?.fetchHtml) throw new Error('Native Electron API unavailable')
+  const rawHtmlStr = await window.electronAPI.fetchHtml(tag.feedUrl)
+
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(rawHtmlStr, 'text/html')
+
+  let baseOrigin = 'https://' + tag.source
+  try {
+    baseOrigin = new URL(tag.feedUrl).origin
+  } catch {
+    // fallback
+  }
+
+  const seen = new Set<string>()
+  const articles: Article[] = []
+
+  const articleNodes = doc.querySelectorAll('article, .news-item, .post-item, .item, .story, h2 a, h3 a, h1 a, .title a')
+  articleNodes.forEach((node, index) => {
+    const a = node.tagName === 'A' ? (node as HTMLAnchorElement) : node.querySelector('a')
+    if (!a) return
+    const title = a.textContent?.trim() || ''
+    if (title.length < MIN_TITLE_LENGTH) return
+
+    let href = a.getAttribute('href') || ''
+    if (!href || href.startsWith('#') || href.startsWith('javascript:')) return
+    if (href.startsWith('/')) href = baseOrigin + href
+    else if (!href.startsWith('http')) href = baseOrigin + '/' + href
+
+    if (seen.has(href)) return
+    seen.add(href)
+
+    const img = node.querySelector('img')
+    let thumb = img?.getAttribute('src') || img?.getAttribute('data-src') || img?.getAttribute('data-original') || null
+    if (thumb) {
+      if (thumb.startsWith('//')) thumb = 'https:' + thumb
+      else if (thumb.startsWith('/')) thumb = baseOrigin + thumb
+    }
+
+    articles.push({
+      id: `${tag.id}-native-scrape-${index}-${href}`,
+      title,
+      description: '',
+      link: href,
+      image: thumb,
+      pubDate: new Date(Date.now() - index * 60_000).toISOString(),
+      source: tag.source,
+      tagId: tag.id,
+    })
+  })
+
+  if (articles.length === 0) throw new Error('Native scrape found 0 articles')
+  return articles.slice(0, MAX_ITEMS)
+}
+
 export async function scrapeArticles(tag: Tag, signal?: AbortSignal): Promise<Article[]> {
-  const res = await fetch(`${READER_PROXY}${tag.feedUrl}`, { signal })
-  if (!res.ok) throw new Error(`jina HTTP ${res.status}`)
-  const text = await res.text()
+  // 1. Try Native Electron HTML Scrape FIRST (0.2s ultra fast, no proxies!)
+  try {
+    return await scrapeViaNativeElectron(tag)
+  } catch {
+    // 2. Fallback to Jina Reader Scrape
+    const res = await fetch(`${READER_PROXY}${tag.feedUrl}`, { signal })
+    if (!res.ok) throw new Error(`jina HTTP ${res.status}`)
+    const text = await res.text()
 
-  const markerIdx = text.indexOf('Markdown Content:')
-  const markdown = markerIdx >= 0 ? text.slice(markerIdx + 'Markdown Content:'.length) : text
+    const markerIdx = text.indexOf('Markdown Content:')
+    const markdown = markerIdx >= 0 ? text.slice(markerIdx + 'Markdown Content:'.length) : text
 
-  const hostname = new URL(tag.feedUrl).hostname
-  const links = extractLinks(markdown, hostname)
+    const hostname = new URL(tag.feedUrl).hostname
+    const links = extractLinksFromMarkdown(markdown, hostname)
 
-  const now = Date.now()
-  return links.map((link, index) => ({
-    id: `${tag.id}-scrape-${index}-${link.url}`,
-    title: link.title,
-    description: '',
-    link: link.url,
-    image: null,
-    pubDate: new Date(now - index * 60_000).toISOString(),
-    source: tag.source,
-    tagId: tag.id,
-  }))
+    const now = Date.now()
+    return links.map((link, index) => ({
+      id: `${tag.id}-scrape-${index}-${link.url}`,
+      title: link.title,
+      description: '',
+      link: link.url,
+      image: link.image || null,
+      pubDate: new Date(now - index * 60_000).toISOString(),
+      source: tag.source,
+      tagId: tag.id,
+    }))
+  }
 }

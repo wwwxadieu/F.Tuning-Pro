@@ -1,13 +1,19 @@
-export type ArticleFetchResult =
-  | { ok: true; html: string; finalUrl: string }
-  | { ok: false; error: string }
+export interface UpdateProgress {
+  percent: number
+  transferred: number
+  total: number
+  bytesPerSecond: number
+}
 
 export interface ElectronAPI {
   isElectron: true
   getAppVersion: () => Promise<string>
-  fetchArticleHtml: (url: string) => Promise<ArticleFetchResult>
   downloadAndInstallUpdate: (url: string) => Promise<void>
-  onUpdateProgress: (callback: (percent: number) => void) => () => void
+  /** Fetches a page's HTML from the main process, bypassing renderer CORS. Rejects on failure. */
+  fetchHtml: (url: string) => Promise<string>
+  /** Same transport, used for feeds so they don't need a third-party converter. */
+  fetchRawRss: (url: string) => Promise<string>
+  onUpdateProgress: (callback: (data: UpdateProgress | number) => void) => () => void
 }
 
 declare global {

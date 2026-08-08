@@ -12,6 +12,8 @@ import {
   ChevronRightIcon,
   ExternalLinkIcon,
   LinkIcon,
+  MaximizeIcon,
+  MinimizeIcon,
   MoonIcon,
   RefreshIcon,
   SepiaIcon,
@@ -35,7 +37,7 @@ interface Props {
 const THEME_STYLES: Record<ReaderTheme, { bg: string; text: string; subtle: string; card: string }> = {
   light: { bg: '#ffffff', text: '#1d1d1f', subtle: '#6e6e73', card: '#f5f5f7' },
   sepia: { bg: '#f4ecd8', text: '#3a2f22', subtle: '#7a6a52', card: '#ece1c8' },
-  dark: { bg: '#000000', text: '#f2f2f2', subtle: '#9a9a9e', card: '#1c1c1e' },
+  dark: { bg: '#12141a', text: '#f2f2f2', subtle: '#9a9a9e', card: '#1c1c24' },
 }
 
 type LoadState = 'loading' | 'ok' | 'error'
@@ -56,6 +58,7 @@ export default function ReaderView({
   const [shareState, setShareState] = useState<'idle' | 'copied' | 'error'>('idle')
   const [shareMenuOpen, setShareMenuOpen] = useState(false)
   const [retryToken, setRetryToken] = useState(0)
+  const [isExpanded, setIsExpanded] = useState(false)
   const shareMenuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -79,19 +82,12 @@ export default function ReaderView({
   }, [article, retryToken])
 
   useEffect(() => {
-    // Background prefetches share the same proxy as the article the user is
-    // actually waiting on — pausing new ones (in-flight requests are left to
-    // finish) while the reader is open keeps that contention out of the way
-    // for exactly as long as it matters.
     if (article) pausePrefetch()
     else resumePrefetch()
     return () => resumePrefetch()
   }, [article])
 
   useEffect(() => {
-    // The reader is a fixed overlay with its own scroll container — Lenis's
-    // default global wheel handling otherwise hijacks scroll input meant
-    // for it and tries to scroll the (hidden) page behind it instead.
     const lenis = getLenisInstance()
     if (article) lenis?.stop()
     else lenis?.start()
@@ -106,7 +102,7 @@ export default function ReaderView({
   useEffect(() => {
     if (!article) return
     function onKeyDown(e: KeyboardEvent) {
-      if (zoomedImage) return // let the lightbox handle its own Escape/zoom keys
+      if (zoomedImage) return
       if (e.key === 'Escape') {
         if (shareMenuOpen) setShareMenuOpen(false)
         else onClose()
@@ -165,7 +161,6 @@ export default function ReaderView({
   }
 
   async function shareToDiscord() {
-    // Discord has no web share intent — copy a message formatted for pasting into a channel.
     if (!article) return
     setShareMenuOpen(false)
     await copyText(`${article.title}\n${article.link}`)
@@ -193,173 +188,189 @@ export default function ReaderView({
     <AnimatePresence>
       {article && (
         <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 24 }}
-          transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed inset-0 z-[80] flex flex-col"
-          style={{ backgroundColor: theme.bg, color: theme.text }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className={`fixed inset-0 z-[80] flex items-center justify-center bg-black/80 backdrop-blur-md ${
+            isExpanded ? 'p-0' : 'p-3 sm:p-5 lg:p-7'
+          }`}
+          onClick={onClose}
         >
-          <div
-            className="flex shrink-0 items-center justify-between gap-2 border-b px-4 py-2.5 sm:px-6"
-            style={{ borderColor: `${theme.text}1a` }}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96, y: 15 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.96, y: 15 }}
+            transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            onClick={(e) => e.stopPropagation()}
+            style={{ backgroundColor: theme.bg, color: theme.text }}
+            className={`relative flex flex-col overflow-hidden transition-all duration-300 ${
+              isExpanded
+                ? 'h-full w-full rounded-none border-none shadow-none'
+                : 'h-[88vh] w-full max-w-5xl rounded-3xl border border-white/15 shadow-[0_30px_90px_rgba(0,0,0,0.9)]'
+            }`}
           >
-            <div className="flex items-center gap-1">
-              <ToolbarButton onClick={onClose} label="Đóng" style={{ color: theme.subtle }}>
-                <XIcon width={17} height={17} />
-              </ToolbarButton>
-              <div className="mx-1 h-5 w-px" style={{ backgroundColor: `${theme.text}1a` }} />
-              <ToolbarButton onClick={onPrev} disabled={!hasPrev} label="Bài trước" style={{ color: theme.subtle }}>
-                <ChevronLeftIcon width={17} height={17} />
-              </ToolbarButton>
-              <ToolbarButton onClick={onNext} disabled={!hasNext} label="Bài tiếp theo" style={{ color: theme.subtle }}>
-                <ChevronRightIcon width={17} height={17} />
-              </ToolbarButton>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <ThemeDot
-                active={settings.readerTheme === 'light'}
-                onClick={() => onUpdateSettings({ readerTheme: 'light' })}
-                icon={<SunIcon width={14} height={14} />}
-                label="Chế độ sáng"
-              />
-              <ThemeDot
-                active={settings.readerTheme === 'sepia'}
-                onClick={() => onUpdateSettings({ readerTheme: 'sepia' })}
-                icon={<SepiaIcon width={14} height={14} />}
-                label="Chế độ sepia"
-              />
-              <ThemeDot
-                active={settings.readerTheme === 'dark'}
-                onClick={() => onUpdateSettings({ readerTheme: 'dark' })}
-                icon={<MoonIcon width={14} height={14} />}
-                label="Chế độ tối"
-              />
-              <div className="mx-1 h-5 w-px" style={{ backgroundColor: `${theme.text}1a` }} />
-              <ToolbarButton
-                onClick={() => onUpdateSettings({ readerFontSize: Math.max(14, settings.readerFontSize - 1) })}
-                label="Chữ nhỏ hơn"
-                style={{ color: theme.subtle }}
-              >
-                <span className="flex items-center gap-0.5">
-                  <TextSizeIcon width={13} height={13} />
-                  <span className="text-[11px] font-bold">-</span>
-                </span>
-              </ToolbarButton>
-              <ToolbarButton
-                onClick={() => onUpdateSettings({ readerFontSize: Math.min(26, settings.readerFontSize + 1) })}
-                label="Chữ lớn hơn"
-                style={{ color: theme.subtle }}
-              >
-                <span className="flex items-center gap-0.5">
-                  <TextSizeIcon width={17} height={17} />
-                  <span className="text-[13px] font-bold">+</span>
-                </span>
-              </ToolbarButton>
-              <div className="mx-1 h-5 w-px" style={{ backgroundColor: `${theme.text}1a` }} />
-              <div className="relative" ref={shareMenuRef}>
+            {/* Header Toolbar */}
+            <div
+              className="flex shrink-0 items-center justify-between gap-2 border-b px-4 py-3 sm:px-6"
+              style={{ borderColor: `${theme.text}1a` }}
+            >
+              <div className="flex items-center gap-1.5">
+                <ToolbarButton onClick={onClose} label="Đóng cửa sổ" style={{ color: theme.subtle }}>
+                  <XIcon width={17} height={17} />
+                </ToolbarButton>
+                <div className="mx-1 h-5 w-px" style={{ backgroundColor: `${theme.text}1a` }} />
+                <ToolbarButton onClick={onPrev} disabled={!hasPrev} label="Bài trước" style={{ color: theme.subtle }}>
+                  <ChevronLeftIcon width={17} height={17} />
+                </ToolbarButton>
+                <ToolbarButton onClick={onNext} disabled={!hasNext} label="Bài tiếp theo" style={{ color: theme.subtle }}>
+                  <ChevronRightIcon width={17} height={17} />
+                </ToolbarButton>
+                <div className="mx-1 h-5 w-px" style={{ backgroundColor: `${theme.text}1a` }} />
                 <ToolbarButton
-                  onClick={() => setShareMenuOpen((v) => !v)}
-                  label="Chia sẻ"
+                  onClick={() => setIsExpanded((v) => !v)}
+                  label={isExpanded ? 'Thu nhỏ cửa sổ' : 'Mở rộng cửa sổ'}
                   style={{ color: theme.subtle }}
                 >
-                  <ShareIcon width={16} height={16} />
+                  {isExpanded ? <MinimizeIcon width={16} height={16} /> : <MaximizeIcon width={16} height={16} />}
                 </ToolbarButton>
-                <AnimatePresence>
-                  {shareMenuOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -6, scale: 0.97 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: -6, scale: 0.97 }}
-                      transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
-                      className="absolute right-0 top-full z-10 mt-2 w-56 overflow-hidden rounded-2xl p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.35)]"
-                      style={{ backgroundColor: theme.card, color: theme.text }}
-                      data-lenis-prevent
-                    >
-                      <ShareMenuItem label="Facebook" color="#1877F2" badge="f" onClick={shareToFacebook} />
-                      <ShareMenuItem label="X (Twitter)" color="#000000" badge="X" onClick={shareToX} />
-                      <ShareMenuItem
-                        label="Telegram"
-                        color="#26A5E4"
-                        icon={<PlaneIcon width={13} height={13} style={{ color: '#fff' }} />}
-                        onClick={shareToTelegram}
-                      />
-                      <ShareMenuItem label="Discord" color="#5865F2" badge="D" onClick={shareToDiscord} />
-                      <div className="my-1.5 h-px" style={{ backgroundColor: `${theme.text}1a` }} />
-                      <ShareMenuItem
-                        label="Sao chép liên kết"
-                        icon={<LinkIcon width={14} height={14} />}
-                        onClick={handleCopyLink}
-                      />
-                      {typeof navigator.share === 'function' && (
-                        <ShareMenuItem
-                          label="Chia sẻ khác..."
-                          icon={<ShareIcon width={14} height={14} />}
-                          onClick={handleNativeShare}
-                        />
-                      )}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-                <AnimatePresence>
-                  {shareState !== 'idle' && !shareMenuOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -4 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute right-0 top-full mt-2 whitespace-nowrap rounded-lg px-2.5 py-1.5 text-[11px] font-medium shadow-lg"
-                      style={{ backgroundColor: theme.text, color: theme.bg }}
-                    >
-                      {shareState === 'copied' ? 'Đã sao chép!' : 'Không thể sao chép'}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
               </div>
-              <ToolbarButton
-                onClick={() => window.open(article.link, '_blank', 'noopener,noreferrer')}
-                label="Mở bản gốc"
-                style={{ color: theme.subtle }}
-              >
-                <ExternalLinkIcon width={16} height={16} />
-              </ToolbarButton>
-            </div>
-          </div>
 
-          <div className="flex-1 overflow-y-auto" data-lenis-prevent>
-            <article className="mx-auto max-w-[1180px] px-6 py-10 sm:px-8">
-              <div className="lg:grid lg:grid-cols-[minmax(260px,360px)_minmax(0,1fr)] lg:items-start lg:gap-12">
-                <div className="lg:sticky lg:top-8">
-                  {article.image && (
+              <div className="flex items-center gap-1">
+                <ThemeDot
+                  active={settings.readerTheme === 'light'}
+                  onClick={() => onUpdateSettings({ readerTheme: 'light' })}
+                  icon={<SunIcon width={14} height={14} />}
+                  label="Chế độ sáng"
+                />
+                <ThemeDot
+                  active={settings.readerTheme === 'sepia'}
+                  onClick={() => onUpdateSettings({ readerTheme: 'sepia' })}
+                  icon={<SepiaIcon width={14} height={14} />}
+                  label="Chế độ sepia"
+                />
+                <ThemeDot
+                  active={settings.readerTheme === 'dark'}
+                  onClick={() => onUpdateSettings({ readerTheme: 'dark' })}
+                  icon={<MoonIcon width={14} height={14} />}
+                  label="Chế độ tối"
+                />
+                <div className="mx-1 h-5 w-px" style={{ backgroundColor: `${theme.text}1a` }} />
+                <ToolbarButton
+                  onClick={() => onUpdateSettings({ readerFontSize: Math.max(14, settings.readerFontSize - 1) })}
+                  label="Chữ nhỏ hơn"
+                  style={{ color: theme.subtle }}
+                >
+                  <span className="flex items-center gap-0.5">
+                    <TextSizeIcon width={13} height={13} />
+                    <span className="text-[11px] font-bold">-</span>
+                  </span>
+                </ToolbarButton>
+                <ToolbarButton
+                  onClick={() => onUpdateSettings({ readerFontSize: Math.min(26, settings.readerFontSize + 1) })}
+                  label="Chữ lớn hơn"
+                  style={{ color: theme.subtle }}
+                >
+                  <span className="flex items-center gap-0.5">
+                    <TextSizeIcon width={17} height={17} />
+                    <span className="text-[13px] font-bold">+</span>
+                  </span>
+                </ToolbarButton>
+                <div className="mx-1 h-5 w-px" style={{ backgroundColor: `${theme.text}1a` }} />
+                <div className="relative" ref={shareMenuRef}>
+                  <ToolbarButton
+                    onClick={() => setShareMenuOpen((v) => !v)}
+                    label="Chia sẻ"
+                    style={{ color: theme.subtle }}
+                  >
+                    <ShareIcon width={16} height={16} />
+                  </ToolbarButton>
+                  <AnimatePresence>
+                    {shareMenuOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: -6, scale: 0.97 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -6, scale: 0.97 }}
+                        transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute right-0 top-full z-10 mt-2 w-56 overflow-hidden rounded-2xl p-1.5 shadow-[0_20px_50px_rgba(0,0,0,0.35)] border border-white/10"
+                        style={{ backgroundColor: theme.card, color: theme.text }}
+                        data-lenis-prevent
+                      >
+                        <ShareMenuItem label="Facebook" color="#1877F2" badge="f" onClick={shareToFacebook} />
+                        <ShareMenuItem label="X (Twitter)" color="#000000" badge="X" onClick={shareToX} />
+                        <ShareMenuItem
+                          label="Telegram"
+                          color="#26A5E4"
+                          icon={<PlaneIcon width={13} height={13} style={{ color: '#fff' }} />}
+                          onClick={shareToTelegram}
+                        />
+                        <ShareMenuItem label="Discord" color="#5865F2" badge="D" onClick={shareToDiscord} />
+                        <div className="my-1.5 h-px" style={{ backgroundColor: `${theme.text}1a` }} />
+                        <ShareMenuItem
+                          label="Sao chép liên kết"
+                          icon={<LinkIcon width={14} height={14} />}
+                          onClick={handleCopyLink}
+                        />
+                        {typeof navigator.share === 'function' && (
+                          <ShareMenuItem
+                            label="Chia sẻ khác..."
+                            icon={<ShareIcon width={14} height={14} />}
+                            onClick={handleNativeShare}
+                          />
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+                <ToolbarButton
+                  onClick={() => window.open(article.link, '_blank', 'noopener,noreferrer')}
+                  label="Mở bản gốc"
+                  style={{ color: theme.subtle }}
+                >
+                  <ExternalLinkIcon width={16} height={16} />
+                </ToolbarButton>
+              </div>
+            </div>
+
+            {/* Article Content Area - Safari Reader Layout */}
+            <div className="flex-1 overflow-y-auto" data-lenis-prevent>
+              <article className="mx-auto max-w-[780px] px-6 py-10 sm:px-10">
+                <header className="mb-8 border-b pb-6" style={{ borderColor: `${theme.text}15` }}>
+                  <div className="mb-3 flex items-center gap-2 text-[12px] font-semibold tracking-wide uppercase" style={{ color: theme.subtle }}>
+                    <span className="rounded-md bg-white/10 px-2 py-0.5 text-white/90">{article.source}</span>
+                    <span>·</span>
+                    <span>{formatRelativeTime(article.pubDate)}</span>
+                  </div>
+
+                  <h1
+                    className="font-bold leading-tight tracking-tight text-white"
+                    style={{ fontSize: `${settings.readerFontSize * 1.5}px` }}
+                  >
+                    {article.title}
+                  </h1>
+                </header>
+
+                {article.image && (
+                  <div className="mb-8 overflow-hidden rounded-2xl border border-white/10 shadow-lg">
                     <img
                       src={article.image}
                       alt=""
-                      className="mb-6 aspect-video w-full cursor-zoom-in rounded-2xl object-cover transition hover:opacity-90 lg:mb-0 lg:aspect-[4/5]"
+                      className="w-full max-h-[480px] cursor-zoom-in object-cover transition hover:opacity-95"
                       onClick={() => setZoomedImage(article.image)}
                       onError={(e) => {
                         ;(e.currentTarget as HTMLImageElement).style.display = 'none'
                       }}
                     />
-                  )}
-                </div>
+                  </div>
+                )}
 
                 <div style={{ fontSize: `${settings.readerFontSize}px` }}>
-                  <h1
-                    className="text-[1.7em] font-bold leading-tight tracking-tight"
-                    style={{ fontSize: `${settings.readerFontSize * 1.55}px` }}
-                  >
-                    {article.title}
-                  </h1>
-                  <p className="mb-8 mt-3 text-[13px]" style={{ color: theme.subtle }}>
-                    {article.source} · {formatRelativeTime(article.pubDate)}
-                  </p>
-
                   {state === 'loading' && <ReaderSkeleton color={theme.card} />}
 
                   {state === 'ok' && (
                     <div
-                      className={`reader-content max-w-[70ch] ${settings.readerFont === 'sans' ? 'font-sans' : ''}`}
-                      style={{ fontSize: `${settings.readerFontSize}px`, lineHeight: 1.7 }}
+                      className={`reader-content max-w-none ${settings.readerFont === 'sans' ? 'font-sans' : ''}`}
+                      style={{ fontSize: `${settings.readerFontSize}px`, lineHeight: 1.8 }}
                       dangerouslySetInnerHTML={{ __html: html }}
                       onClick={(e) => {
                         const target = e.target as HTMLElement
@@ -372,26 +383,26 @@ export default function ReaderView({
                   )}
 
                   {state === 'error' && (
-                    <div className="max-w-[70ch]">
+                    <div className="max-w-none">
                       {article.description && (
-                        <p style={{ fontSize: `${settings.readerFontSize}px`, lineHeight: 1.7 }}>
+                        <p style={{ fontSize: `${settings.readerFontSize}px`, lineHeight: 1.8 }}>
                           {article.description}
                         </p>
                       )}
                       <div
-                        className="mt-6 flex flex-col items-start gap-3 rounded-xl px-4 py-4 text-[13px]"
+                        className="mt-6 flex flex-col items-start gap-3 rounded-2xl border border-white/10 p-5 text-[13px]"
                         style={{ backgroundColor: theme.card, color: theme.subtle }}
                       >
-                        <p>
+                        <p className="font-semibold text-white/90">
                           {article.description
-                            ? 'Không thể tải toàn bộ nội dung bài viết. Đây là bản tóm tắt.'
-                            : 'Không thể tải nội dung bài viết này trong ứng dụng.'}
+                            ? 'Không thể trích xuất toàn bộ nội dung bài viết. Đây là bản tóm tắt.'
+                            : 'Không thể nạp bài viết này.'}
                         </p>
-                        <div className="flex gap-2">
+                        <div className="flex gap-2.5">
                           <button
                             type="button"
                             onClick={() => setRetryToken((t) => t + 1)}
-                            className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold"
+                            className="flex items-center gap-1.5 rounded-xl px-4 py-2 text-[13px] font-bold shadow-md"
                             style={{ backgroundColor: theme.text, color: theme.bg }}
                           >
                             Thử lại
@@ -401,7 +412,7 @@ export default function ReaderView({
                             href={article.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-1.5 rounded-lg px-3 py-2 text-[13px] font-semibold"
+                            className="flex items-center gap-1.5 rounded-xl border border-white/10 px-4 py-2 text-[13px] font-bold"
                             style={{ backgroundColor: `${theme.subtle}22`, color: theme.text }}
                           >
                             Mở bản gốc
@@ -412,11 +423,11 @@ export default function ReaderView({
                     </div>
                   )}
                 </div>
-              </div>
-            </article>
-          </div>
+              </article>
+            </div>
 
-          <ImageLightbox src={zoomedImage} onClose={() => setZoomedImage(null)} />
+            <ImageLightbox src={zoomedImage} onClose={() => setZoomedImage(null)} />
+          </motion.div>
         </motion.div>
       )}
     </AnimatePresence>
@@ -473,7 +484,7 @@ function ToolbarButton({
       disabled={disabled}
       aria-label={label}
       style={style}
-      className="flex h-8 w-8 items-center justify-center rounded-lg transition hover:bg-black/10 disabled:opacity-25 disabled:hover:bg-transparent dark:hover:bg-white/10"
+      className="flex h-8.5 w-8.5 items-center justify-center rounded-xl bg-white/5 transition hover:bg-white/15 disabled:opacity-25 active:scale-95"
     >
       {children}
     </button>
@@ -496,8 +507,8 @@ function ThemeDot({
       type="button"
       onClick={onClick}
       aria-label={label}
-      className={`flex h-8 w-8 items-center justify-center rounded-lg transition ${
-        active ? 'bg-[#0A84FF] text-white' : 'text-current opacity-50 hover:opacity-100'
+      className={`flex h-8.5 w-8.5 items-center justify-center rounded-xl transition active:scale-95 ${
+        active ? 'bg-[#0A84FF] text-white shadow-md' : 'text-current opacity-50 hover:bg-white/10 hover:opacity-100'
       }`}
     >
       {icon}
@@ -507,9 +518,9 @@ function ThemeDot({
 
 function ReaderSkeleton({ color }: { color: string }) {
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       {[100, 95, 88, 92, 60].map((w, i) => (
-        <div key={i} className="h-4 rounded-full" style={{ width: `${w}%`, backgroundColor: color }} />
+        <div key={i} className="h-4 rounded-full opacity-60" style={{ width: `${w}%`, backgroundColor: color }} />
       ))}
     </div>
   )

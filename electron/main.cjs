@@ -5,67 +5,105 @@ const os = require('node:os')
 
 ipcMain.handle('app:get-version', () => app.getVersion())
 
-// The renderer can't fetch article pages itself — it runs on a file:// origin,
-// so every news site's response is blocked by CORS. That's the only reason the
-// reader ever went through a third-party text-extraction proxy. The main
-// process has no such restriction, so it can pull the page straight from the
-// publisher: measured at ~2-3s versus 7-21s (frequently timing out) through
-// the proxy, with no shared rate limit to get stuck behind.
+// Guards so a slow or oversized page can't leave the reader spinning forever
+// or balloon memory: a hung request has no natural end, and a few sites serve
+// multi-megabyte pages we have no use for.
 const ARTICLE_FETCH_TIMEOUT_MS = 15_000
 const MAX_ARTICLE_BYTES = 8 * 1024 * 1024
+const MAX_REDIRECTS = 5
 
-ipcMain.handle('article:fetch-html', async (_event, url) => {
-  let parsed
-  try {
-    parsed = new URL(url)
-  } catch {
-    return { ok: false, error: 'URL không hợp lệ' }
-  }
-  if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
-    return { ok: false, error: 'Giao thức không được hỗ trợ' }
-  }
-
-  try {
-    const res = await net.fetch(parsed.href, {
-      method: 'GET',
-      redirect: 'follow',
-      headers: {
-        // Some publishers serve a stripped or blocked page to non-browser
-        // clients, so present as the browser this actually is.
-        'User-Agent':
-          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-        'Accept-Language': 'vi-VN,vi;q=0.9,en;q=0.8',
-      },
-      signal: AbortSignal.timeout(ARTICLE_FETCH_TIMEOUT_MS),
-    })
-    if (!res.ok) return { ok: false, error: `HTTP ${res.status}` }
-
-    const contentType = res.headers.get('content-type') ?? ''
-    if (contentType && !/(text\/html|application\/xhtml|text\/plain|xml)/i.test(contentType)) {
-      return { ok: false, error: `Loại nội dung không đọc được: ${contentType}` }
-    }
-
-    const buffer = await res.arrayBuffer()
-    if (buffer.byteLength > MAX_ARTICLE_BYTES) {
-      return { ok: false, error: 'Trang quá lớn' }
-    }
-
-    // Vietnamese news sites are overwhelmingly UTF-8, but a few older ones
-    // still serve windows-1258/latin1 — honour the declared charset so
-    // accented characters don't come through mangled.
-    const charsetMatch = contentType.match(/charset=([^;\s]+)/i)
-    let html
+function fetchHtmlDirect(targetUrl, redirectsLeft = MAX_REDIRECTS) {
+  return new Promise((resolve, reject) => {
     try {
-      html = new TextDecoder(charsetMatch?.[1] ?? 'utf-8').decode(buffer)
+      new URL(targetUrl)
     } catch {
-      html = new TextDecoder('utf-8').decode(buffer)
+      reject(new Error('Invalid URL'))
+      return
     }
 
-    return { ok: true, html, finalUrl: res.url || parsed.href }
-  } catch (err) {
-    return { ok: false, error: err?.message ?? 'Không thể tải trang' }
-  }
+    const request = net.request({
+      url: targetUrl,
+      method: 'GET',
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept':
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Cache-Control': 'no-cache',
+      },
+    })
+
+    const timer = setTimeout(() => {
+      request.abort()
+      reject(new Error('Hết thời gian tải trang'))
+    }, ARTICLE_FETCH_TIMEOUT_MS)
+    const settle = (fn) => (value) => {
+      clearTimeout(timer)
+      fn(value)
+    }
+    const done = settle(resolve)
+    const fail = settle(reject)
+
+    request.on('response', (response) => {
+      if (response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
+        if (redirectsLeft <= 0) {
+          fail(new Error('Quá nhiều chuyển hướng'))
+          return
+        }
+        const redirectUrl = Array.isArray(response.headers.location)
+          ? response.headers.location[0]
+          : response.headers.location
+        const finalUrl = new URL(redirectUrl, targetUrl).toString()
+        clearTimeout(timer)
+        return fetchHtmlDirect(finalUrl, redirectsLeft - 1).then(resolve).catch(reject)
+      }
+
+      if (response.statusCode !== 200) {
+        fail(new Error(`HTTP ${response.statusCode}`))
+        return
+      }
+
+      // Decoding each chunk on its own splits any multi-byte character that
+      // straddles a chunk boundary into replacement characters — which in
+      // Vietnamese text means roughly every accented word is a candidate for
+      // corruption. Collect the bytes and decode once, at the end.
+      const chunks = []
+      let received = 0
+      response.on('data', (chunk) => {
+        received += chunk.length
+        if (received > MAX_ARTICLE_BYTES) {
+          request.abort()
+          fail(new Error('Trang quá lớn'))
+          return
+        }
+        chunks.push(chunk)
+      })
+      response.on('end', () => {
+        const buffer = Buffer.concat(chunks)
+        const charset = /charset=["']?([\w-]+)/i.exec(response.headers['content-type'] ?? '')?.[1]
+        let text
+        try {
+          text = new TextDecoder(charset || 'utf-8').decode(buffer)
+        } catch {
+          text = buffer.toString('utf-8')
+        }
+        done(text)
+      })
+      response.on('error', fail)
+    })
+
+    request.on('error', fail)
+    request.end()
+  })
+}
+
+ipcMain.handle('article:fetch-html', async (event, url) => {
+  return await fetchHtmlDirect(url)
+})
+
+ipcMain.handle('rss:fetch-raw', async (event, url) => {
+  return await fetchHtmlDirect(url)
 })
 
 function downloadFile(url, dest, onProgress) {
@@ -81,10 +119,29 @@ function downloadFile(url, dest, onProgress) {
       }
       const total = parseInt(response.headers['content-length'] ?? '0', 10)
       let received = 0
+      let lastTime = Date.now()
+      let lastReceived = 0
+      let currentSpeed = 0
+
       response.on('data', (chunk) => {
         received += chunk.length
         file.write(chunk)
-        if (total) onProgress(Math.round((received / total) * 100))
+
+        const now = Date.now()
+        const timeDiff = (now - lastTime) / 1000
+        if (timeDiff >= 0.3) {
+          currentSpeed = Math.round((received - lastReceived) / timeDiff)
+          lastTime = now
+          lastReceived = received
+        }
+
+        const percent = total ? Math.min(100, Math.round((received / total) * 100)) : 0
+        onProgress({
+          percent,
+          transferred: received,
+          total,
+          bytesPerSecond: currentSpeed,
+        })
       })
       response.on('end', () => file.end(resolve))
       response.on('error', reject)
@@ -97,17 +154,22 @@ function downloadFile(url, dest, onProgress) {
   })
 }
 
-// Downloads the Windows installer straight into the app (no browser hop),
-// launches it like a double-click, then quits so the installer can
-// overwrite this running instance's files without a lock conflict.
+// Downloads the Windows installer, launches it via shell.openPath, and quits current app
 ipcMain.handle('update:download-and-install', async (event, downloadUrl) => {
-  const dest = path.join(os.tmpdir(), `FVNN-Update-${Date.now()}.exe`)
-  await downloadFile(downloadUrl, dest, (percent) => {
-    event.sender.send('update:progress', percent)
+  const dest = path.join(os.tmpdir(), `FVNN-Setup-${Date.now()}.exe`)
+  await downloadFile(downloadUrl, dest, (progressInfo) => {
+    event.sender.send('update:progress', progressInfo)
   })
-  const openError = await shell.openPath(dest)
-  if (openError) throw new Error(openError)
-  setTimeout(() => app.quit(), 800)
+
+  try {
+    await shell.openPath(dest)
+  } catch (err) {
+    // fallback
+  }
+
+  setTimeout(() => {
+    app.quit()
+  }, 800)
 })
 
 function createWindow() {
@@ -125,8 +187,6 @@ function createWindow() {
     },
   })
 
-  // Article links (target="_blank") should open in the user's real browser,
-  // not spawn another Electron window.
   win.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url)
     return { action: 'deny' }

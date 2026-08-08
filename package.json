@@ -46,7 +46,7 @@
     "publish": {
       "provider": "github",
       "owner": "wwwxadieu",
-      "repo": "F.Tuning-Pro",
+      "repo": "F.VNN",
       "releaseType": "release"
     },
     "directories": {
@@ -66,8 +66,10 @@
       "icon": "build-resources/icon.ico"
     },
     "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
+      "oneClick": true,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": false,
+      "deleteAppDataOnUninstall": false,
       "artifactName": "F.VNN-Setup-${version}.${ext}"
     }
   }

@@ -13,25 +13,23 @@ function writeCache(text: string, translated: string) {
   try {
     sessionStorage.setItem(CACHE_PREFIX + text, translated)
   } catch {
-    // storage full or unavailable — ignore, caching is a pure optimization
+    // storage full or unavailable — ignore
   }
 }
 
 /**
- * Translates English text to Vietnamese via Google Translate's public
- * (unofficial, no-key) endpoint. Falls back to returning the original text
- * on any failure — a foreign headline in English is far better UX than a
- * broken/blank card.
+ * Translates foreign text (English, French, Japanese, etc.) to Vietnamese
+ * using Google Translate's auto-detect language endpoint.
  */
 export async function translateText(text: string, target = 'vi'): Promise<string> {
   const trimmed = text.trim()
-  if (!trimmed) return text
+  if (!trimmed || trimmed.length < 3) return text
 
   const cached = readCache(trimmed)
   if (cached !== null) return cached
 
   try {
-    const url = `${TRANSLATE_ENDPOINT}?client=gtx&sl=en&tl=${target}&dt=t&q=${encodeURIComponent(trimmed)}`
+    const url = `${TRANSLATE_ENDPOINT}?client=gtx&sl=auto&tl=${target}&dt=t&q=${encodeURIComponent(trimmed)}`
     const res = await fetch(url)
     if (!res.ok) throw new Error(`translate HTTP ${res.status}`)
     const data = (await res.json()) as unknown

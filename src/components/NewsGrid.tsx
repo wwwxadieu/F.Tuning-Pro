@@ -32,10 +32,6 @@ export default function NewsGrid({
   onOpenArticle,
 }: Props) {
   const { tags } = useTags()
-  // A source the user deliberately added is its own signal of interest —
-  // it shouldn't also need to be toggled on in the interest picker just to
-  // show up on the dashboard alongside whatever built-in categories were
-  // picked during onboarding.
   const visibleTags =
     selected !== null
       ? tags.filter((t) => t.id === selected)
@@ -50,7 +46,7 @@ export default function NewsGrid({
           .filter((a) => a.tagId === tag.id)
           .sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
         const status = statuses[tag.id]
-        const revealCount = revealCounts[tag.id] ?? 6
+        const revealCount = revealCounts[tag.id] ?? 18
         const visibleItems = items.slice(0, revealCount)
         const hasMore = items.length > revealCount || supplementing[tag.id] === true
 
@@ -61,13 +57,20 @@ export default function NewsGrid({
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.5 }}
-              className="mb-5 flex items-center justify-between"
+              className="mb-5 flex items-center justify-between border-b border-white/10 pb-3"
             >
-              <h2 className="flex items-center gap-2.5 text-xl font-semibold tracking-tight sm:text-2xl">
+              <h2 className="flex items-center gap-2.5 text-xl font-bold tracking-tight sm:text-2xl text-white">
                 <CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={18} chip />
                 {tag.label}
               </h2>
-              <span className="text-[12px] text-[var(--text-4)]">{tag.source}</span>
+              <div className="flex items-center gap-3 text-[12px] text-white/60">
+                <span>{tag.source}</span>
+                {items.length > 0 && (
+                  <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-semibold text-white/80">
+                    {visibleItems.length} / {items.length} bài
+                  </span>
+                )}
+              </div>
             </motion.div>
 
             {status === 'error' && items.length === 0 && (
@@ -84,7 +87,7 @@ export default function NewsGrid({
 
             {status === 'loading' && items.length === 0 && (
               <div className={`${MASONRY_COLS} gap-5`}>
-                {Array.from({ length: 3 }).map((_, i) => (
+                {Array.from({ length: 4 }).map((_, i) => (
                   <div key={i} className="mb-5 break-inside-avoid">
                     <CardSkeleton />
                   </div>
@@ -105,7 +108,18 @@ export default function NewsGrid({
                     </div>
                   ))}
                 </div>
-                {hasMore && <LoadMoreSentinel onTrigger={() => onLoadMore(tag.id)} />}
+                {hasMore && (
+                  <div className="mt-8 flex flex-col items-center justify-center gap-3 py-4">
+                    <button
+                      onClick={() => onLoadMore(tag.id)}
+                      className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-2.5 text-xs font-bold text-white transition hover:bg-white/20 active:scale-95 shadow-lg backdrop-blur-md"
+                    >
+                      <span>Xem thêm bài viết</span>
+                      <span className="text-white/50">({items.length - visibleItems.length} tin)</span>
+                    </button>
+                    <LoadMoreSentinel onTrigger={() => onLoadMore(tag.id)} />
+                  </div>
+                )}
               </>
             )}
           </section>
@@ -132,15 +146,15 @@ function LoadMoreSentinel({ onTrigger }: { onTrigger: () => void }) {
           }, 600)
         }
       },
-      { rootMargin: '0px' }
+      { rootMargin: '200px' }
     )
     observer.observe(el)
     return () => observer.disconnect()
   }, [onTrigger])
 
   return (
-    <div ref={ref} className="mt-6 flex justify-center py-6">
-      <div className="h-5 w-5 animate-spin rounded-full border-2 border-[var(--border-1)] border-t-[var(--text-3)]" />
+    <div ref={ref} className="h-4 w-full flex justify-center items-center opacity-40">
+      <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white" />
     </div>
   )
 }

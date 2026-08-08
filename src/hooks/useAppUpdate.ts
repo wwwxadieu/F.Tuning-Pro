@@ -4,13 +4,27 @@ import { fetchLatestRelease, isNewerVersion, type ReleaseInfo } from '../service
 type UpdateStatus = 'idle' | 'checking' | 'update-available' | 'up-to-date' | 'error'
 type InstallStatus = 'idle' | 'downloading' | 'error'
 
+export interface UpdateProgressState {
+  percent: number
+  transferred: number
+  total: number
+  bytesPerSecond: number
+}
+
+const INITIAL_PROGRESS: UpdateProgressState = {
+  percent: 0,
+  transferred: 0,
+  total: 0,
+  bytesPerSecond: 0,
+}
+
 export function useAppUpdate(autoCheckEnabled: boolean) {
   const [isElectron, setIsElectron] = useState(false)
   const [currentVersion, setCurrentVersion] = useState<string | null>(null)
   const [status, setStatus] = useState<UpdateStatus>('idle')
   const [latest, setLatest] = useState<ReleaseInfo | null>(null)
   const [installStatus, setInstallStatus] = useState<InstallStatus>('idle')
-  const [installProgress, setInstallProgress] = useState(0)
+  const [installProgress, setInstallProgress] = useState<UpdateProgressState>(INITIAL_PROGRESS)
 
   useEffect(() => {
     if (window.electronAPI?.isElectron) {
@@ -39,23 +53,27 @@ export function useAppUpdate(autoCheckEnabled: boolean) {
     }
   }, [currentVersion])
 
-  // Auto-check once, right after we know the real running version — only
-  // if the user has automatic checking turned on at that moment.
   useEffect(() => {
     if (isElectron && autoCheckEnabled && currentVersion) {
       check()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isElectron, currentVersion])
+  }, [isElectron, currentVersion, autoCheckEnabled, check])
 
   const install = useCallback(async () => {
     if (!latest?.downloadUrl || !window.electronAPI) return
     setInstallStatus('downloading')
-    setInstallProgress(0)
-    const unsubscribe = window.electronAPI.onUpdateProgress(setInstallProgress)
+    setInstallProgress(INITIAL_PROGRESS)
+
+    const unsubscribe = window.electronAPI.onUpdateProgress((data) => {
+      if (typeof data === 'number') {
+        setInstallProgress({ percent: data, transferred: 0, total: 0, bytesPerSecond: 0 })
+      } else {
+        setInstallProgress(data)
+      }
+    })
+
     try {
       await window.electronAPI.downloadAndInstallUpdate(latest.downloadUrl)
-      // App quits itself once the installer launches — nothing left to reset here.
     } catch {
       setInstallStatus('error')
     } finally {

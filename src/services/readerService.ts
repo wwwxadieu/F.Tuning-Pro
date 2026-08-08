@@ -10,6 +10,8 @@ export interface ReaderContent {
 const CACHE_PREFIX = 'luong:reader:'
 const CACHE_TTL_MS = 60 * 60 * 1000 // 1 hour
 
+const SANITIZE_CONFIG = { ADD_ATTR: ['target', 'src'] }
+
 function readCache(url: string): ReaderContent | null {
   try {
     const raw = sessionStorage.getItem(CACHE_PREFIX + url)
@@ -26,34 +28,28 @@ function writeCache(url: string, content: ReaderContent) {
   try {
     sessionStorage.setItem(CACHE_PREFIX + url, JSON.stringify({ savedAt: Date.now(), content }))
   } catch {
-    // storage full or unavailable — ignore
+    // ignore
   }
 }
 
-const SANITIZE_CONFIG = {
-  ADD_ATTR: ['target'],
-  FORBID_TAGS: ['form', 'input', 'button', 'style'],
-}
-
 // ---------------------------------------------------------------------------
-// Primary path: fetch the publisher's own HTML and extract it locally.
+// Shared cleanup
 // ---------------------------------------------------------------------------
 
-// Chrome/Firefox/Safari reader modes all run Readability over the live DOM,
-// which is exactly what we can do here once the main process hands us the
-// HTML. These are the wrappers Readability has no reason to keep and which
-// otherwise leak into the article body — deliberately limited to containers
-// that are never the story itself, since over-trimming would silently eat
-// real content on sites that use these words in unrelated class names.
-// Readability already treats "comment" as an unlikely candidate, but its own
-// escape hatch un-filters anything whose class also contains "content" — which
-// is exactly how a forum's `thread-comment__content` replies survive into the
-// article. Removing these up front is what leaves just the original post.
+// Wrappers that are never the story itself. Readability already treats
+// "comment" as an unlikely candidate, but its own escape hatch un-filters
+// anything whose class also contains "content" — which is how a forum's
+// `thread-comment__content` replies survive into the article body. Removing
+// them up front is what leaves just the original post.
 const STRIP_SELECTORS = [
   'script',
   'style',
   'noscript',
   'template',
+  'svg',
+  'form',
+  'input',
+  'button',
   'iframe[src*="ads"]',
   'nav',
   'aside',
@@ -69,7 +65,16 @@ const STRIP_SELECTORS = [
   '[class*="social-share"]',
   '[class*="relatedNews"]',
   '[class*="related-news"]',
+  '[class*="relate-news"]',
   '[class*="newsletter"]',
+  '[class*="recommend"]',
+  '[class*="tracking"]',
+  '.ads',
+  '.ad',
+  '.banner',
+  '.box-ads',
+  '.author-info',
+  '.back-to-top',
   // Bootstrap-style mobile duplicate of the site chrome/footer.
   '[class*="visible-xs"]',
 ].join(',')
@@ -78,41 +83,63 @@ const STRIP_SELECTORS = [
 // class="has-comments">), which would throw the article away along with it.
 const NEVER_STRIP = new Set(['HTML', 'BODY', 'HEAD', 'MAIN', 'ARTICLE'])
 
-function extractWithReadability(html: string, baseUrl: string): ReaderContent {
-  const doc = new DOMParser().parseFromString(html, 'text/html')
+// Boilerplate these publishers inline into the article body itself, so it
+// survives element-level filtering and has to be matched on its text.
+const PROMO_SNIPPETS = [
+  'Thêm VnExpress trên Google',
+  'Xem hướng dẫn',
+  'Chọn VnExpress làm nguồn',
+  'Theo dõi channel',
+  'Google Search',
+]
 
-  // DOMParser gives the document our own file:// origin as its base, so every
-  // relative <img src> and <a href> in the article would resolve against the
-  // app bundle instead of the publisher. A <base> tag repoints resolution at
-  // the real page, which is what lets Readability emit absolute URLs.
-  const base = doc.createElement('base')
-  base.setAttribute('href', baseUrl)
-  doc.head?.prepend(base)
-
-  doc.querySelectorAll(STRIP_SELECTORS).forEach((el) => {
+function stripNoise(root: ParentNode) {
+  root.querySelectorAll(STRIP_SELECTORS).forEach((el) => {
     if (!NEVER_STRIP.has(el.tagName)) el.remove()
   })
-
-  const article = new Readability(doc, { charThreshold: 250 }).parse()
-  if (!article?.content) throw new Error('Không tách được nội dung bài viết')
-
-  const html_ = DOMPurify.sanitize(article.content, SANITIZE_CONFIG)
-  if (!html_.trim()) throw new Error('Nội dung rỗng')
-
-  return { title: article.title?.trim() || null, html: stripLeadingTitle(html_, article.title) }
 }
 
-// Readability keeps the headline inside the extracted body on many sites, but
-// the reader already renders the title above the content — drop the duplicate.
+function stripPromoText(root: ParentNode) {
+  root.querySelectorAll('p, div, span, a').forEach((el) => {
+    const text = el.textContent?.trim() ?? ''
+    if (PROMO_SNIPPETS.some((s) => text.includes(s)) || text.startsWith('Trở lại ')) {
+      el.remove()
+    }
+  })
+}
+
+// Lazy-loading sites leave the real image in data-src/data-original and ship a
+// placeholder in src, so images would otherwise render blank in the reader.
+function fixImages(root: ParentNode, origin: string) {
+  root.querySelectorAll('img').forEach((img) => {
+    const src =
+      img.getAttribute('src') ||
+      img.getAttribute('data-src') ||
+      img.getAttribute('data-original') ||
+      ''
+    if (!src) return
+    if (src.startsWith('//')) img.setAttribute('src', 'https:' + src)
+    else if (src.startsWith('/')) img.setAttribute('src', origin + src)
+    else img.setAttribute('src', src)
+  })
+}
+
+function removeEmptyParagraphs(root: ParentNode) {
+  root.querySelectorAll('p').forEach((p) => {
+    if (!p.textContent?.trim() && p.querySelectorAll('img, video').length === 0) p.remove()
+  })
+}
+
+// Publishers repeat the headline as a heading; forums repeat it as the first
+// line of the post body. Both duplicate the title the reader renders above.
 function stripLeadingTitle(html: string, title: string | null | undefined): string {
   if (!title) return html
   const wrapper = document.createElement('div')
   wrapper.innerHTML = html
 
-  // Readability returns its output inside a <div id="readability-page-1">, and
-  // sites often nest another wrapper or two below that, so the headline is
-  // never the top-level first child — descend through single-child wrappers
-  // until we reach the first element that actually holds content.
+  // Readability nests its output in <div id="readability-page-1">, often with
+  // another wrapper below it, so the headline is never the top-level first
+  // child — descend through single-child wrappers to the real first element.
   let container: Element = wrapper
   while (
     container.children.length === 1 &&
@@ -125,9 +152,6 @@ function stripLeadingTitle(html: string, title: string | null | undefined): stri
   const first = container.firstElementChild
   if (!first) return html
 
-  // Publishers repeat the headline as a heading; forums repeat it as the first
-  // line of the post body. Both are duplicates of the title the reader already
-  // renders above, and an exact text match makes removal safe either way.
   const normalize = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase()
   if (
     /^(h[1-3]|p|div)$/i.test(first.tagName) &&
@@ -139,23 +163,126 @@ function stripLeadingTitle(html: string, title: string | null | undefined): stri
   return html
 }
 
-async function fetchViaElectron(url: string): Promise<ReaderContent> {
-  const api = window.electronAPI
-  if (!api?.fetchArticleHtml) throw new Error('Không có cầu nối Electron')
-  const result = await api.fetchArticleHtml(url)
-  if (!result.ok) throw new Error(result.error)
-  return extractWithReadability(result.html, result.finalUrl)
+// ---------------------------------------------------------------------------
+// Extraction
+// ---------------------------------------------------------------------------
+
+const MIN_CONTENT_LENGTH = 50
+
+// Hand-picked article containers for the Vietnamese sites we ship by default.
+const KNOWN_ARTICLE_SELECTORS =
+  '.knc-content, .detail-content, article.fck_detail, .fck_detail, .maincontent, ' +
+  '.content-detail, .singular-content, .post-content, .entry-content, article, main'
+
+function originOf(targetUrl: string): string {
+  try {
+    return new URL(targetUrl).origin
+  } catch {
+    return ''
+  }
+}
+
+/**
+ * Readability is the engine behind Safari/Firefox reader modes: it scores the
+ * DOM rather than matching known markup, so it handles arbitrary sites — which
+ * is what user-added sources are. A fixed selector list can only ever cover
+ * sites someone thought to add, so it runs second, as a safety net.
+ */
+function extractArticle(rawHtml: string, targetUrl: string): ReaderContent | null {
+  const origin = originOf(targetUrl)
+  const doc = new DOMParser().parseFromString(rawHtml, 'text/html')
+
+  // DOMParser bases the document on our own file:// origin, so relative URLs
+  // would resolve against the app bundle. A <base> tag repoints resolution at
+  // the real page, which is what lets Readability emit absolute links.
+  const base = doc.createElement('base')
+  base.setAttribute('href', targetUrl)
+  doc.head?.prepend(base)
+
+  const pageTitle =
+    doc.querySelector('h1.title-detail, h1.detail-title, h1, title')?.textContent?.trim() || null
+
+  stripNoise(doc)
+
+  // Readability consumes the document it is given, so hand it a clone and keep
+  // the original intact for the selector fallback below.
+  const readabilityDoc = doc.cloneNode(true) as Document
+  try {
+    const parsed = new Readability(readabilityDoc, { charThreshold: 250 }).parse()
+    if (parsed?.content) {
+      const holder = document.createElement('div')
+      holder.innerHTML = parsed.content
+      stripPromoText(holder)
+      fixImages(holder, origin)
+      removeEmptyParagraphs(holder)
+      const clean = DOMPurify.sanitize(holder.innerHTML, SANITIZE_CONFIG)
+      if (clean.trim().length >= MIN_CONTENT_LENGTH) {
+        const title = parsed.title?.trim() || pageTitle
+        return { title, html: stripLeadingTitle(clean, title) }
+      }
+    }
+  } catch {
+    // fall through to the selector approach
+  }
+
+  const articleEl = doc.querySelector(KNOWN_ARTICLE_SELECTORS)
+  if (!articleEl) return null
+
+  stripPromoText(articleEl)
+  fixImages(articleEl, origin)
+  removeEmptyParagraphs(articleEl)
+
+  const clean = DOMPurify.sanitize(articleEl.innerHTML, SANITIZE_CONFIG)
+  if (!clean || clean.trim().length < MIN_CONTENT_LENGTH) return null
+
+  return { title: pageTitle, html: stripLeadingTitle(clean, pageTitle) }
 }
 
 // ---------------------------------------------------------------------------
-// Fallback path: the text-extraction proxy.
-//
-// Still needed for `npm run dev` in a plain browser (no Electron bridge), and
-// as a safety net for the occasional site that refuses a direct fetch. It is
-// no longer the primary path because it was measured at 7-21s per article on
-// ordinary pages — frequently past any reasonable timeout, which is what left
-// the reader stuck on its error screen.
+// Transports, fastest and most reliable first
 // ---------------------------------------------------------------------------
+
+async function fetchViaNativeElectron(url: string): Promise<ReaderContent> {
+  if (!window.electronAPI?.fetchHtml) throw new Error('Electron API unavailable')
+  const rawHtml = await window.electronAPI.fetchHtml(url)
+  const parsed = extractArticle(rawHtml, url)
+  if (!parsed) throw new Error('Could not parse article from native fetch')
+  return parsed
+}
+
+async function fetchViaCorsProxy(url: string, signal?: AbortSignal): Promise<ReaderContent> {
+  const proxyUrls = [
+    `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`,
+    `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
+  ]
+
+  for (const proxyUrl of proxyUrls) {
+    try {
+      const combinedSignal = signal
+        ? AbortSignal.any([signal, AbortSignal.timeout(8000)])
+        : AbortSignal.timeout(8000)
+      const res = await fetch(proxyUrl, { signal: combinedSignal })
+      if (!res.ok) continue
+
+      let rawHtml = ''
+      if (proxyUrl.includes('allorigins')) {
+        const data = await res.json()
+        rawHtml = data.contents || ''
+      } else {
+        rawHtml = await res.text()
+      }
+      if (!rawHtml || rawHtml.length < 200) continue
+
+      const parsed = extractArticle(rawHtml, url)
+      if (parsed) return parsed
+    } catch {
+      if (signal?.aborted) throw new Error('aborted')
+      // try next proxy
+    }
+  }
+
+  throw new Error('CORS proxy failed')
+}
 
 const AUTHOR_CARD_RE = /\[!\[[^\]]*\]\([^)]*\)\]\((https?:\/\/[^)]*\/(?:profile|user|author|u)\/[^)]*)\)/g
 
@@ -168,14 +295,14 @@ function isolateOriginalPost(markdown: string): string {
   return isolated || markdown
 }
 
-const PROXY_TIMEOUT_MS = 30_000
-
-async function fetchViaProxy(
+// Last resort. Measured at 7-21s per article on ordinary pages, which is why
+// it is no longer anywhere near the primary path.
+async function fetchViaJina(
   url: string,
   signal?: AbortSignal,
   priority?: RequestPriority
 ): Promise<ReaderContent> {
-  const timeout = AbortSignal.timeout(PROXY_TIMEOUT_MS)
+  const timeout = AbortSignal.timeout(25_000)
   const combinedSignal = signal ? AbortSignal.any([signal, timeout]) : timeout
   const res = await fetch(`https://r.jina.ai/${url}`, { signal: combinedSignal, priority })
   if (!res.ok) throw new Error(`jina HTTP ${res.status}`)
@@ -190,10 +317,11 @@ async function fetchViaProxy(
   markdown = markdown.replace(/^#{1,2}[ \t]+.+(?:\r?\n)+/, '')
 
   const rawHtml = await marked.parse(markdown, { async: true })
-  return { title: titleMatch?.[1]?.trim() ?? null, html: DOMPurify.sanitize(rawHtml, SANITIZE_CONFIG) }
+  return {
+    title: titleMatch?.[1]?.trim() ?? null,
+    html: DOMPurify.sanitize(rawHtml, SANITIZE_CONFIG),
+  }
 }
-
-// ---------------------------------------------------------------------------
 
 export async function fetchReaderContent(
   url: string,
@@ -203,23 +331,22 @@ export async function fetchReaderContent(
   const cached = readCache(url)
   if (cached) return cached
 
-  const hasBridge = Boolean(window.electronAPI?.fetchArticleHtml)
+  const attempts: Array<() => Promise<ReaderContent>> = [
+    () => fetchViaNativeElectron(url),
+    () => fetchViaCorsProxy(url, signal),
+    () => fetchViaJina(url, signal, priority),
+  ]
 
-  if (hasBridge) {
+  let lastError: unknown = new Error('Không thể tải nội dung bài viết')
+  for (const attempt of attempts) {
+    if (signal?.aborted) throw new Error('aborted')
     try {
-      const content = await fetchViaElectron(url)
+      const content = await attempt()
       writeCache(url, content)
       return content
     } catch (err) {
-      if (signal?.aborted) throw err
-      // Direct fetch failed (site blocked us, or the markup defeated
-      // extraction) — fall through to the proxy rather than giving up.
+      lastError = err
     }
   }
-
-  if (signal?.aborted) throw new Error('aborted')
-
-  const content = await fetchViaProxy(url, signal, priority)
-  writeCache(url, content)
-  return content
+  throw lastError
 }
