@@ -114,19 +114,32 @@ const GOOGLE_RETRIES = 2
 // trip the endpoint's rate limit — it then answers 429 with an HTML challenge
 // page rather than JSON. That is why translating one article could work and
 // the very next one fail outright. A short backoff clears it most of the time.
+// GET is the form this endpoint is actually known to serve — it is what the
+// app has always used for headlines. POST is kept only for text too long to
+// sit in a URL; it is unverified, so it must never be the default path.
+const MAX_GET_URL_CHARS = 7000
+const UA =
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
+
 async function translateViaGoogle(text, target, attempt = 0) {
-  const endpoint =
-    `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(target)}&dt=t`
-  const res = await net.fetch(endpoint, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
-      'User-Agent':
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
-    },
-    body: new URLSearchParams({ q: text }).toString(),
-    signal: AbortSignal.timeout(TRANSLATE_TIMEOUT_MS),
-  })
+  const base = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(target)}&dt=t`
+  const encoded = encodeURIComponent(text)
+  const useGet = base.length + encoded.length + 3 <= MAX_GET_URL_CHARS
+
+  const res = useGet
+    ? await net.fetch(`${base}&q=${encoded}`, {
+        headers: { 'User-Agent': UA },
+        signal: AbortSignal.timeout(TRANSLATE_TIMEOUT_MS),
+      })
+    : await net.fetch(base, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+          'User-Agent': UA,
+        },
+        body: new URLSearchParams({ q: text }).toString(),
+        signal: AbortSignal.timeout(TRANSLATE_TIMEOUT_MS),
+      })
 
   if ((res.status === 429 || res.status === 503) && attempt < GOOGLE_RETRIES) {
     await delay(900 * (attempt + 1))
@@ -329,7 +342,46 @@ function launchInstaller(installerPath) {
   })
 }
 
-ipcMain.handle('update:download-and-install', async (event, downloadUrl) => {
+// Downloading the whole 78MB installer for every update is almost all wasted
+// bytes: the Electron runtime inside it is byte-identical between releases and
+// only the app code actually changed. electron-builder already publishes a
+// .blockmap alongside each installer describing its blocks, and
+// electron-updater uses it to fetch only the blocks that differ — so a
+// code-only update transfers a few MB instead of the full package.
+async function installViaUpdater(event) {
+  const { autoUpdater } = require('electron-updater')
+  autoUpdater.autoDownload = false
+  autoUpdater.autoInstallOnAppQuit = false
+  autoUpdater.allowDowngrade = false
+  // The whole point: reuse the installed package's blocks.
+  autoUpdater.disableDifferentialDownload = false
+
+  const onProgress = (info) => {
+    event.sender.send('update:progress', {
+      percent: Math.round(info.percent ?? 0),
+      transferred: info.transferred ?? 0,
+      total: info.total ?? 0,
+      bytesPerSecond: Math.round(info.bytesPerSecond ?? 0),
+    })
+  }
+  autoUpdater.on('download-progress', onProgress)
+
+  try {
+    const result = await autoUpdater.checkForUpdates()
+    if (!result?.updateInfo) throw new Error('Không tìm thấy thông tin bản cập nhật')
+    await autoUpdater.downloadUpdate(result.cancellationToken)
+    // isSilent=true, isForceRunAfter=true — install without a wizard and
+    // relaunch afterwards. quitAndInstall handles quitting this process.
+    setTimeout(() => autoUpdater.quitAndInstall(true, true), 300)
+  } finally {
+    autoUpdater.removeListener('download-progress', onProgress)
+  }
+}
+
+// The original path: download the full installer and run it. Kept as a
+// fallback so a problem in the differential path can't strand anyone on an
+// old version — which has already happened once.
+async function installViaFullDownload(event, downloadUrl) {
   const dest = path.join(os.tmpdir(), `FVNN-Setup-${Date.now()}.exe`)
   await downloadFile(downloadUrl, dest, (progressInfo) => {
     event.sender.send('update:progress', progressInfo)
@@ -337,15 +389,23 @@ ipcMain.handle('update:download-and-install', async (event, downloadUrl) => {
 
   const launched = await launchInstaller(dest)
   if (!launched) {
-    // Couldn't spawn it — fall back to opening the installer visibly so the
-    // user can finish by hand rather than being left on the old version with
-    // no explanation.
+    // Couldn't spawn it — open the installer visibly so the user can finish by
+    // hand rather than being left on the old version with no explanation.
     await shell.openPath(dest)
   }
 
   // Exit promptly: the installer is already waiting on this process to release
   // its files, and every extra moment is time it spends stuck in that loop.
   setTimeout(() => app.quit(), 300)
+}
+
+ipcMain.handle('update:download-and-install', async (event, downloadUrl) => {
+  try {
+    await installViaUpdater(event)
+  } catch (err) {
+    if (!downloadUrl) throw err
+    await installViaFullDownload(event, downloadUrl)
+  }
 })
 
 function createWindow() {

@@ -8,13 +8,20 @@ export default {
         '3xl': '1800px',
       },
       fontFamily: {
+        // Naming "SF Pro" explicitly is a trap on Windows: some installs have
+        // it, and its Vietnamese coverage is incomplete, so the browser
+        // substitutes a different face for each accented character and the
+        // text comes out looking like a ransom note. system-ui already
+        // resolves to SF Pro on macOS and Segoe UI on Windows, both of which
+        // cover Vietnamese fully.
         sans: [
+          'system-ui',
           '-apple-system',
           'BlinkMacSystemFont',
-          '"SF Pro Display"',
-          '"SF Pro Text"',
-          '"Inter"',
-          'system-ui',
+          '"Segoe UI"',
+          'Roboto',
+          '"Helvetica Neue"',
+          'Arial',
           'sans-serif',
         ],
       },

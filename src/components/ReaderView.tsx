@@ -54,6 +54,8 @@ interface TranslationState {
   title: string | null
   progress: number
   showing: boolean
+  /** Why it failed, shown to the user — otherwise a failure is undiagnosable. */
+  error?: string
 }
 
 const EMPTY_TRANSLATION: TranslationState = {
@@ -163,9 +165,10 @@ export default function ReaderView({
           showing: true,
         })
       })
-      .catch(() => {
+      .catch((err: unknown) => {
         if (controller.signal.aborted) return
-        setTranslation({ ...EMPTY_TRANSLATION, status: 'error' })
+        const reason = err instanceof Error ? err.message : String(err)
+        setTranslation({ ...EMPTY_TRANSLATION, status: 'error', error: reason })
       })
   }
 
@@ -460,14 +463,19 @@ export default function ReaderView({
               <article className="mx-auto max-w-[780px] px-6 py-10 sm:px-10">
                 <header className="mb-8 border-b pb-6" style={{ borderColor: `${theme.text}15` }}>
                   <div className="mb-3 flex items-center gap-2 text-[12px] font-semibold tracking-wide uppercase" style={{ color: theme.subtle }}>
-                    <span className="rounded-md bg-white/10 px-2 py-0.5 text-white/90">{article.source}</span>
+                    <span
+                      className="rounded-md px-2 py-0.5"
+                      style={{ backgroundColor: `${theme.text}12`, color: theme.text }}
+                    >
+                      {article.source}
+                    </span>
                     <span>·</span>
                     <span>{formatRelativeTime(article.pubDate)}</span>
                   </div>
 
                   <h1
-                    className="font-bold leading-tight tracking-tight text-white"
-                    style={{ fontSize: `${settings.readerFontSize * 1.5}px` }}
+                    className="font-bold leading-tight tracking-tight"
+                    style={{ fontSize: `${settings.readerFontSize * 1.5}px`, color: theme.text }}
                   >
                     {displayedTitle}
                   </h1>
@@ -576,7 +584,12 @@ export default function ReaderView({
                       )}
                       {translation.status === 'error' && (
                         <>
-                          <span>Không thể dịch bài viết này lúc này.</span>
+                          <span>
+                            Không thể dịch bài viết này lúc này.
+                            {translation.error && (
+                              <span className="opacity-70"> ({translation.error})</span>
+                            )}
+                          </span>
                           <button
                             type="button"
                             onClick={handleTranslate}
@@ -613,10 +626,10 @@ export default function ReaderView({
                         </p>
                       )}
                       <div
-                        className="mt-6 flex flex-col items-start gap-3 rounded-2xl border border-white/10 p-5 text-[13px]"
-                        style={{ backgroundColor: theme.card, color: theme.subtle }}
+                        className="mt-6 flex flex-col items-start gap-3 rounded-2xl border p-5 text-[13px]"
+                        style={{ backgroundColor: theme.card, color: theme.subtle, borderColor: `${theme.text}15` }}
                       >
-                        <p className="font-semibold text-white/90">
+                        <p className="font-semibold" style={{ color: theme.text }}>
                           {article.description
                             ? 'Không thể trích xuất toàn bộ nội dung bài viết. Đây là bản tóm tắt.'
                             : 'Không thể nạp bài viết này.'}
