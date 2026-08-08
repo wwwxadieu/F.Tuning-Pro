@@ -110,7 +110,7 @@ export default function App() {
   }
 
   const recommendedArticles = useMemo(() => {
-    return getRecommendedArticles(articles, 6)
+    return getRecommendedArticles(articles, 5)
   }, [articles, habits, getRecommendedArticles])
 
   const unreadCount = notifications.filter((n) => !n.read).length

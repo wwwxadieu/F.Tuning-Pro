@@ -1,17 +1,11 @@
 import { motion } from 'framer-motion'
-import { lazy, Suspense } from 'react'
 import { smoothScrollTo } from '../lib/lenisInstance'
-
-const HeroScene = lazy(() => import('./HeroScene'))
+import HeroBackdrop from './HeroBackdrop'
 
 export default function Hero() {
   return (
     <section id="top" className="relative h-[92vh] min-h-[480px] w-full overflow-hidden">
-      <div className="absolute inset-0">
-        <Suspense fallback={null}>
-          <HeroScene />
-        </Suspense>
-      </div>
+      <HeroBackdrop />
 
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent via-[var(--bg)]/40 to-[var(--bg)]" />
 

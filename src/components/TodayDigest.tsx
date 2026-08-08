@@ -47,110 +47,67 @@ export default function TodayDigest({ articles, recommendedArticles = [], loadin
     return pickDiverse(recent.length >= DIGEST_SIZE ? recent : sorted, DIGEST_SIZE)
   }, [articles])
 
-  if (!loading && topStories.length === 0) return null
+  const hasRecommendations = recommendedArticles.length > 0
+
+  if (!loading && topStories.length === 0 && !hasRecommendations) return null
 
   return (
-    <section className="mx-auto max-w-[1900px] px-6 pb-2 pt-10 sm:px-8 space-y-8">
-      {/* Smart Personalized Recommendations Block */}
-      {recommendedArticles.length > 0 && (
-        <div>
-          <div className="mb-4 flex items-center justify-between">
-            <h2 className="flex items-center gap-2 text-lg font-bold tracking-tight text-[var(--text-1)] sm:text-xl">
-              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-tr from-[#FF375F] to-[#FF9F0A] text-[13px] shadow-sm">
-                ✨
-              </span>
-              Dành riêng cho bạn
-            </h2>
-            <span className="rounded-full bg-[#0A84FF]/10 px-3 py-1 text-[11px] font-semibold text-[#0A84FF] border border-[#0A84FF]/20">
-              Tổng hợp từ thói quen đọc tin của bạn
-            </span>
-          </div>
+    <section className="mx-auto max-w-[1900px] px-6 pb-2 pt-10 sm:px-8">
+      {/* Side by side once there's room; stacked on narrow windows, where two
+          columns would squeeze the headlines to a few words per line. */}
+      <div className={`grid gap-8 ${hasRecommendations ? 'lg:grid-cols-2' : 'grid-cols-1'}`}>
+        {hasRecommendations && (
+          <div>
+            <div className="mb-4 flex items-center gap-2.5">
+              <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-tr from-[#FF375F] to-[#FF9F0A] text-[13px] shadow-sm">
+                  ✨
+                </span>
+                Dành riêng cho bạn
+              </h2>
+              <span className="text-[12px] text-[var(--text-4)]">Dựa trên thói quen đọc của bạn</span>
+            </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {recommendedArticles.slice(0, 3).map((article) => (
-              <RecommendedCard
-                key={`rec-${article.id}`}
-                article={article}
-                tag={tagMap.get(article.tagId)}
-                onOpenArticle={() => onOpenArticle(article, recommendedArticles)}
-              />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Top Stories Block */}
-      <div>
-        <div className="mb-4 flex items-center gap-2.5">
-          <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
-            <FlameIcon width={19} height={19} style={{ color: '#FF9F0A' }} />
-            Nổi bật hôm nay
-          </h2>
-          <span className="text-[12px] text-[var(--text-4)]">Tổng hợp tin mới nhất từ mọi chuyên mục</span>
-        </div>
-
-        <div className="glass flex flex-col divide-y divide-[var(--border-1)] overflow-hidden rounded-2xl">
-          {loading && topStories.length === 0
-            ? Array.from({ length: DIGEST_SIZE }).map((_, i) => <DigestSkeleton key={i} />)
-            : topStories.map((article, i) => (
+            <div className="glass flex flex-col divide-y divide-[var(--border-1)] overflow-hidden rounded-2xl">
+              {recommendedArticles.slice(0, DIGEST_SIZE).map((article, i) => (
                 <DigestRow
-                  key={article.id}
+                  key={`rec-${article.id}`}
                   article={article}
                   index={i}
+                  showIndex={false}
                   tag={tagMap.get(article.tagId)}
-                  onOpenArticle={() => onOpenArticle(article, topStories)}
+                  onOpenArticle={() => onOpenArticle(article, recommendedArticles)}
                 />
               ))}
+            </div>
+          </div>
+        )}
+
+        <div>
+          <div className="mb-4 flex items-center gap-2.5">
+            <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
+              <FlameIcon width={19} height={19} style={{ color: '#FF9F0A' }} />
+              Nổi bật hôm nay
+            </h2>
+            <span className="text-[12px] text-[var(--text-4)]">Tin mới nhất từ mọi chuyên mục</span>
+          </div>
+
+          <div className="glass flex flex-col divide-y divide-[var(--border-1)] overflow-hidden rounded-2xl">
+            {loading && topStories.length === 0
+              ? Array.from({ length: DIGEST_SIZE }).map((_, i) => <DigestSkeleton key={i} />)
+              : topStories.map((article, i) => (
+                  <DigestRow
+                    key={article.id}
+                    article={article}
+                    index={i}
+                    tag={tagMap.get(article.tagId)}
+                    onOpenArticle={() => onOpenArticle(article, topStories)}
+                  />
+                ))}
+          </div>
         </div>
       </div>
     </section>
-  )
-}
-
-function RecommendedCard({
-  article,
-  tag,
-  onOpenArticle,
-}: {
-  article: Article
-  tag: Tag | undefined
-  onOpenArticle: () => void
-}) {
-  const ref = useRef<HTMLButtonElement>(null)
-  const prefetch = useHoverPrefetch(article.link)
-  useViewportPrefetch(article.link, ref as any)
-
-  return (
-    <motion.button
-      type="button"
-      ref={ref}
-      onClick={onOpenArticle}
-      onMouseEnter={prefetch.onMouseEnter}
-      onMouseLeave={prefetch.onMouseLeave}
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="glass group relative flex flex-col overflow-hidden rounded-2xl border border-[var(--border-1)] p-4 text-left transition hover:border-[#0A84FF]/50 hover:bg-[var(--surface-1)] active:scale-[0.99]"
-    >
-      <div className="mb-3 flex items-center justify-between text-[11px] text-[var(--text-3)]">
-        {tag && (
-          <span className="flex items-center gap-1.5 font-semibold text-[var(--text-2)]">
-            <CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={12} />
-            {tag.label}
-          </span>
-        )}
-        <span>{formatRelativeTime(article.pubDate)}</span>
-      </div>
-
-      <h3 className="mb-2 line-clamp-2 text-[14.5px] font-bold leading-snug text-[var(--text-1)] group-hover:text-[#0A84FF] transition-colors">
-        {article.title}
-      </h3>
-
-      {article.description && (
-        <p className="line-clamp-2 text-[12px] leading-relaxed text-[var(--text-3)]">
-          {article.description}
-        </p>
-      )}
-    </motion.button>
   )
 }
 
@@ -159,11 +116,14 @@ function DigestRow({
   index,
   tag,
   onOpenArticle,
+  showIndex = true,
 }: {
   article: Article
   index: number
   tag: Tag | undefined
   onOpenArticle: () => void
+  /** Off for recommendations — those are suggestions, not a ranked chart. */
+  showIndex?: boolean
 }) {
   const ref = useRef<HTMLButtonElement>(null)
   const prefetch = useHoverPrefetch(article.link)
@@ -181,7 +141,9 @@ function DigestRow({
       transition={{ duration: 0.35, delay: Math.min(index * 0.06, 0.3) }}
       className="flex w-full items-center gap-4 px-4 py-3 text-left transition hover:bg-[var(--surface-1)]"
     >
-      <span className="w-5 shrink-0 text-center text-[15px] font-bold text-[var(--text-4)]">{index + 1}</span>
+      {showIndex && (
+        <span className="w-5 shrink-0 text-center text-[15px] font-bold text-[var(--text-4)]">{index + 1}</span>
+      )}
       <div className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-gradient-to-br from-[#0A84FF]/40 to-[#BF5AF2]/40">
         {article.image && (
           <img
