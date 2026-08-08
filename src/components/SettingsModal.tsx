@@ -25,7 +25,7 @@ interface Props {
   settings: Settings
   onUpdateSettings: (patch: Partial<Settings>) => void
   customSources: Tag[]
-  onAddSource: (input: { label: string; feedUrl: string; emoji?: string; scrape?: boolean }) => void
+  onAddSource: (input: { label: string; feedUrl: string; emoji?: string; scrape?: boolean; translate?: boolean }) => void
   onRemoveSource: (id: string) => void
   onClearCache: () => void
   interests: string[]
@@ -50,6 +50,8 @@ export default function SettingsModal({
   const [label, setLabel] = useState('')
   const [emoji, setEmoji] = useState('')
   const [feedUrl, setFeedUrl] = useState('')
+  const [isWebScrape, setIsWebScrape] = useState(false)
+  const [autoTranslate, setAutoTranslate] = useState(false)
   const [validating, setValidating] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [interestsOpen, setInterestsOpen] = useState(false)
@@ -71,21 +73,39 @@ export default function SettingsModal({
     setValidating(true)
     try {
       const name = label.trim() || url.hostname.replace(/^www\./, '')
-      const discovered = await discoverFeed(url)
-      if (!discovered) {
-        setError('Không tìm thấy nguồn tin RSS từ đường dẫn này.')
-        setValidating(false)
-        return
+      if (isWebScrape) {
+        onAddSource({
+          label: name,
+          feedUrl: url.toString(),
+          emoji: emoji.trim() || undefined,
+          scrape: true,
+          translate: autoTranslate,
+        })
+        setLabel('')
+        setEmoji('')
+        setFeedUrl('')
+        setIsWebScrape(false)
+        setAutoTranslate(false)
+      } else {
+        const discovered = await discoverFeed(url)
+        if (!discovered) {
+          setError('Không tìm thấy luồng RSS. Đã tự chuyển sang chế độ Trang Web.')
+          setIsWebScrape(true)
+          setValidating(false)
+          return
+        }
+        onAddSource({
+          label: name,
+          feedUrl: discovered.feedUrl,
+          emoji: emoji.trim() || undefined,
+          scrape: discovered.scrape,
+          translate: autoTranslate,
+        })
+        setLabel('')
+        setEmoji('')
+        setFeedUrl('')
+        setAutoTranslate(false)
       }
-      onAddSource({
-        label: name,
-        feedUrl: discovered.feedUrl,
-        emoji: emoji.trim() || undefined,
-        scrape: discovered.scrape,
-      })
-      setLabel('')
-      setEmoji('')
-      setFeedUrl('')
     } catch {
       setError('Không thể đọc nguồn tin này. Kiểm tra lại đường dẫn.')
     } finally {
@@ -100,7 +120,7 @@ export default function SettingsModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
           onClick={onClose}
         >
           <motion.div
@@ -109,11 +129,11 @@ export default function SettingsModal({
             exit={{ opacity: 0, y: 20, scale: 0.97 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="soft-glass max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl p-6 shadow-[0_30px_80px_rgba(0,0,0,0.85)] border border-white/15 bg-[#12141a]/95 text-white lg:max-w-3xl xl:max-w-5xl 2xl:max-w-6xl"
+            className="max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl p-6 shadow-[0_30px_80px_rgba(0,0,0,0.4)] border border-[var(--border-1)] bg-[var(--modal-bg)] text-[var(--text-1)] backdrop-blur-2xl lg:max-w-3xl xl:max-w-5xl 2xl:max-w-6xl"
             data-lenis-prevent
           >
-            <div className="mb-6 flex items-center justify-between">
-              <h2 className="text-lg font-semibold tracking-tight">Cài đặt</h2>
+            <div className="mb-6 flex items-center justify-between border-b border-[var(--border-1)] pb-4">
+              <h2 className="text-lg font-semibold tracking-tight text-[var(--text-1)]">Cài đặt</h2>
               <button
                 type="button"
                 onClick={onClose}
@@ -127,7 +147,7 @@ export default function SettingsModal({
             <div className="lg:grid lg:grid-cols-2 lg:items-start lg:gap-x-8 xl:grid-cols-3">
               <section className="mb-7">
                 <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
-                  Giao diện
+                  Giao diện ứng dụng
                 </h3>
                 <div className="flex gap-2">
                   <ThemeSwatch
@@ -178,169 +198,197 @@ export default function SettingsModal({
                 <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
                   Thông báo
                 </h3>
-              <label className="flex cursor-pointer items-center justify-between rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-4 py-3">
-                <span className="text-[14px] text-[var(--text-1)]">Báo khi có tin mới</span>
-                <input
-                  type="checkbox"
-                  checked={settings.notificationsEnabled}
-                  onChange={(e) => onUpdateSettings({ notificationsEnabled: e.target.checked })}
-                  className="h-5 w-5 accent-[#0A84FF]"
-                />
-              </label>
-            </section>
+                <label className="flex cursor-pointer items-center justify-between rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-4 py-3">
+                  <span className="text-[14px] text-[var(--text-1)]">Báo khi có tin mới</span>
+                  <input
+                    type="checkbox"
+                    checked={settings.notificationsEnabled}
+                    onChange={(e) => onUpdateSettings({ notificationsEnabled: e.target.checked })}
+                    className="h-5 w-5 accent-[#0A84FF]"
+                  />
+                </label>
+              </section>
 
-            <section className="mb-7">
-              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
-                Chế độ đọc mặc định
-              </h3>
-              <div className="flex gap-2">
-                <ThemeSwatch
-                  active={settings.readerTheme === 'light'}
-                  label="Sáng"
-                  icon={<SunIcon width={15} height={15} />}
-                  onClick={() => onUpdateSettings({ readerTheme: 'light' as ReaderTheme })}
-                />
-                <ThemeSwatch
-                  active={settings.readerTheme === 'sepia'}
-                  label="Sepia"
-                  icon={<SepiaIcon width={15} height={15} />}
-                  onClick={() => onUpdateSettings({ readerTheme: 'sepia' as ReaderTheme })}
-                />
-                <ThemeSwatch
-                  active={settings.readerTheme === 'dark'}
-                  label="Tối"
-                  icon={<MoonIcon width={15} height={15} />}
-                  onClick={() => onUpdateSettings({ readerTheme: 'dark' as ReaderTheme })}
-                />
-              </div>
-
-              <div className="mt-4 flex gap-2">
-                <FontSwatch
-                  active={settings.readerFont === 'serif'}
-                  label="Chữ có chân"
-                  sample="Aa"
-                  sampleClassName="font-serif"
-                  onClick={() => onUpdateSettings({ readerFont: 'serif' as ReaderFont })}
-                />
-                <FontSwatch
-                  active={settings.readerFont === 'sans'}
-                  label="Chữ không chân"
-                  sample="Aa"
-                  sampleClassName="font-sans"
-                  onClick={() => onUpdateSettings({ readerFont: 'sans' as ReaderFont })}
-                />
-              </div>
-
-              <div className="mt-4 flex items-center justify-between rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-4 py-3">
-                <span className="flex items-center gap-2 text-[14px] text-[var(--text-1)]">
-                  <TextSizeIcon width={15} height={15} />
-                  Cỡ chữ
-                </span>
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onUpdateSettings({ readerFontSize: Math.max(14, settings.readerFontSize - 1) })
-                    }
-                    disabled={settings.readerFontSize <= 14}
-                    aria-label="Giảm cỡ chữ"
-                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--surface-2)] text-[var(--text-1)] transition hover:bg-[var(--surface-3)] disabled:opacity-30"
-                  >
-                    −
-                  </button>
-                  <span className="w-8 text-center text-[13px] tabular-nums text-[var(--text-2)]">
-                    {settings.readerFontSize}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() =>
-                      onUpdateSettings({ readerFontSize: Math.min(26, settings.readerFontSize + 1) })
-                    }
-                    disabled={settings.readerFontSize >= 26}
-                    aria-label="Tăng cỡ chữ"
-                    className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--surface-2)] text-[var(--text-1)] transition hover:bg-[var(--surface-3)] disabled:opacity-30"
-                  >
-                    +
-                  </button>
-                </div>
-              </div>
-            </section>
-
-            <section className="mb-7">
-              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
-                Nguồn tin của bạn
-              </h3>
-
-              {customSources.length > 0 && (
-                <ul className="mb-3 flex flex-col gap-1.5">
-                  {customSources.map((s) => (
-                    <li
-                      key={s.id}
-                      className="flex items-center gap-2.5 rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-2"
-                    >
-                      <CategoryIcon tagId={s.id} emoji={s.emoji} faviconHost={s.source} size={13} chip />
-                      <span className="flex-1 truncate text-[13px] text-[var(--text-1)]">{s.label}</span>
-                      <button
-                        type="button"
-                        onClick={() => onRemoveSource(s.id)}
-                        aria-label={`Xoá ${s.label}`}
-                        className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-3)] transition hover:bg-[var(--surface-2)] hover:text-[#FF375F]"
-                      >
-                        <TrashIcon width={14} height={14} />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              <form onSubmit={handleAdd} className="flex flex-col gap-2">
+              <section className="mb-7">
+                <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
+                  Chế độ đọc mặc định
+                </h3>
                 <div className="flex gap-2">
-                  <input
-                    value={emoji}
-                    onChange={(e) => setEmoji(e.target.value)}
-                    placeholder="📰"
-                    maxLength={4}
-                    className="w-14 rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-2 py-2 text-center text-sm text-[var(--text-1)] outline-none focus:border-[var(--text-3)]"
+                  <ThemeSwatch
+                    active={settings.readerTheme === 'light'}
+                    label="Sáng"
+                    icon={<SunIcon width={15} height={15} />}
+                    onClick={() => onUpdateSettings({ readerTheme: 'light' as ReaderTheme })}
                   />
-                  <input
-                    value={label}
-                    onChange={(e) => setLabel(e.target.value)}
-                    placeholder="Tên chuyên mục"
-                    className="flex-1 rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-1)] outline-none focus:border-[var(--text-3)]"
+                  <ThemeSwatch
+                    active={settings.readerTheme === 'sepia'}
+                    label="Sepia"
+                    icon={<SepiaIcon width={15} height={15} />}
+                    onClick={() => onUpdateSettings({ readerTheme: 'sepia' as ReaderTheme })}
+                  />
+                  <ThemeSwatch
+                    active={settings.readerTheme === 'dark'}
+                    label="Tối"
+                    icon={<MoonIcon width={15} height={15} />}
+                    onClick={() => onUpdateSettings({ readerTheme: 'dark' as ReaderTheme })}
                   />
                 </div>
-                <input
-                  value={feedUrl}
-                  onChange={(e) => setFeedUrl(e.target.value)}
-                  placeholder="vidu.com/rss.xml"
-                  className="rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-1)] outline-none focus:border-[var(--text-3)]"
-                />
-                {error && <p className="text-[12px] text-[#FF375F]">{error}</p>}
+
+                <div className="mt-4 flex gap-2">
+                  <FontSwatch
+                    active={settings.readerFont === 'serif'}
+                    label="Chữ có chân"
+                    sample="Aa"
+                    sampleClassName="font-serif"
+                    onClick={() => onUpdateSettings({ readerFont: 'serif' as ReaderFont })}
+                  />
+                  <FontSwatch
+                    active={settings.readerFont === 'sans'}
+                    label="Chữ không chân"
+                    sample="Aa"
+                    sampleClassName="font-sans"
+                    onClick={() => onUpdateSettings({ readerFont: 'sans' as ReaderFont })}
+                  />
+                </div>
+
+                <div className="mt-4 flex items-center justify-between rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-4 py-3">
+                  <span className="flex items-center gap-2 text-[14px] text-[var(--text-1)]">
+                    <TextSizeIcon width={15} height={15} />
+                    Cỡ chữ
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onUpdateSettings({ readerFontSize: Math.max(14, settings.readerFontSize - 1) })
+                      }
+                      disabled={settings.readerFontSize <= 14}
+                      aria-label="Giảm cỡ chữ"
+                      className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--surface-2)] text-[var(--text-1)] transition hover:bg-[var(--surface-3)] disabled:opacity-30"
+                    >
+                      −
+                    </button>
+                    <span className="w-8 text-center text-[13px] tabular-nums text-[var(--text-2)]">
+                      {settings.readerFontSize}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        onUpdateSettings({ readerFontSize: Math.min(26, settings.readerFontSize + 1) })
+                      }
+                      disabled={settings.readerFontSize >= 26}
+                      aria-label="Tăng cỡ chữ"
+                      className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--surface-2)] text-[var(--text-1)] transition hover:bg-[var(--surface-3)] disabled:opacity-30"
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </section>
+
+              <section className="mb-7">
+                <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
+                  Nguồn tin của bạn
+                </h3>
+
+                {customSources.length > 0 && (
+                  <ul className="mb-3 flex flex-col gap-1.5">
+                    {customSources.map((s) => (
+                      <li
+                        key={s.id}
+                        className="flex items-center gap-2.5 rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-2"
+                      >
+                        <CategoryIcon tagId={s.id} emoji={s.emoji} faviconHost={s.source} size={13} chip />
+                        <span className="flex-1 truncate text-[13px] text-[var(--text-1)]">{s.label}</span>
+                        {s.scrape && (
+                          <span className="rounded bg-[#0A84FF]/15 px-1.5 py-0.5 text-[10px] font-semibold text-[#0A84FF]">
+                            Web HTML
+                          </span>
+                        )}
+                        <button
+                          type="button"
+                          onClick={() => onRemoveSource(s.id)}
+                          aria-label={`Xoá ${s.label}`}
+                          className="flex h-7 w-7 items-center justify-center rounded-lg text-[var(--text-3)] transition hover:bg-[var(--surface-2)] hover:text-[#FF375F]"
+                        >
+                          <TrashIcon width={14} height={14} />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
+                <form onSubmit={handleAdd} className="flex flex-col gap-2.5">
+                  <div className="flex gap-2">
+                    <input
+                      value={emoji}
+                      onChange={(e) => setEmoji(e.target.value)}
+                      placeholder="📰"
+                      maxLength={4}
+                      className="w-14 rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-2 py-2 text-center text-sm text-[var(--text-1)] outline-none focus:border-[#0A84FF]"
+                    />
+                    <input
+                      value={label}
+                      onChange={(e) => setLabel(e.target.value)}
+                      placeholder="Tên chuyên mục"
+                      className="flex-1 rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-1)] outline-none focus:border-[#0A84FF]"
+                    />
+                  </div>
+                  <input
+                    value={feedUrl}
+                    onChange={(e) => setFeedUrl(e.target.value)}
+                    placeholder="vidu.com (RSS hoặc URL trang Web)"
+                    className="rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-3 py-2 text-sm text-[var(--text-1)] outline-none focus:border-[#0A84FF]"
+                  />
+
+                  <div className="flex items-center justify-between gap-2 px-1 text-[12px] text-[var(--text-2)]">
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={isWebScrape}
+                        onChange={(e) => setIsWebScrape(e.target.checked)}
+                        className="h-4 w-4 accent-[#0A84FF]"
+                      />
+                      <span>Nguồn trang Web (HTML)</span>
+                    </label>
+
+                    <label className="flex cursor-pointer items-center gap-2">
+                      <input
+                        type="checkbox"
+                        checked={autoTranslate}
+                        onChange={(e) => setAutoTranslate(e.target.checked)}
+                        className="h-4 w-4 accent-[#0A84FF]"
+                      />
+                      <span>Tự động dịch sang Tiếng Việt</span>
+                    </label>
+                  </div>
+
+                  {error && <p className="text-[12px] text-[#FF375F]">{error}</p>}
+                  <button
+                    type="submit"
+                    disabled={validating}
+                    className="flex items-center justify-center gap-1.5 rounded-xl bg-[#0A84FF] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[#0A84FF]/90 disabled:opacity-50"
+                  >
+                    <PlusIcon width={14} height={14} />
+                    {validating ? 'Đang kiểm tra...' : isWebScrape ? 'Thêm nguồn Trang Web' : 'Thêm nguồn RSS'}
+                  </button>
+                </form>
+              </section>
+
+              <UpdateSection settings={settings} onUpdateSettings={onUpdateSettings} appUpdate={appUpdate} />
+
+              <section className="mb-7">
+                <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
+                  Khác
+                </h3>
                 <button
-                  type="submit"
-                  disabled={validating}
-                  className="flex items-center justify-center gap-1.5 rounded-xl bg-[var(--text-1)] px-4 py-2.5 text-[13px] font-semibold text-[var(--bg)] transition hover:opacity-90 disabled:opacity-50"
+                  type="button"
+                  onClick={onClearCache}
+                  className="w-full rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-4 py-2.5 text-[13px] font-medium text-[var(--text-2)] transition hover:bg-[var(--surface-2)] hover:text-[var(--text-1)]"
                 >
-                  <PlusIcon width={14} height={14} />
-                  {validating ? 'Đang kiểm tra...' : 'Thêm nguồn RSS'}
+                  Xoá bộ nhớ đệm tin tức
                 </button>
-              </form>
-            </section>
-
-            <UpdateSection settings={settings} onUpdateSettings={onUpdateSettings} appUpdate={appUpdate} />
-
-            <section className="mb-7">
-              <h3 className="mb-3 text-[12px] font-semibold uppercase tracking-wide text-[var(--text-3)]">
-                Khác
-              </h3>
-              <button
-                type="button"
-                onClick={onClearCache}
-                className="w-full rounded-xl border border-[var(--border-1)] bg-[var(--surface-1)] px-4 py-2.5 text-[13px] font-medium text-[var(--text-2)] transition hover:bg-[var(--surface-2)] hover:text-[var(--text-1)]"
-              >
-                Xoá bộ nhớ đệm tin tức
-              </button>
-            </section>
+              </section>
             </div>
           </motion.div>
         </motion.div>
@@ -366,7 +414,7 @@ function ThemeSwatch({
       onClick={onClick}
       className={`flex flex-1 flex-col items-center gap-1.5 rounded-xl border px-3 py-3 text-[12px] font-medium transition ${
         active
-          ? 'border-[#0A84FF] bg-[#0A84FF] text-white'
+          ? 'border-[#0A84FF] bg-[#0A84FF] text-white shadow-sm'
           : 'border-[var(--border-1)] bg-[var(--surface-1)] text-[var(--text-2)] hover:bg-[var(--surface-2)]'
       }`}
     >
@@ -395,7 +443,7 @@ function FontSwatch({
       onClick={onClick}
       className={`flex flex-1 items-center gap-2.5 rounded-xl border px-3 py-2.5 text-[12px] font-medium transition ${
         active
-          ? 'border-[#0A84FF] bg-[#0A84FF] text-white'
+          ? 'border-[#0A84FF] bg-[#0A84FF] text-white shadow-sm'
           : 'border-[var(--border-1)] bg-[var(--surface-1)] text-[var(--text-2)] hover:bg-[var(--surface-2)]'
       }`}
     >
@@ -442,13 +490,13 @@ function UpdateSection({
         <div className="text-[13px] text-[var(--text-2)]">
           {currentVersion ? (
             <>
-              Phiên bản hiện tại: <span className="text-[var(--text-1)]">{currentVersion}</span>
+              Phiên bản hiện tại: <span className="font-semibold text-[var(--text-1)]">{currentVersion}</span>
             </>
           ) : (
             'Không xác định phiên bản'
           )}
           {status === 'update-available' && latest && (
-            <p className="mt-1 text-[#30D158]">Có bản mới: v{latest.version}</p>
+            <p className="mt-1 font-semibold text-[#30D158]">Có bản mới: v{latest.version}</p>
           )}
           {status === 'up-to-date' && <p className="mt-1 text-[var(--text-3)]">Bạn đang dùng bản mới nhất.</p>}
           {status === 'error' && <p className="mt-1 text-[#FF375F]">Không thể kiểm tra lúc này.</p>}
@@ -457,7 +505,7 @@ function UpdateSection({
           type="button"
           onClick={check}
           disabled={!isElectron || status === 'checking'}
-          className="flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--surface-2)] px-3.5 py-2 text-[12px] font-medium text-[var(--text-1)] transition hover:bg-[var(--surface-3)] disabled:opacity-40"
+          className="flex shrink-0 items-center gap-1.5 rounded-full bg-[var(--surface-2)] px-3.5 py-2 text-[12px] font-semibold text-[var(--text-1)] transition hover:bg-[var(--surface-3)] disabled:opacity-40"
         >
           <RefreshIcon width={13} height={13} />
           {status === 'checking' ? 'Đang kiểm tra...' : 'Kiểm tra ngay'}
@@ -469,7 +517,7 @@ function UpdateSection({
           type="button"
           onClick={install}
           disabled={!latest.downloadUrl}
-          className="mt-2 flex items-center justify-center gap-1.5 rounded-xl bg-[var(--text-1)] px-4 py-2.5 text-[13px] font-semibold text-[var(--bg)] transition hover:opacity-90 disabled:opacity-40"
+          className="mt-2 flex items-center justify-center gap-1.5 rounded-xl bg-[#0A84FF] px-4 py-2.5 text-[13px] font-semibold text-white transition hover:bg-[#0A84FF]/90 disabled:opacity-40"
         >
           {latest.downloadUrl ? 'Cập nhật ngay' : 'Không tìm thấy tệp cài đặt'}
         </button>
@@ -479,7 +527,7 @@ function UpdateSection({
         <div className="mt-2">
           <div className="mb-1.5 flex items-center justify-between text-[12px] text-[var(--text-2)]">
             <span>Đang tải bản cập nhật...</span>
-            <span className="tabular-nums font-bold">
+            <span className="tabular-nums font-bold text-[var(--text-1)]">
               {typeof installProgress === 'number' ? installProgress : installProgress.percent}%
             </span>
           </div>

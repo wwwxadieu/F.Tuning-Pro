@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion'
+import { useEffect, useState } from 'react'
 import { useTags } from '../context/TagsContext'
 import { usePinnedTags } from '../hooks/usePinnedTags'
 import CategoryIcon from './CategoryIcon'
-import { GearIcon, LayersIcon, PinIcon, PlusIcon, TrashIcon } from './icons'
+import { GearIcon, PinIcon, PlusIcon, TrashIcon } from './icons'
 
 interface Props {
   open: boolean
@@ -15,6 +16,16 @@ interface Props {
 export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRemoveSource }: Props) {
   const { tags } = useTags()
   const { isPinned, togglePin, pinned } = usePinnedTags(tags)
+  const [version, setVersion] = useState('v1.0.31')
+
+  useEffect(() => {
+    if (window.electronAPI?.getAppVersion) {
+      window.electronAPI.getAppVersion().then((v) => {
+        if (v) setVersion(`v${v}`)
+      })
+    }
+  }, [])
+
   const builtInTags = tags.filter((t) => !t.custom)
   const customTags = tags.filter((t) => t.custom)
   const pinnedTags = tags
@@ -29,7 +40,7 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRe
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: -260, opacity: 0 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="fixed bottom-0 left-0 top-0 z-40 flex w-64 shrink-0 flex-col overflow-y-auto border-r border-[var(--border-1)] bg-[var(--bg)]/80 pb-6 pt-24 backdrop-blur-2xl"
+          className="fixed bottom-0 left-0 top-0 z-40 flex w-64 shrink-0 flex-col overflow-y-auto border-r border-[var(--border-1)] bg-[var(--bg)]/85 pb-6 pt-24 backdrop-blur-2xl"
           data-lenis-prevent
         >
           {pinnedTags.length > 0 && (
@@ -124,9 +135,12 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRe
               <GearIcon width={16} height={16} />
               Cài đặt
             </button>
-            <div className="mt-2 flex items-center gap-2 px-3 text-[11px] text-[var(--text-4)]">
-              <LayersIcon width={13} height={13} />
-              {tags.length} chuyên mục
+            <div className="mt-2.5 flex items-center justify-between px-3 text-[11px] font-medium text-[var(--text-3)]">
+              <span className="flex items-center gap-1.5 font-semibold text-[var(--text-2)]">
+                <span className="h-1.5 w-1.5 rounded-full bg-[#30D158]" />
+                F.VNN {version}
+              </span>
+              <span className="text-[10.5px] opacity-70">{tags.length} chuyên mục</span>
             </div>
           </div>
         </motion.aside>

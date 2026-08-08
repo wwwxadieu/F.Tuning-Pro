@@ -21,6 +21,16 @@ interface RawFeedResponse {
   items?: RawFeedItem[]
 }
 
+const VIETNAMESE_DIACRITICS_RE = /[àáảãạăắằẳẵặâấầẩẫậđèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵ]/i
+
+function isForeignText(text: string): boolean {
+  const trimmed = text.trim()
+  if (trimmed.length < 15) return false
+  const wordCount = trimmed.split(/\s+/).length
+  if (wordCount < 4) return false
+  return !VIETNAMESE_DIACRITICS_RE.test(trimmed)
+}
+
 function stripTags(html: string): string {
   return html
     .replace(/<script\b[^<]*>([\s\S]*?)<\/script>/gi, '')
@@ -218,7 +228,7 @@ export async function fetchArticlesForTag(
     }
   }
 
-  // Filter out articles older than 14 days (14 * 24 * 60 * 60 * 1000)
+  // Filter out articles older than 14 days
   const nowMs = Date.now()
   const fourteenDaysMs = 14 * 24 * 60 * 60 * 1000
   const freshArticles = articles.filter((a) => {
@@ -233,12 +243,19 @@ export async function fetchArticlesForTag(
   // Sort strictly by publication date descending (newest first)
   articles.sort((a, b) => parsePubDateMs(b.pubDate) - parsePubDateMs(a.pubDate))
 
-  if (tag.translate) {
+  // Auto-translate foreign language headlines to Vietnamese
+  const shouldTranslate = tag.translate || articles.some((a) => isForeignText(a.title))
+  if (shouldTranslate) {
     await Promise.all(
       articles.map(async (a) => {
-        const [title, description] = await Promise.all([translateText(a.title), translateText(a.description)])
-        a.title = title
-        a.description = description
+        if (tag.translate || isForeignText(a.title)) {
+          const [title, description] = await Promise.all([
+            translateText(a.title),
+            a.description ? translateText(a.description) : Promise.resolve(''),
+          ])
+          a.title = title
+          a.description = description
+        }
       })
     )
   }
