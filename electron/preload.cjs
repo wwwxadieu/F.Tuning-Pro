@@ -6,6 +6,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   downloadAndInstallUpdate: (url) => ipcRenderer.invoke('update:download-and-install', url),
   fetchHtml: (url) => ipcRenderer.invoke('article:fetch-html', url),
   fetchRawRss: (url) => ipcRenderer.invoke('rss:fetch-raw', url),
+  translateText: (text, target) => ipcRenderer.invoke('translate:text', text, target),
   onUpdateProgress: (callback) => {
     const handler = (_event, data) => callback(data)
     ipcRenderer.on('update:progress', handler)

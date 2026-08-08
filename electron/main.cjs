@@ -98,6 +98,70 @@ function fetchHtmlDirect(targetUrl, redirectsLeft = MAX_REDIRECTS) {
   })
 }
 
+// Translation runs here rather than in the renderer for two reasons: a POST
+// body has no practical length limit, where the GET form the renderer used for
+// short titles would truncate an article paragraph into an over-long URL; and
+// requests carry a normal browser User-Agent, which the endpoint is far less
+// likely to turn away.
+const TRANSLATE_TIMEOUT_MS = 20_000
+const MYMEMORY_MAX_CHARS = 500
+
+async function translateViaGoogle(text, target) {
+  const endpoint =
+    `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(target)}&dt=t`
+  const res = await net.fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8',
+      'User-Agent':
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+    },
+    body: new URLSearchParams({ q: text }).toString(),
+    signal: AbortSignal.timeout(TRANSLATE_TIMEOUT_MS),
+  })
+  if (!res.ok) throw new Error(`translate HTTP ${res.status}`)
+
+  const data = JSON.parse(await res.text())
+  const segments = Array.isArray(data) ? data[0] : null
+  if (!Array.isArray(segments)) throw new Error('Phản hồi dịch không hợp lệ')
+  // Segments are per-sentence and carry their own line breaks, so joining
+  // with no separator reproduces the paragraph structure that was sent in.
+  const out = segments.map((s) => (Array.isArray(s) ? String(s[0] ?? '') : '')).join('')
+  if (!out.trim()) throw new Error('Kết quả dịch rỗng')
+  return out
+}
+
+async function translateViaMyMemory(text, target) {
+  if (text.length > MYMEMORY_MAX_CHARS) throw new Error('Đoạn văn quá dài cho nguồn dự phòng')
+  const url =
+    'https://api.mymemory.translated.net/get?q=' +
+    encodeURIComponent(text) +
+    `&langpair=${encodeURIComponent('en|' + target)}`
+  const res = await net.fetch(url, { signal: AbortSignal.timeout(TRANSLATE_TIMEOUT_MS) })
+  if (!res.ok) throw new Error(`mymemory HTTP ${res.status}`)
+  const data = JSON.parse(await res.text())
+  if (data?.responseStatus !== 200) throw new Error(String(data?.responseDetails ?? 'lỗi dịch'))
+  const out = String(data?.responseData?.translatedText ?? '')
+  if (!out.trim()) throw new Error('Kết quả dịch rỗng')
+  return out
+}
+
+ipcMain.handle('translate:text', async (_event, text, target = 'vi') => {
+  if (typeof text !== 'string' || !text.trim()) return text
+  try {
+    return await translateViaGoogle(text, target)
+  } catch (err) {
+    // MyMemory only accepts 500 characters at a time and needs an explicit
+    // source language, so it cannot cover every case — but for a short
+    // paragraph it is better than showing the reader nothing.
+    try {
+      return await translateViaMyMemory(text, target)
+    } catch {
+      throw err
+    }
+  }
+})
+
 ipcMain.handle('article:fetch-html', async (event, url) => {
   return await fetchHtmlDirect(url)
 })

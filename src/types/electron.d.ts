@@ -13,6 +13,8 @@ export interface ElectronAPI {
   fetchHtml: (url: string) => Promise<string>
   /** Same transport, used for feeds so they don't need a third-party converter. */
   fetchRawRss: (url: string) => Promise<string>
+  /** Translates a block of text. POSTs from the main process, so long paragraphs are fine. */
+  translateText: (text: string, target?: string) => Promise<string>
   onUpdateProgress: (callback: (data: UpdateProgress | number) => void) => () => void
 }
 

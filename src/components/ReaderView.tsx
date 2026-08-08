@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import type { Article, ReaderTheme, Settings } from '../types/news'
 import { getLenisInstance } from '../lib/lenisInstance'
 import { fetchReaderContent } from '../services/readerService'
+import { looksVietnamese, translateArticleHtml, translateText } from '../services/translateService'
 import { pausePrefetch, resumePrefetch } from '../services/prefetchQueue'
 import { formatRelativeTime } from '../utils/time'
 import { PlaneIcon } from './categoryIcons'
@@ -20,6 +21,7 @@ import {
   ShareIcon,
   SunIcon,
   TextSizeIcon,
+  TranslateIcon,
   XIcon,
 } from './icons'
 
@@ -42,6 +44,23 @@ const THEME_STYLES: Record<ReaderTheme, { bg: string; text: string; subtle: stri
 
 type LoadState = 'loading' | 'ok' | 'error'
 
+interface TranslationState {
+  status: 'idle' | 'working' | 'done' | 'error'
+  /** Kept alongside the original so toggling back is instant, with no refetch. */
+  html: string | null
+  title: string | null
+  progress: number
+  showing: boolean
+}
+
+const EMPTY_TRANSLATION: TranslationState = {
+  status: 'idle',
+  html: null,
+  title: null,
+  progress: 0,
+  showing: false,
+}
+
 export default function ReaderView({
   article,
   hasPrev,
@@ -60,6 +79,9 @@ export default function ReaderView({
   const [retryToken, setRetryToken] = useState(0)
   const [isExpanded, setIsExpanded] = useState(false)
   const shareMenuRef = useRef<HTMLDivElement>(null)
+
+  const [translation, setTranslation] = useState<TranslationState>(EMPTY_TRANSLATION)
+  const translateAbortRef = useRef<AbortController | null>(null)
 
   useEffect(() => {
     if (!article) return
@@ -86,6 +108,67 @@ export default function ReaderView({
     else resumePrefetch()
     return () => resumePrefetch()
   }, [article])
+
+  // A translation belongs to one article, so moving to the next one has to
+  // drop it — otherwise the reader would show the previous piece's text.
+  useEffect(() => {
+    translateAbortRef.current?.abort()
+    translateAbortRef.current = null
+    setTranslation(EMPTY_TRANSLATION)
+  }, [article, retryToken])
+
+  useEffect(() => () => translateAbortRef.current?.abort(), [])
+
+  const handleTranslate = () => {
+    if (!article) return
+
+    // Already translated: the button just flips between the two versions.
+    if (translation.html !== null) {
+      setTranslation((prev) => ({ ...prev, showing: !prev.showing }))
+      return
+    }
+    if (translation.status === 'working') return
+
+    const controller = new AbortController()
+    translateAbortRef.current = controller
+    setTranslation({ ...EMPTY_TRANSLATION, status: 'working', showing: true })
+
+    Promise.all([
+      translateArticleHtml(html, {
+        signal: controller.signal,
+        cacheKey: article.link,
+        onProgress: (fraction) =>
+          setTranslation((prev) =>
+            prev.status === 'working' ? { ...prev, progress: fraction } : prev
+          ),
+      }),
+      // Foreign sources already have their headline translated when the feed
+      // is fetched, so only send one that is still in another language.
+      // Falls back to the original on failure, so this never rejects.
+      looksVietnamese(article.title)
+        ? Promise.resolve(article.title)
+        : translateText(article.title),
+    ])
+      .then(([translatedHtml, translatedTitle]) => {
+        if (controller.signal.aborted) return
+        setTranslation({
+          status: 'done',
+          html: translatedHtml,
+          title: translatedTitle,
+          progress: 1,
+          showing: true,
+        })
+      })
+      .catch(() => {
+        if (controller.signal.aborted) return
+        setTranslation({ ...EMPTY_TRANSLATION, status: 'error' })
+      })
+  }
+
+  const showingTranslation = translation.showing && translation.html !== null
+  const displayedHtml = showingTranslation ? (translation.html as string) : html
+  const displayedTitle =
+    showingTranslation && translation.title ? translation.title : article?.title
 
   useEffect(() => {
     const lenis = getLenisInstance()
@@ -277,6 +360,31 @@ export default function ReaderView({
                   </span>
                 </ToolbarButton>
                 <div className="mx-1 h-5 w-px" style={{ backgroundColor: `${theme.text}1a` }} />
+                <ToolbarButton
+                  onClick={handleTranslate}
+                  disabled={state !== 'ok' || translation.status === 'working'}
+                  label={
+                    translation.status === 'working'
+                      ? `Đang dịch… ${Math.round(translation.progress * 100)}%`
+                      : translation.status === 'error'
+                        ? 'Dịch thất bại — nhấn để thử lại'
+                        : showingTranslation
+                          ? 'Xem bản gốc'
+                          : 'Dịch sang tiếng Việt'
+                  }
+                  style={{
+                    color: showingTranslation ? '#fff' : theme.subtle,
+                    backgroundColor: showingTranslation ? '#0A84FF' : undefined,
+                    opacity: state !== 'ok' ? 0.4 : 1,
+                  }}
+                >
+                  {translation.status === 'working' ? (
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                  ) : (
+                    <TranslateIcon width={16} height={16} />
+                  )}
+                </ToolbarButton>
+                <div className="mx-1 h-5 w-px" style={{ backgroundColor: `${theme.text}1a` }} />
                 <div className="relative" ref={shareMenuRef}>
                   <ToolbarButton
                     onClick={() => setShareMenuOpen((v) => !v)}
@@ -346,7 +454,7 @@ export default function ReaderView({
                     className="font-bold leading-tight tracking-tight text-white"
                     style={{ fontSize: `${settings.readerFontSize * 1.5}px` }}
                   >
-                    {article.title}
+                    {displayedTitle}
                   </h1>
                 </header>
 
@@ -367,11 +475,56 @@ export default function ReaderView({
                 <div style={{ fontSize: `${settings.readerFontSize}px` }}>
                   {state === 'loading' && <ReaderSkeleton color={theme.card} />}
 
+                  {state === 'ok' && translation.status !== 'idle' && (
+                    <div
+                      className="mb-5 flex items-center gap-3 rounded-xl px-4 py-2.5 text-[13px]"
+                      style={{ backgroundColor: theme.card, color: theme.subtle }}
+                    >
+                      {translation.status === 'working' && (
+                        <>
+                          <span className="h-3.5 w-3.5 shrink-0 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                          <span>Đang dịch sang tiếng Việt… {Math.round(translation.progress * 100)}%</span>
+                        </>
+                      )}
+                      {translation.status === 'done' && (
+                        <>
+                          <TranslateIcon width={14} height={14} style={{ color: '#0A84FF' }} />
+                          <span>
+                            {showingTranslation
+                              ? 'Đang xem bản dịch tiếng Việt (dịch tự động).'
+                              : 'Đang xem bản gốc.'}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={handleTranslate}
+                            className="ml-auto shrink-0 font-semibold underline underline-offset-2"
+                            style={{ color: theme.text }}
+                          >
+                            {showingTranslation ? 'Xem bản gốc' : 'Xem bản dịch'}
+                          </button>
+                        </>
+                      )}
+                      {translation.status === 'error' && (
+                        <>
+                          <span>Không thể dịch bài viết này lúc này.</span>
+                          <button
+                            type="button"
+                            onClick={handleTranslate}
+                            className="ml-auto shrink-0 font-semibold underline underline-offset-2"
+                            style={{ color: theme.text }}
+                          >
+                            Thử lại
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
+
                   {state === 'ok' && (
                     <div
                       className={`reader-content max-w-none ${settings.readerFont === 'sans' ? 'font-sans' : ''}`}
                       style={{ fontSize: `${settings.readerFontSize}px`, lineHeight: 1.8 }}
-                      dangerouslySetInnerHTML={{ __html: html }}
+                      dangerouslySetInnerHTML={{ __html: displayedHtml }}
                       onClick={(e) => {
                         const target = e.target as HTMLElement
                         if (target.tagName === 'IMG') {

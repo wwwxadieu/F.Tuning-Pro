@@ -108,6 +108,18 @@ export function TrashIcon(props: IconProps) {
   )
 }
 
+export function TranslateIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <path d="M4 5h10" />
+      <path d="M9 3v2c0 4.4-2.2 7.6-5 9" />
+      <path d="M6 12c1.8 2 4 3.4 6 4" />
+      <path d="M13 20l4.5-10 4.5 10" />
+      <path d="M14.8 17h5.4" />
+    </svg>
+  )
+}
+
 export function TextSizeIcon(props: IconProps) {
   return (
     <svg {...base(props)}>
