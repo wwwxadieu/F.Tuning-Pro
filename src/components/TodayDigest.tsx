@@ -10,24 +10,14 @@ import { formatRelativeTime } from '../utils/time'
 
 interface Props {
   articles: Article[]
+  recommendedArticles?: Article[]
   loading: boolean
   onOpenArticle: (article: Article, list: Article[]) => void
 }
 
 const DIGEST_SIZE = 5
-// "Nổi bật hôm nay" should read as live and current — cap it to articles from
-// the last 2 days so a category whose feed rarely updates doesn't leave a
-// months-old story sitting at the top just because nothing newer exists yet
-// in that category. Falls back to the plain newest-first list if fewer than
-// DIGEST_SIZE articles are that recent, so the section is never left sparse.
 const MAX_AGE_MS = 2 * 24 * 60 * 60 * 1000
 
-// A pure recency sort can let one bursty source (five posts in the same
-// minute) fill the whole digest, which reads as "stuck on one topic" rather
-// than a live overview. Spreading picks across tags first — one story per
-// source, newest-first — surfaces custom/self-added sources right alongside
-// built-in ones instead of them getting crowded out, then backfills any
-// remaining slots by recency once every source has had a turn.
 function pickDiverse(sortedByRecency: Article[], size: number): Article[] {
   const picked: Article[] = []
   const seenTags = new Set<string>()
@@ -48,7 +38,7 @@ function pickDiverse(sortedByRecency: Article[], size: number): Article[] {
   return picked
 }
 
-export default function TodayDigest({ articles, loading, onOpenArticle }: Props) {
+export default function TodayDigest({ articles, recommendedArticles = [], loading, onOpenArticle }: Props) {
   const { tagMap } = useTags()
 
   const topStories = useMemo(() => {
@@ -60,29 +50,107 @@ export default function TodayDigest({ articles, loading, onOpenArticle }: Props)
   if (!loading && topStories.length === 0) return null
 
   return (
-    <section className="mx-auto max-w-[1900px] px-6 pb-2 pt-10 sm:px-8">
-      <div className="mb-4 flex items-center gap-2.5">
-        <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
-          <FlameIcon width={19} height={19} style={{ color: '#FF9F0A' }} />
-          Nổi bật hôm nay
-        </h2>
-        <span className="text-[12px] text-[var(--text-4)]">Tổng hợp tin mới nhất từ mọi chuyên mục</span>
-      </div>
+    <section className="mx-auto max-w-[1900px] px-6 pb-2 pt-10 sm:px-8 space-y-8">
+      {/* Smart Personalized Recommendations Block */}
+      {recommendedArticles.length > 0 && (
+        <div>
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="flex items-center gap-2 text-lg font-bold tracking-tight text-[var(--text-1)] sm:text-xl">
+              <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-to-tr from-[#FF375F] to-[#FF9F0A] text-[13px] shadow-sm">
+                ✨
+              </span>
+              Dành riêng cho bạn
+            </h2>
+            <span className="rounded-full bg-[#0A84FF]/10 px-3 py-1 text-[11px] font-semibold text-[#0A84FF] border border-[#0A84FF]/20">
+              Tổng hợp từ thói quen đọc tin của bạn
+            </span>
+          </div>
 
-      <div className="glass flex flex-col divide-y divide-[var(--border-1)] overflow-hidden rounded-2xl">
-        {loading && topStories.length === 0
-          ? Array.from({ length: DIGEST_SIZE }).map((_, i) => <DigestSkeleton key={i} />)
-          : topStories.map((article, i) => (
-              <DigestRow
-                key={article.id}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {recommendedArticles.slice(0, 3).map((article) => (
+              <RecommendedCard
+                key={`rec-${article.id}`}
                 article={article}
-                index={i}
                 tag={tagMap.get(article.tagId)}
-                onOpenArticle={() => onOpenArticle(article, topStories)}
+                onOpenArticle={() => onOpenArticle(article, recommendedArticles)}
               />
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Top Stories Block */}
+      <div>
+        <div className="mb-4 flex items-center gap-2.5">
+          <h2 className="flex items-center gap-2 text-lg font-semibold tracking-tight sm:text-xl">
+            <FlameIcon width={19} height={19} style={{ color: '#FF9F0A' }} />
+            Nổi bật hôm nay
+          </h2>
+          <span className="text-[12px] text-[var(--text-4)]">Tổng hợp tin mới nhất từ mọi chuyên mục</span>
+        </div>
+
+        <div className="glass flex flex-col divide-y divide-[var(--border-1)] overflow-hidden rounded-2xl">
+          {loading && topStories.length === 0
+            ? Array.from({ length: DIGEST_SIZE }).map((_, i) => <DigestSkeleton key={i} />)
+            : topStories.map((article, i) => (
+                <DigestRow
+                  key={article.id}
+                  article={article}
+                  index={i}
+                  tag={tagMap.get(article.tagId)}
+                  onOpenArticle={() => onOpenArticle(article, topStories)}
+                />
+              ))}
+        </div>
       </div>
     </section>
+  )
+}
+
+function RecommendedCard({
+  article,
+  tag,
+  onOpenArticle,
+}: {
+  article: Article
+  tag: Tag | undefined
+  onOpenArticle: () => void
+}) {
+  const ref = useRef<HTMLButtonElement>(null)
+  const prefetch = useHoverPrefetch(article.link)
+  useViewportPrefetch(article.link, ref as any)
+
+  return (
+    <motion.button
+      type="button"
+      ref={ref}
+      onClick={onOpenArticle}
+      onMouseEnter={prefetch.onMouseEnter}
+      onMouseLeave={prefetch.onMouseLeave}
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="glass group relative flex flex-col overflow-hidden rounded-2xl border border-[var(--border-1)] p-4 text-left transition hover:border-[#0A84FF]/50 hover:bg-[var(--surface-1)] active:scale-[0.99]"
+    >
+      <div className="mb-3 flex items-center justify-between text-[11px] text-[var(--text-3)]">
+        {tag && (
+          <span className="flex items-center gap-1.5 font-semibold text-[var(--text-2)]">
+            <CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={12} />
+            {tag.label}
+          </span>
+        )}
+        <span>{formatRelativeTime(article.pubDate)}</span>
+      </div>
+
+      <h3 className="mb-2 line-clamp-2 text-[14.5px] font-bold leading-snug text-[var(--text-1)] group-hover:text-[#0A84FF] transition-colors">
+        {article.title}
+      </h3>
+
+      {article.description && (
+        <p className="line-clamp-2 text-[12px] leading-relaxed text-[var(--text-3)]">
+          {article.description}
+        </p>
+      )}
+    </motion.button>
   )
 }
 

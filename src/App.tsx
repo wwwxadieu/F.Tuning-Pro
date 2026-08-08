@@ -18,6 +18,7 @@ import { useCustomSources } from './hooks/useCustomSources'
 import { useSmoothScroll } from './hooks/useSmoothScroll'
 import { useInterests } from './hooks/useInterests'
 import { useAppUpdate } from './hooks/useAppUpdate'
+import { useReadingHabits } from './hooks/useReadingHabits'
 import { TagsProvider } from './context/TagsContext'
 import { TAGS as BUILT_IN_TAGS } from './data/tags'
 import { smoothScrollTo } from './lib/lenisInstance'
@@ -32,6 +33,8 @@ export default function App() {
   const { settings, update: updateSettings } = useSettings()
   const { sources: customSources, addSource, removeSource } = useCustomSources()
   const { onboarded, interests, setInterests, completeOnboarding } = useInterests()
+  const { habits, trackArticleRead, getRecommendedArticles } = useReadingHabits()
+
   const allTags: Tag[] = useMemo(() => [...BUILT_IN_TAGS, ...customSources], [customSources])
 
   const appUpdate = useAppUpdate(settings.autoUpdateEnabled)
@@ -85,6 +88,7 @@ export default function App() {
   }
 
   function handleOpenArticle(article: Article, list: Article[]) {
+    trackArticleRead(article)
     const index = list.findIndex((a) => a.id === article.id)
     setReaderList(list)
     setReaderIndex(index >= 0 ? index : 0)
@@ -104,6 +108,10 @@ export default function App() {
     keys.forEach((k) => localStorage.removeItem(k))
     allTags.forEach((tag) => retryTag(tag.id))
   }
+
+  const recommendedArticles = useMemo(() => {
+    return getRecommendedArticles(articles, 6)
+  }, [articles, habits, getRecommendedArticles])
 
   const unreadCount = notifications.filter((n) => !n.read).length
   const readerArticle = readerList ? readerList[readerIndex] : null
@@ -142,7 +150,12 @@ export default function App() {
         <div className={`transition-[padding-left] duration-300 ease-out ${sidebarOpen ? 'lg:pl-64' : ''}`}>
           <Hero />
 
-          <TodayDigest articles={articles} loading={digestLoading} onOpenArticle={handleOpenArticle} />
+          <TodayDigest
+            articles={articles}
+            recommendedArticles={recommendedArticles}
+            loading={digestLoading}
+            onOpenArticle={handleOpenArticle}
+          />
 
           <main className="mx-auto max-w-[1900px] px-6 pb-10 pt-16 sm:px-8">
             <NewsGrid
