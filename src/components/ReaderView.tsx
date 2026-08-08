@@ -749,7 +749,7 @@ function ThemeDot({
       onClick={onClick}
       aria-label={label}
       className={`flex h-8.5 w-8.5 items-center justify-center rounded-xl transition active:scale-95 ${
-        active ? 'bg-[#0A84FF] text-white shadow-md' : 'text-current opacity-50 hover:bg-white/10 hover:opacity-100'
+        active ? 'bg-[var(--accent)] text-white shadow-md' : 'text-current opacity-50 hover:bg-white/10 hover:opacity-100'
       }`}
     >
       {icon}

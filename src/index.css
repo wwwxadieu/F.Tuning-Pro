@@ -3,12 +3,16 @@
 @tailwind utilities;
 
 :root {
+  --accent: #0A84FF;
   color-scheme: dark;
   --bg: #000000;
   --text-1: #ffffff;
   --text-2: rgba(255, 255, 255, 0.68);
   --text-3: rgba(255, 255, 255, 0.48);
-  --text-4: rgba(255, 255, 255, 0.32);
+  /* 0.32 measured 2.67:1 on the dark ground — the section headings and counts
+     were as hard to read here as in light mode. 0.52 reaches ~5.7 and stays
+     the most muted tier. */
+  --text-4: rgba(255, 255, 255, 0.52);
   --surface-1: rgba(255, 255, 255, 0.05);
   --surface-2: rgba(255, 255, 255, 0.1);
   --surface-3: rgba(255, 255, 255, 0.16);
@@ -25,9 +29,16 @@
   color-scheme: light;
   --bg: #f5f5f7;
   --text-1: #1d1d1f;
-  --text-2: rgba(29, 29, 31, 0.75);
-  --text-3: rgba(29, 29, 31, 0.55);
-  --text-4: rgba(29, 29, 31, 0.38);
+  /* Measured against #f5f5f7: the previous 0.75/0.55/0.38 gave 7.0/3.7/2.3,
+     so the muted tiers (section headings, counts, meta) fell well under the
+     4.5:1 needed to read comfortably. These give 10.2/6.0/4.6. */
+  --text-2: rgba(29, 29, 31, 0.86);
+  --text-3: rgba(29, 29, 31, 0.70);
+  --text-4: rgba(29, 29, 31, 0.62);
+  /* White on #0A84FF is only 3.65:1 — fine on a dark ground, short of the
+     4.5:1 mark on a light one. This darker blue reaches 4.70:1 and keeps the
+     same family, so filled accents stay readable in light mode. */
+  --accent: #0071E3;
   --surface-1: rgba(0, 0, 0, 0.04);
   --surface-2: rgba(0, 0, 0, 0.08);
   --surface-3: rgba(0, 0, 0, 0.13);

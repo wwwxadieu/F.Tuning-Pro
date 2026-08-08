@@ -347,7 +347,7 @@ export default function SettingsModal({
                     <button
                       type="submit"
                       disabled={validating}
-                      className="flex items-center justify-center gap-2 rounded-xl bg-[#0A84FF] px-4 py-3 text-[13.5px] font-bold text-white shadow-md shadow-blue-500/20 transition hover:bg-[#0A84FF]/90 active:scale-95 disabled:opacity-50"
+                      className="flex items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-4 py-3 text-[13.5px] font-bold text-white shadow-md shadow-blue-500/20 transition hover:bg-[var(--accent)]/90 active:scale-95 disabled:opacity-50"
                     >
                       <PlusIcon width={15} height={15} />
                       {validating ? 'Đang tự động phân tích trang...' : 'Thêm nguồn tin mới'}
@@ -397,7 +397,7 @@ function ThemeSwatch({
       onClick={onClick}
       className={`flex flex-1 flex-col items-center justify-center gap-2 rounded-xl border px-3 py-3.5 text-[12.5px] font-semibold transition active:scale-95 ${
         active
-          ? 'border-[#0A84FF] bg-[#0A84FF] text-white shadow-md'
+          ? 'border-[#0A84FF] bg-[var(--accent)] text-white shadow-md'
           : 'border-[var(--border-1)] bg-[var(--modal-bg)] text-[var(--text-2)] hover:bg-[var(--surface-2)]'
       }`}
     >
@@ -426,7 +426,7 @@ function FontSwatch({
       onClick={onClick}
       className={`flex flex-1 items-center gap-3 rounded-xl border px-3.5 py-3 text-[12.5px] font-semibold transition active:scale-95 ${
         active
-          ? 'border-[#0A84FF] bg-[#0A84FF] text-white shadow-md'
+          ? 'border-[#0A84FF] bg-[var(--accent)] text-white shadow-md'
           : 'border-[var(--border-1)] bg-[var(--modal-bg)] text-[var(--text-2)] hover:bg-[var(--surface-2)]'
       }`}
     >
@@ -500,7 +500,7 @@ function UpdateSection({
           type="button"
           onClick={install}
           disabled={!latest.downloadUrl}
-          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[#0A84FF] px-4 py-3 text-[13.5px] font-bold text-white shadow-md transition hover:bg-[#0A84FF]/90 disabled:opacity-40 active:scale-95"
+          className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--accent)] px-4 py-3 text-[13.5px] font-bold text-white shadow-md transition hover:bg-[var(--accent)]/90 disabled:opacity-40 active:scale-95"
         >
           {latest.downloadUrl ? 'Nâng cấp lên bản mới ngay' : 'Không tìm thấy tệp cài đặt'}
         </button>

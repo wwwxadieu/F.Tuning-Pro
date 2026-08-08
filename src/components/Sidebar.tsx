@@ -280,7 +280,7 @@ function SidebarItem({
     <div
       className={`group flex items-center gap-1 rounded-xl pr-1 transition ${
         active
-          ? 'bg-[#0A84FF] text-white'
+          ? 'bg-[var(--accent)] text-white'
           : 'text-[var(--text-2)] hover:bg-[var(--surface-2)] hover:text-[var(--text-1)]'
       }`}
     >

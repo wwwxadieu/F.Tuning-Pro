@@ -1,9 +1,22 @@
+/** One publisher's feed within a topic. */
+export interface FeedSource {
+  url: string
+  /** Publisher name shown on each article from this feed. */
+  source: string
+}
+
 export interface Tag {
   id: string
   label: string
   emoji: string
   feedUrl: string
   source: string
+  /**
+   * Additional publishers merged into this topic, so a category isn't a single
+   * outlet's view of it. Each contributes articles labelled with its own name,
+   * and any that fails is simply skipped.
+   */
+  extraFeeds?: FeedSource[]
   custom?: boolean
   /** Foreign-language source — translate article titles/descriptions to Vietnamese after fetching. */
   translate?: boolean

@@ -93,7 +93,7 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
                   type="button"
                   onClick={install}
                   disabled={!latest?.downloadUrl}
-                  className="flex-1 rounded-xl bg-[#0A84FF] px-3 py-2.5 text-[12px] font-bold text-white shadow-md shadow-blue-500/20 transition hover:bg-[#0A84FF]/90 active:scale-95 disabled:opacity-40"
+                  className="flex-1 rounded-xl bg-[var(--accent)] px-3 py-2.5 text-[12px] font-bold text-white shadow-md shadow-blue-500/20 transition hover:bg-[var(--accent)]/90 active:scale-95 disabled:opacity-40"
                 >
                   Cập nhật ngay
                 </button>

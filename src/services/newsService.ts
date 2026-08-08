@@ -1,4 +1,4 @@
-import type { Article, Tag } from '../types/news'
+import type { Article, FeedSource as FeedRef, Tag } from '../types/news'
 import { scrapeArticles } from './scrapeService'
 import { translateText } from './translateService'
 
@@ -91,7 +91,7 @@ interface FetchOptions {
   forceRefresh?: boolean
 }
 
-function parseXmlFeed(xmlText: string, tag: Tag): Article[] {
+function parseXmlFeed(xmlText: string, tag: Tag, feed: FeedRef): Article[] {
   const parser = new DOMParser()
   const doc = parser.parseFromString(xmlText, 'text/xml')
   const items = Array.from(doc.querySelectorAll('item, entry'))
@@ -115,30 +115,30 @@ function parseXmlFeed(xmlText: string, tag: Tag): Article[] {
     }
 
     return {
-      id: `${tag.id}-${index}-${link}`,
+      id: `${tag.id}-${feed.source}-${index}-${link}`,
       title: cleanText(title),
       description: cleanText(description),
       link,
       image: thumb,
       pubDate,
-      source: tag.source,
+      source: feed.source,
       tagId: tag.id,
     }
   })
 }
 
-async function fetchViaNativeElectronRss(tag: Tag): Promise<Article[]> {
+async function fetchViaNativeElectronRss(tag: Tag, feed: FeedRef): Promise<Article[]> {
   if (!window.electronAPI?.fetchRawRss) throw new Error('Native Electron API unavailable')
-  const xmlText = await window.electronAPI.fetchRawRss(tag.feedUrl)
-  const articles = parseXmlFeed(xmlText, tag)
+  const xmlText = await window.electronAPI.fetchRawRss(feed.url)
+  const articles = parseXmlFeed(xmlText, tag, feed)
   if (articles.length === 0) throw new Error('Parsed 0 articles from native RSS')
   return articles
 }
 
-async function fetchViaXmlProxy(tag: Tag, signal?: AbortSignal): Promise<Article[]> {
+async function fetchViaXmlProxy(tag: Tag, feed: FeedRef, signal?: AbortSignal): Promise<Article[]> {
   const proxyUrls = [
-    `https://api.allorigins.win/get?url=${encodeURIComponent(tag.feedUrl)}`,
-    `https://corsproxy.io/?url=${encodeURIComponent(tag.feedUrl)}`,
+    `https://api.allorigins.win/get?url=${encodeURIComponent(feed.url)}`,
+    `https://corsproxy.io/?url=${encodeURIComponent(feed.url)}`,
   ]
 
   for (const proxyUrl of proxyUrls) {
@@ -158,7 +158,7 @@ async function fetchViaXmlProxy(tag: Tag, signal?: AbortSignal): Promise<Article
         continue
       }
 
-      const articles = parseXmlFeed(xmlText, tag)
+      const articles = parseXmlFeed(xmlText, tag, feed)
       if (articles.length > 0) return articles
     } catch {
       // try next
@@ -168,8 +168,8 @@ async function fetchViaXmlProxy(tag: Tag, signal?: AbortSignal): Promise<Article
   throw new Error('Proxy XML fetch failed')
 }
 
-async function fetchViaRss2Json(tag: Tag, signal?: AbortSignal): Promise<Article[]> {
-  const url = `${RSS2JSON_ENDPOINT}?rss_url=${encodeURIComponent(tag.feedUrl)}`
+async function fetchViaRss2Json(tag: Tag, feed: FeedRef, signal?: AbortSignal): Promise<Article[]> {
+  const url = `${RSS2JSON_ENDPOINT}?rss_url=${encodeURIComponent(feed.url)}`
   const res = await fetch(url, { signal: signal || AbortSignal.timeout(7000), priority: 'high' })
   if (!res.ok) throw new Error(`rss2json HTTP ${res.status}`)
 
@@ -179,15 +179,28 @@ async function fetchViaRss2Json(tag: Tag, signal?: AbortSignal): Promise<Article
   }
 
   return data.items.map((item, index) => ({
-    id: `${tag.id}-${index}-${item.link ?? item.title ?? index}`,
+    id: `${tag.id}-${feed.source}-${index}-${item.link ?? item.title ?? index}`,
     title: cleanText(item.title ?? '') || '(Không có tiêu đề)',
     description: cleanText(item.description ?? ''),
     link: item.link ?? '#',
     image: item.thumbnail || item.enclosure?.link || extractImageFromHtml(item.content || item.description || ''),
     pubDate: item.pubDate ?? new Date().toISOString(),
-    source: tag.source,
+    source: feed.source,
     tagId: tag.id,
   }))
+}
+
+/** Reads one publisher's feed, trying each transport in turn. */
+async function fetchOneFeed(tag: Tag, feed: FeedRef, signal?: AbortSignal): Promise<Article[]> {
+  try {
+    return await fetchViaNativeElectronRss(tag, feed)
+  } catch {
+    try {
+      return await fetchViaXmlProxy(tag, feed, signal)
+    } catch {
+      return await fetchViaRss2Json(tag, feed, signal)
+    }
+  }
 }
 
 export async function fetchArticlesForTag(
@@ -205,25 +218,28 @@ export async function fetchArticlesForTag(
   if (tag.scrape) {
     articles = await scrapeArticles(tag, signal)
   } else {
-    // 1. Try Native Electron Direct RSS Fetch FIRST (instant, no CORS, no 3rd party!)
-    try {
-      articles = await fetchViaNativeElectronRss(tag)
-    } catch {
-      // 2. Try XML Proxy
+    const feeds: FeedRef[] = [{ url: tag.feedUrl, source: tag.source }, ...(tag.extraFeeds ?? [])]
+
+    // Every publisher is fetched in parallel and independently: one outlet
+    // being down or slow must not cost the topic the others' articles.
+    const results = await Promise.allSettled(feeds.map((feed) => fetchOneFeed(tag, feed, signal)))
+    articles = results.flatMap((r) => (r.status === 'fulfilled' ? r.value : []))
+
+    // The same wire story often runs on several outlets; keep the first copy.
+    const seenLinks = new Set<string>()
+    articles = articles.filter((a) => {
+      if (!a.link || a.link === '#') return true
+      if (seenLinks.has(a.link)) return false
+      seenLinks.add(a.link)
+      return true
+    })
+
+    // Last resort only when every feed came back empty.
+    if (articles.length === 0) {
       try {
-        articles = await fetchViaXmlProxy(tag, signal)
+        articles = await scrapeArticles(tag, signal)
       } catch {
-        // 3. Fallback to rss2json
-        try {
-          articles = await fetchViaRss2Json(tag, signal)
-        } catch {
-          // 4. Fallback to scrape if available
-          try {
-            articles = await scrapeArticles(tag, signal)
-          } catch {
-            articles = []
-          }
-        }
+        articles = []
       }
     }
   }
