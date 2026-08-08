@@ -57,16 +57,16 @@ export default function NewsGrid({
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.5 }}
-              className="mb-5 flex items-center justify-between border-b border-white/10 pb-3"
+              className="mb-5 flex items-center justify-between border-b border-[var(--border-1)] pb-3"
             >
-              <h2 className="flex items-center gap-2.5 text-xl font-bold tracking-tight sm:text-2xl text-white">
+              <h2 className="flex items-center gap-2.5 text-xl font-bold tracking-tight text-[var(--text-1)] sm:text-2xl">
                 <CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={18} chip />
                 {tag.label}
               </h2>
-              <div className="flex items-center gap-3 text-[12px] text-white/60">
+              <div className="flex items-center gap-3 text-[12px] text-[var(--text-3)]">
                 <span>{tag.source}</span>
                 {items.length > 0 && (
-                  <span className="rounded-full bg-white/10 px-2.5 py-0.5 font-semibold text-white/80">
+                  <span className="rounded-full bg-[var(--surface-2)] px-2.5 py-0.5 font-semibold text-[var(--text-2)]">
                     {visibleItems.length} / {items.length} bài
                   </span>
                 )}
@@ -112,10 +112,10 @@ export default function NewsGrid({
                   <div className="mt-8 flex flex-col items-center justify-center gap-3 py-4">
                     <button
                       onClick={() => onLoadMore(tag.id)}
-                      className="flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-6 py-2.5 text-xs font-bold text-white transition hover:bg-white/20 active:scale-95 shadow-lg backdrop-blur-md"
+                      className="flex items-center gap-2 rounded-full border border-[var(--border-1)] bg-[var(--surface-2)] px-6 py-2.5 text-xs font-bold text-[var(--text-1)] shadow-lg backdrop-blur-md transition hover:bg-[var(--surface-3)] active:scale-95"
                     >
                       <span>Xem thêm bài viết</span>
-                      <span className="text-white/50">({items.length - visibleItems.length} tin)</span>
+                      <span className="text-[var(--text-3)]">({items.length - visibleItems.length} tin)</span>
                     </button>
                     <LoadMoreSentinel onTrigger={() => onLoadMore(tag.id)} />
                   </div>

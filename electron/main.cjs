@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, shell, net } = require('electron')
 const path = require('node:path')
 const fs = require('node:fs')
 const os = require('node:os')
+const { spawn } = require('node:child_process')
 
 ipcMain.handle('app:get-version', () => app.getVersion())
 
@@ -218,22 +219,66 @@ function downloadFile(url, dest, onProgress) {
   })
 }
 
-// Downloads the Windows installer, launches it via shell.openPath, and quits current app
+// Flags the electron-builder NSIS installer understands (see its
+// installSection.nsh / allowOnlyOneInstallerInstance.nsh templates):
+//
+//   --updated    Tells the installer this is an update. Without it, finding
+//                the app still running makes it show a modal "app is running"
+//                prompt and then `Quit` — aborting the install outright. That
+//                is why launching it with no arguments left the old version in
+//                place: the app exited, the installer gave up, nothing changed.
+//                With the flag it waits for the app to exit, then taskkills.
+//   /S           Install silently, with no installer window.
+//   --force-run  Relaunch the app afterwards. A one-click installer only
+//                auto-starts the app when NOT silent, so going silent without
+//                this is what left the app closed after updating.
+const INSTALLER_ARGS = ['--updated', '/S', '--force-run']
+
+// shell.openPath can't pass arguments, so the installer has to be spawned
+// directly — detached, so it outlives the app it is about to replace.
+function launchInstaller(installerPath) {
+  return new Promise((resolve) => {
+    let settled = false
+    const finish = (ok) => {
+      if (!settled) {
+        settled = true
+        resolve(ok)
+      }
+    }
+    try {
+      const child = spawn(installerPath, INSTALLER_ARGS, {
+        detached: true,
+        stdio: 'ignore',
+        windowsHide: true,
+      })
+      child.once('error', () => finish(false))
+      child.unref()
+      // No error almost immediately means the process is up; the installer
+      // itself runs long after this resolves.
+      setTimeout(() => finish(true), 600)
+    } catch {
+      finish(false)
+    }
+  })
+}
+
 ipcMain.handle('update:download-and-install', async (event, downloadUrl) => {
   const dest = path.join(os.tmpdir(), `FVNN-Setup-${Date.now()}.exe`)
   await downloadFile(downloadUrl, dest, (progressInfo) => {
     event.sender.send('update:progress', progressInfo)
   })
 
-  try {
+  const launched = await launchInstaller(dest)
+  if (!launched) {
+    // Couldn't spawn it — fall back to opening the installer visibly so the
+    // user can finish by hand rather than being left on the old version with
+    // no explanation.
     await shell.openPath(dest)
-  } catch (err) {
-    // fallback
   }
 
-  setTimeout(() => {
-    app.quit()
-  }, 800)
+  // Exit promptly: the installer is already waiting on this process to release
+  // its files, and every extra moment is time it spends stuck in that loop.
+  setTimeout(() => app.quit(), 300)
 })
 
 function createWindow() {

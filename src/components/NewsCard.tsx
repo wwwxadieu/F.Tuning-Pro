@@ -117,8 +117,8 @@ export default function NewsCard({ article, index, onOpen }: Props) {
         <p className="line-clamp-2 flex-1 text-[13px] leading-relaxed text-[var(--text-3)]">
           {article.description}
         </p>
-        <div className="mt-1 flex items-center justify-between text-[11px] text-[var(--text-4)] border-t border-white/5 pt-2">
-          <span className="font-semibold text-white/60">{article.source}</span>
+        <div className="mt-1 flex items-center justify-between border-t border-[var(--border-1)] pt-2 text-[11px] text-[var(--text-4)]">
+          <span className="font-semibold text-[var(--text-3)]">{article.source}</span>
           <span>{formatRelativeTime(article.pubDate)}</span>
         </div>
       </div>
