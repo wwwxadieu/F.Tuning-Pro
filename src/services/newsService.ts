@@ -81,6 +81,50 @@ interface FetchOptions {
   forceRefresh?: boolean
 }
 
+function parseXmlFeed(xmlText: string, tag: Tag): Article[] {
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(xmlText, 'text/xml')
+  const items = Array.from(doc.querySelectorAll('item, entry'))
+  if (items.length === 0) return []
+
+  return items.slice(0, 40).map((item, index) => {
+    const title = item.querySelector('title')?.textContent ?? '(Không có tiêu đề)'
+    const description =
+      item.querySelector('content\\:encoded, encoded, description, summary, content')?.textContent ?? ''
+
+    let link = item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent || '#'
+    const pubDate = item.querySelector('pubDate, updated, date, published')?.textContent || new Date().toISOString()
+
+    let thumb = item.querySelector('media\\:thumbnail, thumbnail')?.getAttribute('url') ||
+      item.querySelector('media\\:content, content')?.getAttribute('url') ||
+      item.querySelector('enclosure')?.getAttribute('url') ||
+      item.querySelector('og\\:image, image url')?.textContent || null
+
+    if (!thumb || !thumb.startsWith('http')) {
+      thumb = extractImageFromHtml(description) || extractImageFromHtml(item.innerHTML)
+    }
+
+    return {
+      id: `${tag.id}-${index}-${link}`,
+      title: cleanText(title),
+      description: cleanText(description),
+      link,
+      image: thumb,
+      pubDate,
+      source: tag.source,
+      tagId: tag.id,
+    }
+  })
+}
+
+async function fetchViaNativeElectronRss(tag: Tag): Promise<Article[]> {
+  if (!window.electronAPI?.fetchRawRss) throw new Error('Native Electron API unavailable')
+  const xmlText = await window.electronAPI.fetchRawRss(tag.feedUrl)
+  const articles = parseXmlFeed(xmlText, tag)
+  if (articles.length === 0) throw new Error('Parsed 0 articles from native RSS')
+  return articles
+}
+
 async function fetchViaXmlProxy(tag: Tag, signal?: AbortSignal): Promise<Article[]> {
   const proxyUrls = [
     `https://api.allorigins.win/get?url=${encodeURIComponent(tag.feedUrl)}`,
@@ -104,47 +148,10 @@ async function fetchViaXmlProxy(tag: Tag, signal?: AbortSignal): Promise<Article
         continue
       }
 
-      const parser = new DOMParser()
-      const doc = parser.parseFromString(xmlText, 'text/xml')
-      const items = Array.from(doc.querySelectorAll('item, entry'))
-
-      if (items.length === 0) continue
-
-      return items.slice(0, 40).map((item, index) => {
-        const title = item.querySelector('title')?.textContent ?? '(Không có tiêu đề)'
-        const description =
-          item.querySelector('content\\:encoded, encoded, description, summary, content')?.textContent ?? ''
-        
-        let link = item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent || '#'
-        if (link.includes('api.allorigins.win') || link.includes('corsproxy.io')) {
-          link = tag.feedUrl
-        }
-
-        const pubDate = item.querySelector('pubDate, updated, date, published')?.textContent || new Date().toISOString()
-        
-        // Extract image from media:content, media:thumbnail, enclosure, or HTML content
-        let thumb = item.querySelector('media\\:thumbnail, thumbnail')?.getAttribute('url') ||
-          item.querySelector('media\\:content, content')?.getAttribute('url') ||
-          item.querySelector('enclosure')?.getAttribute('url') ||
-          item.querySelector('og\\:image, image url')?.textContent || null
-
-        if (!thumb || !thumb.startsWith('http')) {
-          thumb = extractImageFromHtml(description) || extractImageFromHtml(item.innerHTML)
-        }
-
-        return {
-          id: `${tag.id}-${index}-${link}`,
-          title: cleanText(title),
-          description: cleanText(description),
-          link,
-          image: thumb,
-          pubDate,
-          source: tag.source,
-          tagId: tag.id,
-        }
-      })
+      const articles = parseXmlFeed(xmlText, tag)
+      if (articles.length > 0) return articles
     } catch {
-      // try next proxy
+      // try next
     }
   }
 
@@ -188,19 +195,24 @@ export async function fetchArticlesForTag(
   if (tag.scrape) {
     articles = await scrapeArticles(tag, signal)
   } else {
-    // Try full XML CORS fetch first for 30-40 articles per feed!
+    // 1. Try Native Electron Direct RSS Fetch FIRST (instant, no CORS, no 3rd party!)
     try {
-      articles = await fetchViaXmlProxy(tag, signal)
+      articles = await fetchViaNativeElectronRss(tag)
     } catch {
-      // Fallback to rss2json
+      // 2. Try XML Proxy
       try {
-        articles = await fetchViaRss2Json(tag, signal)
+        articles = await fetchViaXmlProxy(tag, signal)
       } catch {
-        // Fallback to scrape if available
+        // 3. Fallback to rss2json
         try {
-          articles = await scrapeArticles(tag, signal)
+          articles = await fetchViaRss2Json(tag, signal)
         } catch {
-          articles = []
+          // 4. Fallback to scrape if available
+          try {
+            articles = await scrapeArticles(tag, signal)
+          } catch {
+            articles = []
+          }
         }
       }
     }

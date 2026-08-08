@@ -6,6 +6,66 @@ const os = require('node:os')
 
 ipcMain.handle('app:get-version', () => app.getVersion())
 
+function fetchHtmlDirect(targetUrl) {
+  return new Promise((resolve, reject) => {
+    let urlObj
+    try {
+      urlObj = new URL(targetUrl)
+    } catch {
+      reject(new Error('Invalid URL'))
+      return
+    }
+
+    const request = net.request({
+      url: targetUrl,
+      method: 'GET',
+      headers: {
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'Accept':
+          'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+        'Accept-Language': 'vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7',
+        'Cache-Control': 'no-cache',
+      },
+    })
+
+    let body = ''
+    request.on('response', (response) => {
+      if (response.statusCode >= 300 && response.statusCode < 400 && response.headers.location) {
+        const redirectUrl = Array.isArray(response.headers.location)
+          ? response.headers.location[0]
+          : response.headers.location
+        const finalUrl = redirectUrl.startsWith('http')
+          ? redirectUrl
+          : new URL(redirectUrl, targetUrl).toString()
+        return fetchHtmlDirect(finalUrl).then(resolve).catch(reject)
+      }
+
+      if (response.statusCode !== 200) {
+        reject(new Error(`HTTP ${response.statusCode}`))
+        return
+      }
+
+      response.on('data', (chunk) => {
+        body += chunk.toString('utf-8')
+      })
+      response.on('end', () => resolve(body))
+      response.on('error', reject)
+    })
+
+    request.on('error', reject)
+    request.end()
+  })
+}
+
+ipcMain.handle('article:fetch-html', async (event, url) => {
+  return await fetchHtmlDirect(url)
+})
+
+ipcMain.handle('rss:fetch-raw', async (event, url) => {
+  return await fetchHtmlDirect(url)
+})
+
 function downloadFile(url, dest, onProgress) {
   return new Promise((resolve, reject) => {
     const request = net.request(url)
@@ -54,8 +114,6 @@ function downloadFile(url, dest, onProgress) {
   })
 }
 
-// Downloads the Windows installer, passes progress/size/speed info,
-// runs silent background update (/S), detaches process and restarts the app into the new version.
 ipcMain.handle('update:download-and-install', async (event, downloadUrl) => {
   const dest = path.join(os.tmpdir(), `FVNN-Update-${Date.now()}.exe`)
   await downloadFile(downloadUrl, dest, (progressInfo) => {
