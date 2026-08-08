@@ -80,6 +80,9 @@ export function useNews(
   // Tags the user actually cares about (their selected interests) are issued
   // first so those requests grab available per-origin connection slots
   // ahead of the rest, instead of loading in arbitrary array order.
+  // Bypasses the on-disk cache so every app launch reflects what's actually
+  // live right now instead of replaying whatever was on screen up to 10
+  // minutes ago from a previous session.
   useEffect(() => {
     const priority = priorityTagIds && priorityTagIds.length > 0 ? new Set(priorityTagIds) : null
     const ordered = priority
@@ -87,7 +90,7 @@ export function useNews(
       : tags
     ordered.forEach((tag) => {
       if (!(tag.id in statuses)) {
-        loadTag(tag, controllerRef.current?.signal)
+        loadTag(tag, controllerRef.current?.signal, { forceRefresh: true })
       }
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps

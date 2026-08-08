@@ -32,11 +32,15 @@ export default function NewsGrid({
   onOpenArticle,
 }: Props) {
   const { tags } = useTags()
+  // A source the user deliberately added is its own signal of interest —
+  // it shouldn't also need to be toggled on in the interest picker just to
+  // show up on the dashboard alongside whatever built-in categories were
+  // picked during onboarding.
   const visibleTags =
     selected !== null
       ? tags.filter((t) => t.id === selected)
       : interests.length > 0
-        ? tags.filter((t) => interests.includes(t.id))
+        ? tags.filter((t) => interests.includes(t.id) || t.custom)
         : tags
 
   return (

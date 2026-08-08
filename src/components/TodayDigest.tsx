@@ -22,13 +22,39 @@ const DIGEST_SIZE = 5
 // DIGEST_SIZE articles are that recent, so the section is never left sparse.
 const MAX_AGE_MS = 2 * 24 * 60 * 60 * 1000
 
+// A pure recency sort can let one bursty source (five posts in the same
+// minute) fill the whole digest, which reads as "stuck on one topic" rather
+// than a live overview. Spreading picks across tags first — one story per
+// source, newest-first — surfaces custom/self-added sources right alongside
+// built-in ones instead of them getting crowded out, then backfills any
+// remaining slots by recency once every source has had a turn.
+function pickDiverse(sortedByRecency: Article[], size: number): Article[] {
+  const picked: Article[] = []
+  const seenTags = new Set<string>()
+  for (const article of sortedByRecency) {
+    if (picked.length >= size) break
+    if (seenTags.has(article.tagId)) continue
+    seenTags.add(article.tagId)
+    picked.push(article)
+  }
+  if (picked.length < size) {
+    const pickedIds = new Set(picked.map((a) => a.id))
+    for (const article of sortedByRecency) {
+      if (picked.length >= size) break
+      if (pickedIds.has(article.id)) continue
+      picked.push(article)
+    }
+  }
+  return picked
+}
+
 export default function TodayDigest({ articles, loading, onOpenArticle }: Props) {
   const { tagMap } = useTags()
 
   const topStories = useMemo(() => {
     const sorted = [...articles].sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime())
     const recent = sorted.filter((a) => Date.now() - new Date(a.pubDate).getTime() <= MAX_AGE_MS)
-    return (recent.length >= DIGEST_SIZE ? recent : sorted).slice(0, DIGEST_SIZE)
+    return pickDiverse(recent.length >= DIGEST_SIZE ? recent : sorted, DIGEST_SIZE)
   }, [articles])
 
   if (!loading && topStories.length === 0) return null
