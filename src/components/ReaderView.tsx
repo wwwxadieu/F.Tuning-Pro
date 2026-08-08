@@ -54,6 +54,8 @@ interface TranslationState {
   title: string | null
   progress: number
   showing: boolean
+  /** True when some paragraphs had to be left in the original language. */
+  partial?: boolean
   /** Why it failed, shown to the user — otherwise a failure is undiagnosable. */
   error?: string
 }
@@ -155,14 +157,15 @@ export default function ReaderView({
         ? Promise.resolve(article.title)
         : translateText(article.title),
     ])
-      .then(([translatedHtml, translatedTitle]) => {
+      .then(([result, translatedTitle]) => {
         if (controller.signal.aborted) return
         setTranslation({
           status: 'done',
-          html: translatedHtml,
+          html: result.html,
           title: translatedTitle,
           progress: 1,
           showing: true,
+          partial: !result.complete,
         })
       })
       .catch((err: unknown) => {
@@ -568,9 +571,11 @@ export default function ReaderView({
                         <>
                           <TranslateIcon width={14} height={14} style={{ color: '#0A84FF' }} />
                           <span>
-                            {showingTranslation
-                              ? 'Đang xem bản dịch tiếng Việt (dịch tự động).'
-                              : 'Đang xem bản gốc.'}
+                            {!showingTranslation
+                              ? 'Đang xem bản gốc.'
+                              : translation.partial
+                                ? 'Bản dịch tiếng Việt (một số đoạn giữ nguyên do dịch vụ tạm giới hạn).'
+                                : 'Đang xem bản dịch tiếng Việt (dịch tự động).'}
                           </span>
                           <button
                             type="button"

@@ -104,11 +104,13 @@ function fetchHtmlDirect(targetUrl, redirectsLeft = MAX_REDIRECTS) {
 // short titles would truncate an article paragraph into an over-long URL; and
 // requests carry a normal browser User-Agent, which the endpoint is far less
 // likely to turn away.
-const TRANSLATE_TIMEOUT_MS = 20_000
+// Kept short on purpose: an article is several requests, and the renderer
+// gives the whole job a fixed budget. One slow request must not consume it.
+const TRANSLATE_TIMEOUT_MS = 9_000
 const MYMEMORY_MAX_CHARS = 500
 
 const delay = (ms) => new Promise((r) => setTimeout(r, ms))
-const GOOGLE_RETRIES = 2
+const GOOGLE_RETRIES = 1
 
 // Translating a whole article is several requests in a row, which is enough to
 // trip the endpoint's rate limit — it then answers 429 with an HTML challenge
@@ -142,7 +144,7 @@ async function translateViaGoogle(text, target, attempt = 0) {
       })
 
   if ((res.status === 429 || res.status === 503) && attempt < GOOGLE_RETRIES) {
-    await delay(900 * (attempt + 1))
+    await delay(700 * (attempt + 1))
     return translateViaGoogle(text, target, attempt + 1)
   }
   if (!res.ok) throw new Error(`translate HTTP ${res.status}`)
@@ -198,7 +200,7 @@ async function myMemoryOnce(text, target) {
 // Hard cap per request on this service, so anything article-sized has to be
 // broken up. Previously it simply refused, which made the fallback useless for
 // exactly the case it existed to cover.
-const MYMEMORY_MAX_PIECES = 16
+const MYMEMORY_MAX_PIECES = 6
 
 async function translateViaMyMemory(text, target) {
   // The caller joins paragraphs with newlines and splits the result back on

@@ -25,9 +25,31 @@ function writeCache(text: string, translated: string) {
  * into a URL, and it can fall back to a second provider. The direct GET below
  * is what `npm run dev` in a browser gets, and is only safe for short strings.
  */
+// The main process bounds every request it makes, but this side must not
+// depend on that: if a reply were ever lost, an un-timed await would hang the
+// translation forever and leave the reader frozen on a percentage. Racing a
+// timer here makes that impossible no matter how the bridge behaves.
+const CHUNK_TIMEOUT_MS = 15_000
+
+function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => reject(new Error('Dịch quá thời gian chờ')), ms)
+    promise.then(
+      (value) => {
+        clearTimeout(timer)
+        resolve(value)
+      },
+      (err) => {
+        clearTimeout(timer)
+        reject(err)
+      }
+    )
+  })
+}
+
 async function translateChunk(text: string, target: string): Promise<string> {
   const bridge = window.electronAPI?.translateText
-  if (bridge) return await bridge(text, target)
+  if (bridge) return await withTimeout(bridge(text, target), CHUNK_TIMEOUT_MS)
 
   const url = `${TRANSLATE_ENDPOINT}?client=gtx&sl=auto&tl=${target}&dt=t&q=${encodeURIComponent(text)}`
   const res = await fetch(url)
@@ -82,6 +104,11 @@ export async function translateText(text: string, target = 'vi'): Promise<string
 // enough to stay well inside what the endpoint will accept in one go. The
 // browser fallback puts the text in a URL, where percent-encoding inflates it
 // several times over, so it has to aim much lower.
+// A whole article has to finish in a time a person will actually wait. Past
+// this we stop and show what we have, instead of sitting on a percentage.
+const TOTAL_BUDGET_MS = 45_000
+const MAX_CONSECUTIVE_FAILURES = 2
+
 const BATCH_CHARS_VIA_BRIDGE = 1400
 const BATCH_CHARS_VIA_URL = 400
 
@@ -151,7 +178,14 @@ function batchNodes(nodes: Text[]): Text[][] {
   return batches
 }
 
-async function translateBatch(batch: Text[], target: string): Promise<boolean> {
+interface Budget {
+  /** Wall-clock cutoff for the whole article; past it we stop and keep what we have. */
+  deadline: number
+}
+
+const outOfTime = (budget: Budget) => Date.now() > budget.deadline
+
+async function translateBatch(batch: Text[], target: string, budget: Budget): Promise<boolean> {
   // Newlines are the delimiter, so any that a node already contains — HTML
   // source is routinely indented across lines — would inflate the split count
   // and force the whole batch down the one-request-per-node path. Collapsing
@@ -173,8 +207,13 @@ async function translateBatch(batch: Text[], target: string): Promise<boolean> {
     return true
   }
 
+  // Falling back to one request per node multiplies the provider's whole
+  // retry-and-fallback chain by the number of nodes, which is how a single
+  // stalled batch could hold the reader at the same percentage indefinitely.
+  // The deadline is what stops that.
   let any = false
   for (let i = 0; i < batch.length; i++) {
+    if (outOfTime(budget)) break
     try {
       const single = await translateChunk(originals[i], target)
       if (single.trim()) {
@@ -186,6 +225,12 @@ async function translateBatch(batch: Text[], target: string): Promise<boolean> {
     }
   }
   return any
+}
+
+export interface TranslatedArticle {
+  html: string
+  /** False when some paragraphs were left in the original language. */
+  complete: boolean
 }
 
 export interface TranslateArticleOptions {
@@ -202,12 +247,12 @@ export interface TranslateArticleOptions {
 export async function translateArticleHtml(
   html: string,
   { target = 'vi', signal, onProgress, cacheKey }: TranslateArticleOptions = {}
-): Promise<string> {
+): Promise<TranslatedArticle> {
   if (cacheKey) {
     const cached = readArticleCache(cacheKey)
     if (cached) {
       onProgress?.(1)
-      return cached
+      return { html: cached, complete: true }
     }
   }
 
@@ -216,34 +261,58 @@ export async function translateArticleHtml(
   if (!root) throw new Error('Không đọc được nội dung để dịch')
 
   const nodes = collectTextNodes(root)
-  if (nodes.length === 0) return html
+  if (nodes.length === 0) return { html, complete: true }
 
   const batches = batchNodes(nodes)
+  const budget: Budget = { deadline: Date.now() + TOTAL_BUDGET_MS }
   let done = 0
   let succeeded = 0
+  let consecutiveFailures = 0
+  let stopped = false
 
   for (const batch of batches) {
     if (signal?.aborted) throw new Error('aborted')
-    // Back-to-back requests are what trips the endpoint's rate limit, and once
-    // tripped it stays tripped for a while — which is how translating one
-    // article could poison the next one. A short gap keeps it happy.
+
+    // Rate limiting doesn't clear within one article, so once the provider has
+    // refused twice in a row the remaining batches would only burn through the
+    // same timeouts to fail the same way. Stop and keep what's translated
+    // rather than leaving the reader watching a frozen percentage.
+    if (outOfTime(budget) || consecutiveFailures >= MAX_CONSECUTIVE_FAILURES) {
+      stopped = true
+      break
+    }
+
+    // Back-to-back requests are what trips the rate limit in the first place.
     if (done > 0) await new Promise((r) => setTimeout(r, 250))
 
+    let ok = false
     try {
-      if (await translateBatch(batch, target)) succeeded++
+      ok = await translateBatch(batch, target, budget)
     } catch {
-      // One failed batch shouldn't discard the paragraphs that did translate;
-      // leave this stretch in its original language and carry on.
+      // One failed batch shouldn't discard the paragraphs that did translate.
+    }
+    if (ok) {
+      succeeded++
+      consecutiveFailures = 0
+    } else {
+      consecutiveFailures++
     }
     done++
     onProgress?.(done / batches.length)
   }
 
+  // Never leave the caller on a partial number — whether we finished the last
+  // batch or gave up early, the work is over.
+  onProgress?.(1)
+
   // Only a total washout is worth an error — a partial translation is still
   // more useful to the reader than being sent back to the original.
   if (succeeded === 0) throw new Error('Không thể dịch bài viết này')
 
-  const translated = root.innerHTML
-  if (cacheKey) writeArticleCache(cacheKey, translated)
-  return translated
+  const html_ = root.innerHTML
+  const complete = !stopped && succeeded === batches.length
+  // A partial result is deliberately not cached: reopening the article should
+  // get another go at the paragraphs that were left untranslated.
+  if (cacheKey && complete) writeArticleCache(cacheKey, html_)
+  return { html: html_, complete }
 }
