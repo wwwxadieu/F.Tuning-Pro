@@ -79,6 +79,7 @@ export default function ReaderView({
   onUpdateSettings,
 }: Props) {
   const [state, setState] = useState<LoadState>('loading')
+  const [loadError, setLoadError] = useState<string | null>(null)
   const [html, setHtml] = useState<string>('')
   const [zoomedImage, setZoomedImage] = useState<string | null>(null)
   const [shareState, setShareState] = useState<'idle' | 'copied' | 'error'>('idle')
@@ -94,6 +95,7 @@ export default function ReaderView({
   useEffect(() => {
     if (!article) return
     setState('loading')
+    setLoadError(null)
     setHtml('')
     setZoomedImage(null)
     const controller = new AbortController()
@@ -103,8 +105,12 @@ export default function ReaderView({
         setHtml(content.html)
         setState('ok')
       })
-      .catch(() => {
+      .catch((err: unknown) => {
         if (controller.signal.aborted) return
+        // Without the reason a failure here is undiagnosable from a
+        // screenshot — "blocked", "timed out" and "nothing extractable" all
+        // look identical to the reader.
+        setLoadError(err instanceof Error ? err.message : String(err))
         setState('error')
       })
 
@@ -638,6 +644,7 @@ export default function ReaderView({
                           {article.description
                             ? 'Không thể trích xuất toàn bộ nội dung bài viết. Đây là bản tóm tắt.'
                             : 'Không thể nạp bài viết này.'}
+                          {loadError && <span className="font-normal opacity-70"> ({loadError})</span>}
                         </p>
                         <div className="flex gap-2.5">
                           <button

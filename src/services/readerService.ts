@@ -169,10 +169,46 @@ function stripLeadingTitle(html: string, title: string | null | undefined): stri
 
 const MIN_CONTENT_LENGTH = 50
 
-// Hand-picked article containers for the Vietnamese sites we ship by default.
-const KNOWN_ARTICLE_SELECTORS =
-  '.knc-content, .detail-content, article.fck_detail, .fck_detail, .maincontent, ' +
-  '.content-detail, .singular-content, .post-content, .entry-content, article, main'
+/**
+ * Article containers, most specific first — and they are tried in this order,
+ * one at a time.
+ *
+ * A single comma-joined `querySelector` looks the same but is not: it returns
+ * whichever element comes first *in the document*, whatever selector matched.
+ * On a page carrying several <article> tags for teasers, a teaser near the top
+ * therefore beat the real body further down, and the extraction came back too
+ * short to use.
+ */
+const ARTICLE_SELECTORS = [
+  '[itemprop="articleBody"]', // schema.org — precise, and widely used by VN CMSes
+  '.knc-content',
+  '.detail-content',
+  'article.fck_detail',
+  '.fck_detail',
+  '.maincontent',
+  '.content-detail',
+  '.singular-content',
+  '.post-content',
+  '.entry-content',
+  'article',
+  'main',
+]
+
+/**
+ * The first selector that matches anything wins, and among its matches the one
+ * with the most text — several `<article>` tags on a page are usually teasers
+ * around one real body.
+ */
+function findArticleElement(doc: Document): Element | null {
+  for (const selector of ARTICLE_SELECTORS) {
+    const matches = Array.from(doc.querySelectorAll(selector))
+    if (matches.length === 0) continue
+    return matches.reduce((best, el) =>
+      (el.textContent?.length ?? 0) > (best.textContent?.length ?? 0) ? el : best
+    )
+  }
+  return null
+}
 
 function originOf(targetUrl: string): string {
   try {
@@ -225,7 +261,7 @@ function extractArticle(rawHtml: string, targetUrl: string): ReaderContent | nul
     // fall through to the selector approach
   }
 
-  const articleEl = doc.querySelector(KNOWN_ARTICLE_SELECTORS)
+  const articleEl = findArticleElement(doc)
   if (!articleEl) return null
 
   stripPromoText(articleEl)
