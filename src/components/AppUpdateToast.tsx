@@ -43,7 +43,7 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.95, transition: { duration: 0.2 } }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="soft-glass pointer-events-auto flex flex-col gap-3.5 rounded-2xl p-4.5 shadow-[0_20px_60px_rgba(0,0,0,0.85)] border border-white/15 bg-[#12141a]/95 text-white"
+            className="soft-glass pointer-events-auto flex flex-col gap-4 rounded-2xl p-5 shadow-[0_20px_60px_rgba(0,0,0,0.85)] border border-white/15 bg-[#12141a]/95 text-white"
           >
             <div className="flex items-start gap-3">
               <span className="mt-0.5 flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#0A84FF] to-[#BF5AF2] shadow-md shadow-blue-500/20">
@@ -51,7 +51,7 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
               </span>
               <div className="flex-1">
                 <p className="text-[14px] font-bold text-white">Có bản cập nhật mới</p>
-                <p className="mt-0.5 text-[12px] font-medium text-white/70">
+                <p className="mt-0.5 text-[12px] font-medium text-white/75">
                   F.VNN v{latest?.version} đã sẵn sàng để cài đặt.
                 </p>
               </div>
@@ -68,10 +68,10 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
             </div>
 
             {installStatus === 'downloading' ? (
-              <div className="flex flex-col gap-1.5">
-                <div className="flex items-center justify-between text-[11px] font-semibold text-white/80">
+              <div className="flex flex-col gap-2 pt-1 pb-1">
+                <div className="flex items-center justify-between text-[11.5px] font-semibold text-white/90">
                   <span className="truncate pr-2">{statusText}</span>
-                  <span className="tabular-nums font-bold text-blue-400">{percent}%</span>
+                  <span className="tabular-nums font-bold text-[#0A84FF]">{percent}%</span>
                 </div>
                 <div className="h-2 overflow-hidden rounded-full bg-white/10 border border-white/5">
                   <div
@@ -81,7 +81,7 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
                 </div>
               </div>
             ) : (
-              <div className="flex gap-2 pt-1">
+              <div className="flex gap-2.5 pt-1">
                 <button
                   type="button"
                   onClick={onDismiss}
