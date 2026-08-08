@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain, shell, net } = require('electron')
+const { spawn } = require('node:child_process')
 const path = require('node:path')
 const fs = require('node:fs')
 const os = require('node:os')
@@ -34,17 +35,27 @@ function downloadFile(url, dest, onProgress) {
   })
 }
 
-// Downloads the Windows installer straight into the app (no browser hop),
-// launches it like a double-click, then quits so the installer can
-// overwrite this running instance's files without a lock conflict.
+// Downloads the Windows installer, runs silent background update (/S),
+// detaches process and restarts the app into the new version automatically.
 ipcMain.handle('update:download-and-install', async (event, downloadUrl) => {
   const dest = path.join(os.tmpdir(), `FVNN-Update-${Date.now()}.exe`)
   await downloadFile(downloadUrl, dest, (percent) => {
     event.sender.send('update:progress', percent)
   })
-  const openError = await shell.openPath(dest)
-  if (openError) throw new Error(openError)
-  setTimeout(() => app.quit(), 800)
+
+  try {
+    const child = spawn(dest, ['/S', '--updated'], {
+      detached: true,
+      stdio: 'ignore',
+    })
+    child.unref()
+  } catch (err) {
+    await shell.openPath(dest)
+  }
+
+  setTimeout(() => {
+    app.quit()
+  }, 600)
 })
 
 function createWindow() {
@@ -62,8 +73,6 @@ function createWindow() {
     },
   })
 
-  // Article links (target="_blank") should open in the user's real browser,
-  // not spawn another Electron window.
   win.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url)
     return { action: 'deny' }

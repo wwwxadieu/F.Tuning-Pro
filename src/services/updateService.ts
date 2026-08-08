@@ -1,4 +1,4 @@
-const REPO = 'wwwxadieu/F.Tuning-Pro'
+const REPO = 'wwwxadieu/F.VNN'
 // The repo hosts releases for more than one app; only look at assets
 // carrying this app's installer name so we never pick up an unrelated
 // release published by a different pipeline in the same repo.

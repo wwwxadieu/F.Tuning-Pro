@@ -48,8 +48,8 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
             {installStatus === 'downloading' ? (
               <div>
                 <div className="mb-1.5 flex items-center justify-between text-[11px] text-[var(--text-3)]">
-                  <span>Đang tải bản cập nhật...</span>
-                  <span className="tabular-nums">{installProgress}%</span>
+                  <span>{installProgress >= 100 ? 'Đang tự động cập nhật & khởi động lại...' : 'Đang tải bản cập nhật...'}</span>
+                  <span className="tabular-nums font-bold">{installProgress}%</span>
                 </div>
                 <div className="h-1.5 overflow-hidden rounded-full bg-[var(--surface-2)]">
                   <div
