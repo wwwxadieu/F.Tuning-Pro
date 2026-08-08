@@ -479,12 +479,16 @@ function UpdateSection({
         <div className="mt-2">
           <div className="mb-1.5 flex items-center justify-between text-[12px] text-[var(--text-2)]">
             <span>Đang tải bản cập nhật...</span>
-            <span className="tabular-nums">{installProgress}%</span>
+            <span className="tabular-nums font-bold">
+              {typeof installProgress === 'number' ? installProgress : installProgress.percent}%
+            </span>
           </div>
           <div className="h-1.5 overflow-hidden rounded-full bg-[var(--surface-2)]">
             <div
               className="h-full rounded-full bg-[#0A84FF] transition-[width] duration-200"
-              style={{ width: `${installProgress}%` }}
+              style={{
+                width: `${typeof installProgress === 'number' ? installProgress : installProgress.percent}%`,
+              }}
             />
           </div>
         </div>

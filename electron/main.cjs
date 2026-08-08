@@ -19,10 +19,29 @@ function downloadFile(url, dest, onProgress) {
       }
       const total = parseInt(response.headers['content-length'] ?? '0', 10)
       let received = 0
+      let lastTime = Date.now()
+      let lastReceived = 0
+      let currentSpeed = 0
+
       response.on('data', (chunk) => {
         received += chunk.length
         file.write(chunk)
-        if (total) onProgress(Math.round((received / total) * 100))
+
+        const now = Date.now()
+        const timeDiff = (now - lastTime) / 1000
+        if (timeDiff >= 0.3) {
+          currentSpeed = Math.round((received - lastReceived) / timeDiff)
+          lastTime = now
+          lastReceived = received
+        }
+
+        const percent = total ? Math.min(100, Math.round((received / total) * 100)) : 0
+        onProgress({
+          percent,
+          transferred: received,
+          total,
+          bytesPerSecond: currentSpeed,
+        })
       })
       response.on('end', () => file.end(resolve))
       response.on('error', reject)
@@ -35,12 +54,12 @@ function downloadFile(url, dest, onProgress) {
   })
 }
 
-// Downloads the Windows installer, runs silent background update (/S),
-// detaches process and restarts the app into the new version automatically.
+// Downloads the Windows installer, passes progress/size/speed info,
+// runs silent background update (/S), detaches process and restarts the app into the new version.
 ipcMain.handle('update:download-and-install', async (event, downloadUrl) => {
   const dest = path.join(os.tmpdir(), `FVNN-Update-${Date.now()}.exe`)
-  await downloadFile(downloadUrl, dest, (percent) => {
-    event.sender.send('update:progress', percent)
+  await downloadFile(downloadUrl, dest, (progressInfo) => {
+    event.sender.send('update:progress', progressInfo)
   })
 
   try {

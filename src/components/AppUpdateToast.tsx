@@ -8,12 +8,34 @@ interface Props {
   onDismiss: () => void
 }
 
+function formatBytes(bytes: number, decimals = 1): string {
+  if (!bytes || bytes <= 0) return '0 B'
+  const k = 1024
+  const dm = decimals < 0 ? 0 : decimals
+  const sizes = ['B', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`
+}
+
 export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Props) {
   const { status, latest, installStatus, installProgress, install } = appUpdate
   const visible = status === 'update-available' && latest !== null && !dismissed
 
+  const percent = typeof installProgress === 'number' ? installProgress : installProgress.percent
+  const transferred = typeof installProgress === 'object' ? installProgress.transferred : 0
+  const total = typeof installProgress === 'object' ? installProgress.total : 0
+  const bytesPerSecond = typeof installProgress === 'object' ? installProgress.bytesPerSecond : 0
+
+  let statusText = 'Đang tải bản cập nhật...'
+  if (percent >= 100) {
+    statusText = 'Đang tự động cập nhật & khởi động lại...'
+  } else if (transferred > 0 && total > 0) {
+    const speedStr = bytesPerSecond > 0 ? ` · ${formatBytes(bytesPerSecond)}/s` : ''
+    statusText = `${formatBytes(transferred)} / ${formatBytes(total)}${speedStr}`
+  }
+
   return (
-    <div className="pointer-events-none fixed bottom-24 right-6 z-[65] w-full max-w-xs">
+    <div className="pointer-events-none fixed bottom-24 right-6 z-[65] w-full max-w-sm">
       <AnimatePresence>
         {visible && (
           <motion.div
@@ -21,15 +43,15 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.95, transition: { duration: 0.2 } }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="glass pointer-events-auto flex flex-col gap-3 rounded-2xl p-4 shadow-[0_20px_60px_rgba(0,0,0,0.6)]"
+            className="soft-glass pointer-events-auto flex flex-col gap-3.5 rounded-2xl p-4.5 shadow-[0_20px_60px_rgba(0,0,0,0.85)] border border-white/15 bg-[#12141a]/95 text-white"
           >
             <div className="flex items-start gap-3">
-              <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#0A84FF] to-[#BF5AF2]">
-                <RefreshIcon width={14} height={14} style={{ color: '#fff' }} />
+              <span className="mt-0.5 flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#0A84FF] to-[#BF5AF2] shadow-md shadow-blue-500/20">
+                <RefreshIcon width={15} height={15} style={{ color: '#fff' }} />
               </span>
               <div className="flex-1">
-                <p className="text-[13px] font-semibold text-[var(--text-1)]">Có bản cập nhật mới</p>
-                <p className="mt-0.5 text-[12px] text-[var(--text-2)]">
+                <p className="text-[14px] font-bold text-white">Có bản cập nhật mới</p>
+                <p className="mt-0.5 text-[12px] font-medium text-white/70">
                   F.VNN v{latest?.version} đã sẵn sàng để cài đặt.
                 </p>
               </div>
@@ -38,7 +60,7 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
                   type="button"
                   onClick={onDismiss}
                   aria-label="Để sau"
-                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-[var(--text-3)] transition hover:bg-[var(--surface-2)] hover:text-[var(--text-1)]"
+                  className="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg bg-white/10 text-white/70 transition hover:bg-white/20 hover:text-white"
                 >
                   <XIcon width={12} height={12} />
                 </button>
@@ -46,24 +68,24 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
             </div>
 
             {installStatus === 'downloading' ? (
-              <div>
-                <div className="mb-1.5 flex items-center justify-between text-[11px] text-[var(--text-3)]">
-                  <span>{installProgress >= 100 ? 'Đang tự động cập nhật & khởi động lại...' : 'Đang tải bản cập nhật...'}</span>
-                  <span className="tabular-nums font-bold">{installProgress}%</span>
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center justify-between text-[11px] font-semibold text-white/80">
+                  <span className="truncate pr-2">{statusText}</span>
+                  <span className="tabular-nums font-bold text-blue-400">{percent}%</span>
                 </div>
-                <div className="h-1.5 overflow-hidden rounded-full bg-[var(--surface-2)]">
+                <div className="h-2 overflow-hidden rounded-full bg-white/10 border border-white/5">
                   <div
-                    className="h-full rounded-full bg-[#0A84FF] transition-[width] duration-200"
-                    style={{ width: `${installProgress}%` }}
+                    className="h-full rounded-full bg-gradient-to-r from-[#0A84FF] to-[#BF5AF2] transition-[width] duration-200"
+                    style={{ width: `${percent}%` }}
                   />
                 </div>
               </div>
             ) : (
-              <div className="flex gap-2">
+              <div className="flex gap-2 pt-1">
                 <button
                   type="button"
                   onClick={onDismiss}
-                  className="flex-1 rounded-xl bg-[var(--surface-2)] px-3 py-2 text-[12px] font-medium text-[var(--text-1)] transition hover:bg-[var(--surface-3)]"
+                  className="flex-1 rounded-xl bg-white/10 px-3 py-2 text-[12px] font-semibold text-white/80 transition hover:bg-white/20 active:scale-95"
                 >
                   Để sau
                 </button>
@@ -71,7 +93,7 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
                   type="button"
                   onClick={install}
                   disabled={!latest?.downloadUrl}
-                  className="flex-1 rounded-xl bg-[var(--text-1)] px-3 py-2 text-[12px] font-semibold text-[var(--bg)] transition hover:opacity-90 disabled:opacity-40"
+                  className="flex-1 rounded-xl bg-white px-3 py-2 text-[12px] font-bold text-black transition hover:bg-white/90 active:scale-95 disabled:opacity-40"
                 >
                   Cập nhật ngay
                 </button>
@@ -79,7 +101,7 @@ export default function AppUpdateToast({ appUpdate, dismissed, onDismiss }: Prop
             )}
 
             {installStatus === 'error' && (
-              <p className="text-[11px] text-[#FF375F]">Không thể tải hoặc mở trình cài đặt. Thử lại sau.</p>
+              <p className="text-[11px] font-semibold text-red-400">Không thể tải bản cập nhật. Vui lòng thử lại sau.</p>
             )}
           </motion.div>
         )}
