@@ -1,15 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Article, NewsResponse, Tag } from "@/lib/types";
+import type { Article, CustomFeedSource, NewsResponse, Tag } from "@/lib/types";
+import { FEEDS } from "@/lib/feeds";
 
 const POLL_INTERVAL_MS = 3 * 60 * 1000;
 const SEEN_IDS_KEY = "techwave:seen-ids";
 const NOTIF_PREF_KEY = "techwave:notifications-enabled";
-// Stores the sources the user switched OFF, not the ones left on: that way a
-// feed added in a later release shows up for existing users instead of being
-// silently filtered out because it wasn't in their saved list.
 const DISABLED_SOURCES_KEY = "techwave:disabled-sources";
+const CUSTOM_SOURCES_KEY = "techwave:custom-sources";
 const MAX_STORED_IDS = 400;
 
 function loadSeenIds(): Set<string> {
@@ -27,7 +26,7 @@ function saveSeenIds(ids: Set<string>) {
     const trimmed = Array.from(ids).slice(-MAX_STORED_IDS);
     window.localStorage.setItem(SEEN_IDS_KEY, JSON.stringify(trimmed));
   } catch {
-    // ignore quota errors
+    // ignore
   }
 }
 
@@ -50,6 +49,25 @@ function saveDisabledSources(sources: string[]) {
   }
 }
 
+function loadCustomSources(): CustomFeedSource[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = window.localStorage.getItem(CUSTOM_SOURCES_KEY);
+    const parsed = raw ? JSON.parse(raw) : [];
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveCustomSources(sources: CustomFeedSource[]) {
+  try {
+    window.localStorage.setItem(CUSTOM_SOURCES_KEY, JSON.stringify(sources));
+  } catch {
+    // ignore quota errors
+  }
+}
+
 export interface UseNewsResult {
   articles: Article[];
   filteredArticles: Article[];
@@ -60,6 +78,14 @@ export interface UseNewsResult {
   disabledSources: string[];
   toggleSource: (name: string) => void;
   setAllSourcesEnabled: (enabled: boolean, allSources: string[]) => void;
+  customSources: CustomFeedSource[];
+  addCustomSource: (source: CustomFeedSource) => void;
+  removeCustomSource: (name: string) => void;
+  allFeedSources: any[];
+  selectedArticle: Article | null;
+  setSelectedArticle: (article: Article | null) => void;
+  isAddSourceOpen: boolean;
+  setIsAddSourceOpen: (open: boolean) => void;
   lastFetchedAt: string | null;
   newCount: number;
   clearNewCount: () => void;
@@ -75,6 +101,9 @@ export function useNews(): UseNewsResult {
   const [error, setError] = useState<string | null>(null);
   const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
   const [disabledSources, setDisabledSources] = useState<string[]>([]);
+  const [customSources, setCustomSources] = useState<CustomFeedSource[]>([]);
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+  const [isAddSourceOpen, setIsAddSourceOpen] = useState(false);
   const [lastFetchedAt, setLastFetchedAt] = useState<string | null>(null);
   const [newCount, setNewCount] = useState(0);
   const [notificationsEnabled, setNotificationsEnabled] = useState(false);
@@ -89,6 +118,7 @@ export function useNews(): UseNewsResult {
     seenIdsRef.current = loadSeenIds();
     isFirstLoadRef.current = seenIdsRef.current.size === 0;
     setDisabledSources(loadDisabledSources());
+    setCustomSources(loadCustomSources());
 
     if (typeof window !== "undefined" && "Notification" in window) {
       setNotificationPermission(Notification.permission);
@@ -102,7 +132,10 @@ export function useNews(): UseNewsResult {
   const fetchNews = useCallback(async () => {
     try {
       setError(null);
-      const res = await fetch("/api/news", { cache: "no-store" });
+      const customParam = customSources.length > 0 ? encodeURIComponent(JSON.stringify(customSources)) : "";
+      const url = customParam ? `/api/news?customSources=${customParam}` : "/api/news";
+
+      const res = await fetch(url, { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const data: NewsResponse = await res.json();
 
@@ -124,7 +157,7 @@ export function useNews(): UseNewsResult {
           const body =
             freshArticles.length === 1
               ? headline.title
-              : `${headline.title} +${freshArticles.length - 1} tin khác`;
+              : `${headline.title} +${freshArticles.length - 1} tin mới khác`;
           const notif = new Notification("TechWave · Tin mới", {
             body,
             tag: "techwave-news",
@@ -147,13 +180,31 @@ export function useNews(): UseNewsResult {
     } finally {
       setLoading(false);
     }
-  }, [notificationsEnabled]);
+  }, [customSources, notificationsEnabled]);
 
   useEffect(() => {
     fetchNews();
     const interval = setInterval(fetchNews, POLL_INTERVAL_MS);
     return () => clearInterval(interval);
   }, [fetchNews]);
+
+  const addCustomSource = useCallback((newSource: CustomFeedSource) => {
+    setCustomSources((prev) => {
+      const exists = prev.some((s) => s.name.toLowerCase() === newSource.name.toLowerCase() || s.url === newSource.url);
+      if (exists) return prev;
+      const updated = [...prev, newSource];
+      saveCustomSources(updated);
+      return updated;
+    });
+  }, []);
+
+  const removeCustomSource = useCallback((name: string) => {
+    setCustomSources((prev) => {
+      const updated = prev.filter((s) => s.name !== name);
+      saveCustomSources(updated);
+      return updated;
+    });
+  }, []);
 
   const toggleNotifications = useCallback(async () => {
     if (typeof window === "undefined" || !("Notification" in window)) return;
@@ -193,6 +244,8 @@ export function useNews(): UseNewsResult {
     setDisabledSources(next);
   }, []);
 
+  const allFeedSources = [...FEEDS, ...customSources];
+
   const filteredArticles = articles.filter(
     (a) =>
       (selectedTag === null || a.tags.includes(selectedTag)) &&
@@ -209,6 +262,14 @@ export function useNews(): UseNewsResult {
     disabledSources,
     toggleSource,
     setAllSourcesEnabled,
+    customSources,
+    addCustomSource,
+    removeCustomSource,
+    allFeedSources,
+    selectedArticle,
+    setSelectedArticle,
+    isAddSourceOpen,
+    setIsAddSourceOpen,
     lastFetchedAt,
     newCount,
     clearNewCount: () => setNewCount(0),

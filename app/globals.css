@@ -20,17 +20,18 @@ body {
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.16);
   border-radius: 999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.24);
+  background: rgba(255, 255, 255, 0.28);
 }
 
 .text-balance {
@@ -42,10 +43,19 @@ body {
 }
 
 .glass {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Soft glass with higher opacity & deep dark backdrop for crisp legibility */
+.soft-glass {
+  background: rgba(18, 20, 26, 0.94);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.85);
 }
 
 .shimmer-bg {
@@ -62,18 +72,19 @@ body {
   background: linear-gradient(135deg, #2997ff, #7c5cff);
 }
 .tag-gradient-Apple {
-  background: linear-gradient(135deg, #a0a0a5, #f5f5f7);
+  background: linear-gradient(135deg, #e0e0e5, #ffffff);
+  color: #000000 !important;
 }
-.tag-gradient-Security {
+.tag-gradient-Bảo\ mật {
   background: linear-gradient(135deg, #ff5f6d, #ff9f43);
 }
-.tag-gradient-Mobile {
+.tag-gradient-Di\ động {
   background: linear-gradient(135deg, #30d158, #2997ff);
 }
-.tag-gradient-Software {
+.tag-gradient-Phần\ mềm {
   background: linear-gradient(135deg, #64d2ff, #2997ff);
 }
-.tag-gradient-Hardware {
+.tag-gradient-Phần\ cứng {
   background: linear-gradient(135deg, #ff9f43, #ff5f6d);
 }
 .tag-gradient-Gaming {
@@ -82,6 +93,6 @@ body {
 .tag-gradient-Startup {
   background: linear-gradient(135deg, #ffd60a, #ff9f43);
 }
-.tag-gradient-BigTech {
+.tag-gradient-Big\ Tech {
   background: linear-gradient(135deg, #5e5ce6, #2997ff);
 }

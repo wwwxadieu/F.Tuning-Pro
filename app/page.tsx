@@ -2,12 +2,13 @@
 
 import { useMemo } from "react";
 import { useNews } from "@/hooks/useNews";
-import { FEEDS } from "@/lib/feeds";
 import { Header } from "@/components/Header";
 import { Hero } from "@/components/Hero";
 import { TagFilter } from "@/components/TagFilter";
 import { SourceSidebar } from "@/components/SourceSidebar";
 import { NewsGrid } from "@/components/NewsGrid";
+import { AddSourceModal } from "@/components/AddSourceModal";
+import { ArticleModal } from "@/components/ArticleModal";
 
 export default function Home() {
   const news = useNews();
@@ -37,16 +38,24 @@ export default function Home() {
 
   return (
     <>
-      <Header news={news} />
-      <main>
+      <Header
+        news={news}
+        onOpenAddSource={() => news.setIsAddSourceOpen(true)}
+      />
+
+      <main className="min-h-screen pt-4">
         <Hero articleCount={news.articles.length} />
 
-        <div className="mx-auto flex max-w-[1400px] gap-8 px-6">
+        <div className="mx-auto flex max-w-[1400px] gap-8 px-4 sm:px-6">
           <SourceSidebar
+            allSources={news.allFeedSources}
             counts={sourceCounts}
             disabledSources={news.disabledSources}
+            customSources={news.customSources}
             onToggleSource={news.toggleSource}
             onSetAll={news.setAllSourcesEnabled}
+            onOpenAddSource={() => news.setIsAddSourceOpen(true)}
+            onRemoveCustomSource={news.removeCustomSource}
           />
 
           {/* min-w-0 keeps the grid from overflowing this flex child */}
@@ -59,7 +68,13 @@ export default function Home() {
 
             {/* Below lg the sidebar is hidden, so sources move into a chip row */}
             <div className="flex gap-2 overflow-x-auto py-3 lg:hidden [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-              {FEEDS.map((feed) => {
+              <button
+                onClick={() => news.setIsAddSourceOpen(true)}
+                className="shrink-0 rounded-full border border-blue-500/40 bg-blue-500/15 px-3 py-1 text-xs font-bold text-blue-300 transition-colors"
+              >
+                + Thêm nguồn
+              </button>
+              {news.allFeedSources.map((feed) => {
                 const enabled = !news.disabledSources.includes(feed.name);
                 return (
                   <button
@@ -67,8 +82,8 @@ export default function Home() {
                     onClick={() => news.toggleSource(feed.name)}
                     className={`shrink-0 rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                       enabled
-                        ? "border-accent/40 bg-accent/15 text-white/90"
-                        : "border-hair bg-white/5 text-white/35"
+                        ? "border-blue-500/40 bg-blue-500/15 text-white/90"
+                        : "border-white/10 bg-white/5 text-white/35"
                     }`}
                   >
                     {feed.name}
@@ -82,13 +97,28 @@ export default function Home() {
               articles={news.filteredArticles}
               loading={news.loading}
               error={news.error}
+              onArticleClick={(article) => news.setSelectedArticle(article)}
             />
           </div>
         </div>
       </main>
-      <footer className="border-t border-hair px-6 py-10 text-center text-sm text-white/30">
-        <p>TechWave — tổng hợp tin tức công nghệ tự động từ nhiều nguồn RSS.</p>
+
+      <footer className="border-t border-white/10 px-6 py-10 text-center text-xs text-white/40">
+        <p>TechWave (F.VNN) — Hệ thống tổng hợp & phân tích tin tức công nghệ đa nguồn tự động.</p>
       </footer>
+
+      {/* Add Source Modal (Soft Glass UI) */}
+      <AddSourceModal
+        isOpen={news.isAddSourceOpen}
+        onClose={() => news.setIsAddSourceOpen(false)}
+        onAddSource={(source) => news.addCustomSource(source)}
+      />
+
+      {/* Article Reader Modal */}
+      <ArticleModal
+        article={news.selectedArticle}
+        onClose={() => news.setSelectedArticle(null)}
+      />
     </>
   );
 }

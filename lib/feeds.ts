@@ -1,10 +1,11 @@
-import type { Tag } from "./types";
+import type { CustomFeedSource, Tag } from "./types";
 
 export interface FeedSource {
   name: string;
   url: string;
   baseTags: Tag[];
   lang: "en" | "vi";
+  isCustom?: boolean;
 }
 
 export const FEEDS: FeedSource[] = [
@@ -21,21 +22,24 @@ export const FEEDS: FeedSource[] = [
   { name: "Genk", url: "https://genk.vn/rss/home.rss", baseTags: ["Big Tech"], lang: "vi" },
   { name: "Tinh Tế", url: "https://tinhte.vn/rss", baseTags: ["Phần cứng"], lang: "vi" },
   { name: "Thanh Niên Công nghệ", url: "https://thanhnien.vn/rss/cong-nghe.rss", baseTags: ["Big Tech"], lang: "vi" },
+  { name: "Tuổi Trẻ Công nghệ", url: "https://tuoitre.vn/rss/nhip-song-so.rss", baseTags: ["Di động"], lang: "vi" },
+  { name: "Dân Trí Sức mạnh số", url: "https://dantri.com.vn/rss/suc-manh-so.rss", baseTags: ["Phần cứng"], lang: "vi" },
+  { name: "Sforum CellphoneS", url: "https://sforum.vn/feed", baseTags: ["Di động", "Phần cứng"], lang: "vi" },
 ];
 
 const KEYWORD_TAGS: Array<{ pattern: RegExp; tag: Tag }> = [
-  { pattern: /\b(ai|artificial intelligence|chatgpt|openai|gpt-|llm|gemini|anthropic|claude|trí tuệ nhân tạo)\b/i, tag: "AI" },
-  { pattern: /\b(apple|iphone|ipad|macbook|ios |ipados|macos|airpods|apple watch|vision pro)\b/i, tag: "Apple" },
-  { pattern: /\b(hack|breach|vulnerab|exploit|ransomware|malware|cyberattack|phishing|cve-|bảo mật|lỗ hổng|tấn công mạng|rò rỉ dữ liệu|mã độc)\b/i, tag: "Bảo mật" },
-  { pattern: /\b(android|smartphone|iphone|galaxy|pixel|ipad|tablet|điện thoại)\b/i, tag: "Di động" },
-  { pattern: /\b(app|software|update|os |operating system|firmware|api|ứng dụng|phần mềm|cập nhật)\b/i, tag: "Phần mềm" },
-  { pattern: /\b(chip|processor|gpu|cpu|hardware|silicon|nvidia|amd|intel|laptop|device|con chip|máy tính|phần cứng)\b/i, tag: "Phần cứng" },
-  { pattern: /\b(game|gaming|xbox|playstation|nintendo|steam|esports|trò chơi)\b/i, tag: "Gaming" },
-  { pattern: /\b(startup|funding|raises|series [a-e]|venture capital|ipo|khởi nghiệp|gọi vốn)\b/i, tag: "Startup" },
-  { pattern: /\b(google|meta|amazon|microsoft|facebook|tesla|apple|samsung|xiaomi)\b/i, tag: "Big Tech" },
+  { pattern: /\b(ai|artificial intelligence|chatgpt|openai|gpt-|llm|gemini|anthropic|claude|deepseek|mistral|trí tuệ nhân tạo)\b/i, tag: "AI" },
+  { pattern: /\b(apple|iphone|ipad|macbook|ios |ipados|macos|airpods|apple watch|vision pro|m1|m2|m3|m4|m5)\b/i, tag: "Apple" },
+  { pattern: /\b(hack|breach|vulnerab|exploit|ransomware|malware|cyberattack|phishing|cve-|bảo mật|lỗ hổng|tấn công mạng|rò rỉ dữ liệu|mã độc|an ninh mạng)\b/i, tag: "Bảo mật" },
+  { pattern: /\b(android|smartphone|iphone|galaxy|pixel|ipad|tablet|điện thoại|di động|mobile|xiaomi|oppo|vivo)\b/i, tag: "Di động" },
+  { pattern: /\b(app|software|update|os |operating system|firmware|api|ứng dụng|phần mềm|cập nhật|hệ điều hành|window|windows)\b/i, tag: "Phần mềm" },
+  { pattern: /\b(chip|processor|gpu|cpu|hardware|silicon|nvidia|amd|intel|laptop|device|con chip|máy tính|phần cứng|rtx|geforce|core ultra|ryzen|rog|strix|msi|asus|lenovo|dell|g.skill|ram|ssd)\b/i, tag: "Phần cứng" },
+  { pattern: /\b(game|gaming|xbox|playstation|nintendo|steam|esports|trò chơi|gameplay|rog strix|chuột chơi game)\b/i, tag: "Gaming" },
+  { pattern: /\b(startup|funding|raises|series [a-e]|venture capital|ipo|khởi nghiệp|gọi vốn|đầu tư)\b/i, tag: "Startup" },
+  { pattern: /\b(google|meta|amazon|microsoft|facebook|tesla|apple|samsung|xiaomi|nvidia|tsmc|huawei)\b/i, tag: "Big Tech" },
 ];
 
-export function inferTags(baseTags: Tag[], title: string, summary: string): Tag[] {
+export function inferTags(baseTags: Tag[] = [], title: string, summary: string): Tag[] {
   const haystack = `${title} ${summary}`;
   const tags = new Set<Tag>(baseTags);
   for (const { pattern, tag } of KEYWORD_TAGS) {
