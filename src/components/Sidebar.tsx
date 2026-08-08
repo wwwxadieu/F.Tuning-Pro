@@ -3,7 +3,20 @@ import { useEffect, useState } from 'react'
 import { useTags } from '../context/TagsContext'
 import { usePinnedTags } from '../hooks/usePinnedTags'
 import CategoryIcon from './CategoryIcon'
-import { GearIcon, PinIcon, PlusIcon, TrashIcon } from './icons'
+import { ChevronDownIcon, GearIcon, PinIcon, PlusIcon, TrashIcon } from './icons'
+
+type SectionId = 'pinned' | 'categories' | 'sources'
+
+const COLLAPSE_KEY = 'luong:sidebar-collapsed'
+
+function readCollapsed(): Record<string, boolean> {
+  try {
+    const raw = localStorage.getItem(COLLAPSE_KEY)
+    return raw ? (JSON.parse(raw) as Record<string, boolean>) : {}
+  } catch {
+    return {}
+  }
+}
 
 interface Props {
   open: boolean
@@ -17,6 +30,20 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRe
   const { tags } = useTags()
   const { isPinned, togglePin, pinned } = usePinnedTags(tags)
   const [version, setVersion] = useState('v1.0.31')
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>(readCollapsed)
+
+  // Remembered across launches — a section the user tidied away should stay
+  // that way rather than springing back open next time.
+  useEffect(() => {
+    try {
+      localStorage.setItem(COLLAPSE_KEY, JSON.stringify(collapsed))
+    } catch {
+      // preference only; not worth failing over
+    }
+  }, [collapsed])
+
+  const toggleSection = (id: SectionId) =>
+    setCollapsed((prev) => ({ ...prev, [id]: !prev[id] }))
 
   useEffect(() => {
     if (window.electronAPI?.getAppVersion) {
@@ -43,35 +70,9 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRe
           className="fixed bottom-0 left-0 top-0 z-40 flex w-64 shrink-0 flex-col overflow-y-auto border-r border-[var(--border-1)] bg-[var(--bg)]/85 pb-6 pt-24 backdrop-blur-2xl"
           data-lenis-prevent
         >
-          {pinnedTags.length > 0 && (
-            <>
-              <div className="px-3">
-                <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-4)]">
-                  Đã ghim
-                </p>
-                <nav className="flex flex-col gap-0.5">
-                  {pinnedTags.map((tag) => (
-                    <SidebarItem
-                      key={`pinned-${tag.id}`}
-                      active={selected === tag.id}
-                      icon={<CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={13} chip />}
-                      label={tag.label}
-                      onClick={() => onSelect(tag.id)}
-                      pinned
-                      onTogglePin={() => togglePin(tag.id)}
-                      onRemove={tag.custom ? () => onRemoveSource(tag.id) : undefined}
-                    />
-                  ))}
-                </nav>
-              </div>
-              <div className="my-4 mx-5 h-px shrink-0 bg-[var(--border-1)]" />
-            </>
-          )}
-
+          {/* Kept out of the collapsible sections: this is how you clear a
+              filter, so hiding it could strand someone on one category. */}
           <div className="px-3">
-            <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-4)]">
-              Loại tin tức
-            </p>
             <nav className="flex flex-col gap-0.5">
               <SidebarItem
                 active={selected === null}
@@ -80,41 +81,78 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRe
                 onClick={() => onSelect(null)}
                 showPinButton={false}
               />
-              {builtInTags.map((tag) => (
-                <SidebarItem
-                  key={tag.id}
-                  active={selected === tag.id}
-                  icon={<CategoryIcon tagId={tag.id} size={13} chip />}
-                  label={tag.label}
-                  onClick={() => onSelect(tag.id)}
-                  pinned={isPinned(tag.id)}
-                  onTogglePin={() => togglePin(tag.id)}
-                />
-              ))}
             </nav>
           </div>
 
-          <div className="my-4 mx-5 h-px shrink-0 bg-[var(--border-1)]" />
+          <div className="my-3 mx-5 h-px shrink-0 bg-[var(--border-1)]" />
 
-          <div className="px-3">
-            <p className="mb-1.5 px-3 text-[11px] font-semibold uppercase tracking-wide text-[var(--text-4)]">
-              Nguồn tin tức
-            </p>
-            <nav className="flex flex-col gap-0.5">
-              {customTags.map((tag) => (
-                <SidebarItem
-                  key={tag.id}
-                  active={selected === tag.id}
-                  icon={<CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={13} chip />}
-                  label={tag.label}
-                  onClick={() => onSelect(tag.id)}
-                  pinned={isPinned(tag.id)}
-                  onTogglePin={() => togglePin(tag.id)}
-                  onRemove={() => onRemoveSource(tag.id)}
-                />
-              ))}
-            </nav>
+          {pinnedTags.length > 0 && (
+            <>
+              <SidebarSection
+                title="Đã ghim"
+                count={pinnedTags.length}
+                collapsed={!!collapsed.pinned}
+                onToggle={() => toggleSection('pinned')}
+                hasActive={pinnedTags.some((t) => t.id === selected)}
+              >
+                {pinnedTags.map((tag) => (
+                  <SidebarItem
+                    key={`pinned-${tag.id}`}
+                    active={selected === tag.id}
+                    icon={<CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={13} chip />}
+                    label={tag.label}
+                    onClick={() => onSelect(tag.id)}
+                    pinned
+                    onTogglePin={() => togglePin(tag.id)}
+                    onRemove={tag.custom ? () => onRemoveSource(tag.id) : undefined}
+                  />
+                ))}
+              </SidebarSection>
+              <div className="my-3 mx-5 h-px shrink-0 bg-[var(--border-1)]" />
+            </>
+          )}
 
+          <SidebarSection
+            title="Loại tin tức"
+            count={builtInTags.length}
+            collapsed={!!collapsed.categories}
+            onToggle={() => toggleSection('categories')}
+            hasActive={builtInTags.some((t) => t.id === selected)}
+          >
+            {builtInTags.map((tag) => (
+              <SidebarItem
+                key={tag.id}
+                active={selected === tag.id}
+                icon={<CategoryIcon tagId={tag.id} size={13} chip />}
+                label={tag.label}
+                onClick={() => onSelect(tag.id)}
+                pinned={isPinned(tag.id)}
+                onTogglePin={() => togglePin(tag.id)}
+              />
+            ))}
+          </SidebarSection>
+
+          <div className="my-3 mx-5 h-px shrink-0 bg-[var(--border-1)]" />
+
+          <SidebarSection
+            title="Nguồn tin tức"
+            count={customTags.length}
+            collapsed={!!collapsed.sources}
+            onToggle={() => toggleSection('sources')}
+            hasActive={customTags.some((t) => t.id === selected)}
+          >
+            {customTags.map((tag) => (
+              <SidebarItem
+                key={tag.id}
+                active={selected === tag.id}
+                icon={<CategoryIcon tagId={tag.id} emoji={tag.emoji} faviconHost={tag.source} size={13} chip />}
+                label={tag.label}
+                onClick={() => onSelect(tag.id)}
+                pinned={isPinned(tag.id)}
+                onTogglePin={() => togglePin(tag.id)}
+                onRemove={() => onRemoveSource(tag.id)}
+              />
+            ))}
             <button
               type="button"
               onClick={onOpenSettings}
@@ -123,7 +161,7 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRe
               <PlusIcon width={15} height={15} />
               Thêm nguồn tin
             </button>
-          </div>
+          </SidebarSection>
 
           <div className="mt-auto px-3 pt-4">
             <div className="h-px bg-[var(--border-1)]" />
@@ -146,6 +184,67 @@ export default function Sidebar({ open, selected, onSelect, onOpenSettings, onRe
         </motion.aside>
       )}
     </AnimatePresence>
+  )
+}
+
+function SidebarSection({
+  title,
+  count,
+  collapsed,
+  onToggle,
+  hasActive,
+  children,
+}: {
+  title: string
+  count: number
+  collapsed: boolean
+  onToggle: () => void
+  /** Marks a collapsed section that still holds the current selection. */
+  hasActive: boolean
+  children: React.ReactNode
+}) {
+  return (
+    <div className="px-3">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={!collapsed}
+        className="mb-1.5 flex w-full items-center gap-1.5 rounded-lg px-3 py-1 text-left transition hover:bg-[var(--surface-1)]"
+      >
+        <ChevronDownIcon
+          width={12}
+          height={12}
+          className={`shrink-0 text-[var(--text-4)] transition-transform duration-200 ${
+            collapsed ? '-rotate-90' : ''
+          }`}
+        />
+        <span className="text-[11px] font-semibold uppercase tracking-wide text-[var(--text-4)]">
+          {title}
+        </span>
+        {/* Without this, collapsing the section holding the active filter
+            would hide the only sign of what's selected. */}
+        {collapsed && hasActive && (
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#0A84FF]" />
+        )}
+        <span className="ml-auto text-[10.5px] font-semibold tabular-nums text-[var(--text-4)] opacity-70">
+          {count}
+        </span>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {!collapsed && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+            className="overflow-hidden"
+          >
+            <nav className="flex flex-col gap-0.5">{children}</nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   )
 }
 
