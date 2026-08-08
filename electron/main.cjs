@@ -5,6 +5,69 @@ const os = require('node:os')
 
 ipcMain.handle('app:get-version', () => app.getVersion())
 
+// The renderer can't fetch article pages itself — it runs on a file:// origin,
+// so every news site's response is blocked by CORS. That's the only reason the
+// reader ever went through a third-party text-extraction proxy. The main
+// process has no such restriction, so it can pull the page straight from the
+// publisher: measured at ~2-3s versus 7-21s (frequently timing out) through
+// the proxy, with no shared rate limit to get stuck behind.
+const ARTICLE_FETCH_TIMEOUT_MS = 15_000
+const MAX_ARTICLE_BYTES = 8 * 1024 * 1024
+
+ipcMain.handle('article:fetch-html', async (_event, url) => {
+  let parsed
+  try {
+    parsed = new URL(url)
+  } catch {
+    return { ok: false, error: 'URL không hợp lệ' }
+  }
+  if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+    return { ok: false, error: 'Giao thức không được hỗ trợ' }
+  }
+
+  try {
+    const res = await net.fetch(parsed.href, {
+      method: 'GET',
+      redirect: 'follow',
+      headers: {
+        // Some publishers serve a stripped or blocked page to non-browser
+        // clients, so present as the browser this actually is.
+        'User-Agent':
+          'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'vi-VN,vi;q=0.9,en;q=0.8',
+      },
+      signal: AbortSignal.timeout(ARTICLE_FETCH_TIMEOUT_MS),
+    })
+    if (!res.ok) return { ok: false, error: `HTTP ${res.status}` }
+
+    const contentType = res.headers.get('content-type') ?? ''
+    if (contentType && !/(text\/html|application\/xhtml|text\/plain|xml)/i.test(contentType)) {
+      return { ok: false, error: `Loại nội dung không đọc được: ${contentType}` }
+    }
+
+    const buffer = await res.arrayBuffer()
+    if (buffer.byteLength > MAX_ARTICLE_BYTES) {
+      return { ok: false, error: 'Trang quá lớn' }
+    }
+
+    // Vietnamese news sites are overwhelmingly UTF-8, but a few older ones
+    // still serve windows-1258/latin1 — honour the declared charset so
+    // accented characters don't come through mangled.
+    const charsetMatch = contentType.match(/charset=([^;\s]+)/i)
+    let html
+    try {
+      html = new TextDecoder(charsetMatch?.[1] ?? 'utf-8').decode(buffer)
+    } catch {
+      html = new TextDecoder('utf-8').decode(buffer)
+    }
+
+    return { ok: true, html, finalUrl: res.url || parsed.href }
+  } catch (err) {
+    return { ok: false, error: err?.message ?? 'Không thể tải trang' }
+  }
+})
+
 function downloadFile(url, dest, onProgress) {
   return new Promise((resolve, reject) => {
     const request = net.request(url)

@@ -1,3 +1,4 @@
+import { Readability } from '@mozilla/readability'
 import { marked } from 'marked'
 import DOMPurify from 'dompurify'
 
@@ -8,24 +9,6 @@ export interface ReaderContent {
 
 const CACHE_PREFIX = 'luong:reader:'
 const CACHE_TTL_MS = 60 * 60 * 1000 // 1 hour
-
-// Forum/community threads (XenForo, Discourse, WordPress author archives, ...)
-// repeat an avatar-photo-wrapped-in-a-profile-link "author card" once for the
-// original post and again for every reply beneath it. When that pattern shows
-// up more than once, the actual article always sits between the first card
-// (the author) and the second (the first reply) — slicing there drops both
-// the site's nav/search clutter above the post and the entire comment thread
-// below it, without needing any site-specific selectors.
-const AUTHOR_CARD_RE = /\[!\[[^\]]*\]\([^)]*\)\]\((https?:\/\/[^)]*\/(?:profile|user|author|u)\/[^)]*)\)/g
-
-function isolateOriginalPost(markdown: string): string {
-  const matches = [...markdown.matchAll(AUTHOR_CARD_RE)]
-  if (matches.length < 2) return markdown
-  const start = matches[0].index! + matches[0][0].length
-  const end = matches[1].index!
-  const isolated = markdown.slice(start, end).trim()
-  return isolated || markdown
-}
 
 function readCache(url: string): ReaderContent | null {
   try {
@@ -47,13 +30,153 @@ function writeCache(url: string, content: ReaderContent) {
   }
 }
 
-// Heavy, JS-rendered pages (forum threads, etc.) can take the reader proxy
-// 8-12+ seconds to render on a cold fetch — long, but a real success, not a
-// hang. This bounds the wait instead of leaving it open-ended.
-const FETCH_TIMEOUT_MS = 20_000
+const SANITIZE_CONFIG = {
+  ADD_ATTR: ['target'],
+  FORBID_TAGS: ['form', 'input', 'button', 'style'],
+}
 
-async function fetchOnce(url: string, signal?: AbortSignal, priority?: RequestPriority): Promise<ReaderContent> {
-  const combinedSignal = signal ? AbortSignal.any([signal, AbortSignal.timeout(FETCH_TIMEOUT_MS)]) : AbortSignal.timeout(FETCH_TIMEOUT_MS)
+// ---------------------------------------------------------------------------
+// Primary path: fetch the publisher's own HTML and extract it locally.
+// ---------------------------------------------------------------------------
+
+// Chrome/Firefox/Safari reader modes all run Readability over the live DOM,
+// which is exactly what we can do here once the main process hands us the
+// HTML. These are the wrappers Readability has no reason to keep and which
+// otherwise leak into the article body — deliberately limited to containers
+// that are never the story itself, since over-trimming would silently eat
+// real content on sites that use these words in unrelated class names.
+// Readability already treats "comment" as an unlikely candidate, but its own
+// escape hatch un-filters anything whose class also contains "content" — which
+// is exactly how a forum's `thread-comment__content` replies survive into the
+// article. Removing these up front is what leaves just the original post.
+const STRIP_SELECTORS = [
+  'script',
+  'style',
+  'noscript',
+  'template',
+  'iframe[src*="ads"]',
+  'nav',
+  'aside',
+  'footer',
+  '[role="navigation"]',
+  '[role="complementary"]',
+  '[id*="comment"]',
+  '[class*="comment"]',
+  '[class*="Comment"]',
+  '[class*="message-responses"]',
+  '[class*="reactionsBar"]',
+  '[class*="socialShare"]',
+  '[class*="social-share"]',
+  '[class*="relatedNews"]',
+  '[class*="related-news"]',
+  '[class*="newsletter"]',
+  // Bootstrap-style mobile duplicate of the site chrome/footer.
+  '[class*="visible-xs"]',
+].join(',')
+
+// A substring match could in principle hit a page-level wrapper (a <body
+// class="has-comments">), which would throw the article away along with it.
+const NEVER_STRIP = new Set(['HTML', 'BODY', 'HEAD', 'MAIN', 'ARTICLE'])
+
+function extractWithReadability(html: string, baseUrl: string): ReaderContent {
+  const doc = new DOMParser().parseFromString(html, 'text/html')
+
+  // DOMParser gives the document our own file:// origin as its base, so every
+  // relative <img src> and <a href> in the article would resolve against the
+  // app bundle instead of the publisher. A <base> tag repoints resolution at
+  // the real page, which is what lets Readability emit absolute URLs.
+  const base = doc.createElement('base')
+  base.setAttribute('href', baseUrl)
+  doc.head?.prepend(base)
+
+  doc.querySelectorAll(STRIP_SELECTORS).forEach((el) => {
+    if (!NEVER_STRIP.has(el.tagName)) el.remove()
+  })
+
+  const article = new Readability(doc, { charThreshold: 250 }).parse()
+  if (!article?.content) throw new Error('Không tách được nội dung bài viết')
+
+  const html_ = DOMPurify.sanitize(article.content, SANITIZE_CONFIG)
+  if (!html_.trim()) throw new Error('Nội dung rỗng')
+
+  return { title: article.title?.trim() || null, html: stripLeadingTitle(html_, article.title) }
+}
+
+// Readability keeps the headline inside the extracted body on many sites, but
+// the reader already renders the title above the content — drop the duplicate.
+function stripLeadingTitle(html: string, title: string | null | undefined): string {
+  if (!title) return html
+  const wrapper = document.createElement('div')
+  wrapper.innerHTML = html
+
+  // Readability returns its output inside a <div id="readability-page-1">, and
+  // sites often nest another wrapper or two below that, so the headline is
+  // never the top-level first child — descend through single-child wrappers
+  // until we reach the first element that actually holds content.
+  let container: Element = wrapper
+  while (
+    container.children.length === 1 &&
+    container.firstElementChild &&
+    /^(div|section|article|main)$/i.test(container.firstElementChild.tagName)
+  ) {
+    container = container.firstElementChild
+  }
+
+  const first = container.firstElementChild
+  if (!first) return html
+
+  // Publishers repeat the headline as a heading; forums repeat it as the first
+  // line of the post body. Both are duplicates of the title the reader already
+  // renders above, and an exact text match makes removal safe either way.
+  const normalize = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase()
+  if (
+    /^(h[1-3]|p|div)$/i.test(first.tagName) &&
+    normalize(first.textContent ?? '') === normalize(title)
+  ) {
+    first.remove()
+    return wrapper.innerHTML
+  }
+  return html
+}
+
+async function fetchViaElectron(url: string): Promise<ReaderContent> {
+  const api = window.electronAPI
+  if (!api?.fetchArticleHtml) throw new Error('Không có cầu nối Electron')
+  const result = await api.fetchArticleHtml(url)
+  if (!result.ok) throw new Error(result.error)
+  return extractWithReadability(result.html, result.finalUrl)
+}
+
+// ---------------------------------------------------------------------------
+// Fallback path: the text-extraction proxy.
+//
+// Still needed for `npm run dev` in a plain browser (no Electron bridge), and
+// as a safety net for the occasional site that refuses a direct fetch. It is
+// no longer the primary path because it was measured at 7-21s per article on
+// ordinary pages — frequently past any reasonable timeout, which is what left
+// the reader stuck on its error screen.
+// ---------------------------------------------------------------------------
+
+const AUTHOR_CARD_RE = /\[!\[[^\]]*\]\([^)]*\)\]\((https?:\/\/[^)]*\/(?:profile|user|author|u)\/[^)]*)\)/g
+
+function isolateOriginalPost(markdown: string): string {
+  const matches = [...markdown.matchAll(AUTHOR_CARD_RE)]
+  if (matches.length < 2) return markdown
+  const start = matches[0].index! + matches[0][0].length
+  const end = matches[1].index!
+  const isolated = markdown.slice(start, end).trim()
+  return isolated || markdown
+}
+
+const PROXY_TIMEOUT_MS = 30_000
+
+async function fetchViaProxy(
+  url: string,
+  signal?: AbortSignal,
+  priority?: RequestPriority
+): Promise<ReaderContent> {
+  const timeout = AbortSignal.timeout(PROXY_TIMEOUT_MS)
+  const combinedSignal = signal ? AbortSignal.any([signal, timeout]) : timeout
   const res = await fetch(`https://r.jina.ai/${url}`, { signal: combinedSignal, priority })
   if (!res.ok) throw new Error(`jina HTTP ${res.status}`)
   const text = await res.text()
@@ -64,23 +187,13 @@ async function fetchOnce(url: string, signal?: AbortSignal, priority?: RequestPr
   if (!markdown) throw new Error('Nội dung rỗng')
 
   markdown = isolateOriginalPost(markdown)
-
-  // jina.ai's extraction almost always repeats the article's own headline as
-  // the first line of the markdown (# Headline) — we already render the
-  // title separately above the content, so strip it to avoid a duplicate.
   markdown = markdown.replace(/^#{1,2}[ \t]+.+(?:\r?\n)+/, '')
 
   const rawHtml = await marked.parse(markdown, { async: true })
-  const html = DOMPurify.sanitize(rawHtml, { ADD_ATTR: ['target'] })
-
-  const content: ReaderContent = { title: titleMatch?.[1]?.trim() ?? null, html }
-  writeCache(url, content)
-  return content
+  return { title: titleMatch?.[1]?.trim() ?? null, html: DOMPurify.sanitize(rawHtml, SANITIZE_CONFIG) }
 }
 
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
+// ---------------------------------------------------------------------------
 
 export async function fetchReaderContent(
   url: string,
@@ -90,15 +203,23 @@ export async function fetchReaderContent(
   const cached = readCache(url)
   if (cached) return cached
 
-  try {
-    return await fetchOnce(url, signal, priority)
-  } catch (err) {
-    // The reader proxy occasionally fails on the first attempt (transient
-    // network blip, momentary rate limiting) — one quick retry clears most
-    // of those without the user ever seeing the error state.
-    if (signal?.aborted) throw err
-    await delay(1200)
-    if (signal?.aborted) throw err
-    return await fetchOnce(url, signal, priority)
+  const hasBridge = Boolean(window.electronAPI?.fetchArticleHtml)
+
+  if (hasBridge) {
+    try {
+      const content = await fetchViaElectron(url)
+      writeCache(url, content)
+      return content
+    } catch (err) {
+      if (signal?.aborted) throw err
+      // Direct fetch failed (site blocked us, or the markup defeated
+      // extraction) — fall through to the proxy rather than giving up.
+    }
   }
+
+  if (signal?.aborted) throw new Error('aborted')
+
+  const content = await fetchViaProxy(url, signal, priority)
+  writeCache(url, content)
+  return content
 }

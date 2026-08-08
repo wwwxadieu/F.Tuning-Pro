@@ -15,6 +15,7 @@
     "dist:win:publish": "vite build && electron-builder --win --x64 --publish always"
   },
   "dependencies": {
+    "@mozilla/readability": "^0.6.0",
     "@react-three/drei": "^9.114.0",
     "@react-three/fiber": "^8.17.10",
     "dompurify": "^3.4.13",
