@@ -114,18 +114,23 @@ function downloadFile(url, dest, onProgress) {
   })
 }
 
+// Downloads the Windows installer, passes progress, runs installer silently /S,
+// and automatically re-launches appExePath when installer finishes.
 ipcMain.handle('update:download-and-install', async (event, downloadUrl) => {
   const dest = path.join(os.tmpdir(), `FVNN-Update-${Date.now()}.exe`)
   await downloadFile(downloadUrl, dest, (progressInfo) => {
     event.sender.send('update:progress', progressInfo)
   })
 
+  const appExePath = app.getPath('exe')
+
   try {
-    const child = spawn(dest, ['/S', '--updated'], {
+    const cmd = `start "" /wait "${dest}" /S && start "" "${appExePath}"`
+    spawn('cmd.exe', ['/c', cmd], {
       detached: true,
       stdio: 'ignore',
-    })
-    child.unref()
+      windowsHide: true,
+    }).unref()
   } catch (err) {
     await shell.openPath(dest)
   }

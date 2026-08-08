@@ -2,8 +2,6 @@ import type { SVGProps } from 'react'
 
 export type IconProps = SVGProps<SVGSVGElement>
 
-// Shared premium icon language: a lighter 1.75px stroke (vs. the old 2px)
-// reads closer to SF Symbols' regular weight at the small sizes used here.
 export function iconBase(props: IconProps) {
   return {
     width: 18,
@@ -208,6 +206,28 @@ export function LinkIcon(props: IconProps) {
       <path d="M9.5 14.5l5-5" />
       <path d="M11 6.5l1-1a3.5 3.5 0 0 1 5 5l-1 1" />
       <path d="M13 17.5l-1 1a3.5 3.5 0 0 1-5-5l1-1" />
+    </svg>
+  )
+}
+
+export function MaximizeIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <polyline points="15 3 21 3 21 9" />
+      <polyline points="9 21 3 21 3 15" />
+      <line x1="21" y1="3" x2="14" y2="10" />
+      <line x1="3" y1="21" x2="10" y2="14" />
+    </svg>
+  )
+}
+
+export function MinimizeIcon(props: IconProps) {
+  return (
+    <svg {...base(props)}>
+      <polyline points="4 14 10 14 10 20" />
+      <polyline points="20 10 14 10 14 4" />
+      <line x1="14" y1="10" x2="21" y2="3" />
+      <line x1="10" y1="14" x2="3" y2="21" />
     </svg>
   )
 }

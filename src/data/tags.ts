@@ -2,6 +2,13 @@ import type { Tag } from '../types/news'
 
 export const TAGS: Tag[] = [
   {
+    id: 'vnexpress',
+    label: 'VnExpress',
+    emoji: '📰',
+    feedUrl: 'https://vnexpress.net/rss/tin-moi-nhat.rss',
+    source: 'VnExpress',
+  },
+  {
     id: 'thoi-su',
     label: 'Thời sự',
     emoji: '🏛️',

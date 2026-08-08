@@ -53,19 +53,38 @@ function parseAndCleanHtml(rawHtmlStr: string, targetUrl: string): ReaderContent
 
   const title = doc.querySelector('h1.title-detail, h1.detail-title, h1, title')?.textContent?.trim() || null
   const articleEl = doc.querySelector(
-    '.knc-content, .detail-content, article, .fck_detail, .maincontent, .content-detail, .singular-content, .post-content, .entry-content, main, body'
+    '.knc-content, .detail-content, article.fck_detail, article, .fck_detail, .maincontent, .content-detail, .singular-content, .post-content, .entry-content, main'
   )
 
   if (!articleEl) return null
 
-  // Remove Clutter (scripts, styles, ads, comments, social share)
+  // 1. Remove non-article noise elements (Safari Reader Cleanup)
   articleEl
     .querySelectorAll(
-      'script, style, iframe, nav, header, footer, .ads, .ad, .comment, .social-share, .author-info, .relate-news, .banner, .box-ads, .share-box, .box-embed'
+      'script, style, iframe, svg, noscript, nav, header, footer, form, input, button, ' +
+        '.ads, .ad, .comment, .social-share, .author-info, .relate-news, .banner, .box-ads, .share-box, ' +
+        '.box-embed, .box-google, .box-news, .box-tab-category, .box-author, .txt-head, .back-to-top, ' +
+        '.link-back, .utility-share, [class*="google"], [class*="tracking"], [class*="social"], [class*="recommend"]'
     )
     .forEach((el) => el.remove())
 
-  // Fix relative & lazy loaded images
+  // 2. Remove paragraphs & spans containing promo / footer clutter
+  articleEl.querySelectorAll('p, div, span, a').forEach((el) => {
+    const text = el.textContent?.trim() || ''
+    if (
+      text.includes('Thêm VnExpress trên Google') ||
+      text.includes('Xem hướng dẫn') ||
+      text.includes('Chọn VnExpress làm nguồn') ||
+      text.startsWith('Trở lại ') ||
+      text.includes('Theo dõi channel') ||
+      text.includes('Google Search') ||
+      text.includes('Trở lại Sức khỏe')
+    ) {
+      el.remove()
+    }
+  })
+
+  // 3. Fix relative & lazy loaded image URLs
   articleEl.querySelectorAll('img').forEach((img) => {
     const src = img.getAttribute('src') || img.getAttribute('data-src') || img.getAttribute('data-original')
     if (src) {
@@ -76,6 +95,13 @@ function parseAndCleanHtml(rawHtmlStr: string, targetUrl: string): ReaderContent
       } else if (src.startsWith('/')) {
         img.setAttribute('src', targetUrlObj.origin + src)
       }
+    }
+  })
+
+  // Remove empty paragraphs
+  articleEl.querySelectorAll('p').forEach((p) => {
+    if (!p.textContent?.trim() && p.querySelectorAll('img, video').length === 0) {
+      p.remove()
     }
   })
 
@@ -159,7 +185,7 @@ export async function fetchReaderContent(
   const cached = readCache(url)
   if (cached) return cached
 
-  // 1. Try Native Electron Core Fetch FIRST (0.2s ultra fast, no 3rd party!)
+  // 1. Try Native Electron Desktop Fetch FIRST (0.2s ultra fast, no 3rd party!)
   try {
     return await fetchViaNativeElectron(url)
   } catch {

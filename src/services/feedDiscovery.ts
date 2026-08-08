@@ -37,7 +37,28 @@ function candidateFeedUrls(url: URL): string[] {
   const lastSegment = pathname.split('/').filter(Boolean).pop()
   const candidates = new Set<string>()
 
+  // Known Vietnamese news RSS URLs
+  if (origin.includes('vnexpress')) {
+    candidates.add('https://vnexpress.net/rss/tin-moi-nhat.rss')
+    candidates.add('https://vnexpress.net/rss/thoi-su.rss')
+  }
+  if (origin.includes('tuoitre')) {
+    candidates.add('https://tuoitre.vn/rss/tin-moi-nhat.rss')
+  }
+  if (origin.includes('dantri')) {
+    candidates.add('https://dantri.com.vn/rss/trang-chu.rss')
+  }
+  if (origin.includes('vietnamnet')) {
+    candidates.add('https://vietnamnet.vn/rss/tin-moi-nhat.rss')
+  }
+  if (origin.includes('thanhnien')) {
+    candidates.add('https://thanhnien.vn/rss/home.rss')
+  }
+
   for (const suffix of [
+    '/rss/tin-moi-nhat.rss',
+    '/rss/trang-chu.rss',
+    '/rss/home.rss',
     '/feed',
     '/feed/',
     '/rss',
