@@ -107,7 +107,14 @@ function fetchHtmlDirect(targetUrl, redirectsLeft = MAX_REDIRECTS) {
 const TRANSLATE_TIMEOUT_MS = 20_000
 const MYMEMORY_MAX_CHARS = 500
 
-async function translateViaGoogle(text, target) {
+const delay = (ms) => new Promise((r) => setTimeout(r, ms))
+const GOOGLE_RETRIES = 2
+
+// Translating a whole article is several requests in a row, which is enough to
+// trip the endpoint's rate limit — it then answers 429 with an HTML challenge
+// page rather than JSON. That is why translating one article could work and
+// the very next one fail outright. A short backoff clears it most of the time.
+async function translateViaGoogle(text, target, attempt = 0) {
   const endpoint =
     `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${encodeURIComponent(target)}&dt=t`
   const res = await net.fetch(endpoint, {
@@ -120,9 +127,23 @@ async function translateViaGoogle(text, target) {
     body: new URLSearchParams({ q: text }).toString(),
     signal: AbortSignal.timeout(TRANSLATE_TIMEOUT_MS),
   })
+
+  if ((res.status === 429 || res.status === 503) && attempt < GOOGLE_RETRIES) {
+    await delay(900 * (attempt + 1))
+    return translateViaGoogle(text, target, attempt + 1)
+  }
   if (!res.ok) throw new Error(`translate HTTP ${res.status}`)
 
-  const data = JSON.parse(await res.text())
+  // A rate-limited or challenged response can still arrive as 200 HTML, so
+  // don't let a raw JSON.parse failure surface as an unrelated syntax error.
+  const raw = await res.text()
+  let data
+  try {
+    data = JSON.parse(raw)
+  } catch {
+    throw new Error('Dịch vụ dịch tạm thời từ chối yêu cầu')
+  }
+
   const segments = Array.isArray(data) ? data[0] : null
   if (!Array.isArray(segments)) throw new Error('Phản hồi dịch không hợp lệ')
   // Segments are per-sentence and carry their own line breaks, so joining
@@ -132,8 +153,22 @@ async function translateViaGoogle(text, target) {
   return out
 }
 
-async function translateViaMyMemory(text, target) {
-  if (text.length > MYMEMORY_MAX_CHARS) throw new Error('Đoạn văn quá dài cho nguồn dự phòng')
+function splitToLength(line, limit) {
+  if (line.length <= limit) return [line]
+  const pieces = []
+  let rest = line
+  while (rest.length > limit) {
+    // Break at the last space inside the limit so a word isn't cut in half.
+    let cut = rest.lastIndexOf(' ', limit)
+    if (cut <= 0) cut = limit
+    pieces.push(rest.slice(0, cut))
+    rest = rest.slice(cut).trimStart()
+  }
+  if (rest) pieces.push(rest)
+  return pieces
+}
+
+async function myMemoryOnce(text, target) {
   const url =
     'https://api.mymemory.translated.net/get?q=' +
     encodeURIComponent(text) +
@@ -145,6 +180,38 @@ async function translateViaMyMemory(text, target) {
   const out = String(data?.responseData?.translatedText ?? '')
   if (!out.trim()) throw new Error('Kết quả dịch rỗng')
   return out
+}
+
+// Hard cap per request on this service, so anything article-sized has to be
+// broken up. Previously it simply refused, which made the fallback useless for
+// exactly the case it existed to cover.
+const MYMEMORY_MAX_PIECES = 16
+
+async function translateViaMyMemory(text, target) {
+  // The caller joins paragraphs with newlines and splits the result back on
+  // them, so the line count has to survive exactly — translate line by line.
+  const lines = text.split('\n')
+  const pieceCount = lines.reduce(
+    (n, l) => n + (l.trim() ? splitToLength(l, MYMEMORY_MAX_CHARS).length : 0),
+    0
+  )
+  if (pieceCount > MYMEMORY_MAX_PIECES) {
+    throw new Error('Đoạn văn quá dài cho nguồn dự phòng')
+  }
+
+  const out = []
+  for (const line of lines) {
+    if (!line.trim()) {
+      out.push(line)
+      continue
+    }
+    const parts = []
+    for (const piece of splitToLength(line, MYMEMORY_MAX_CHARS)) {
+      parts.push(await myMemoryOnce(piece, target))
+    }
+    out.push(parts.join(' '))
+  }
+  return out.join('\n')
 }
 
 ipcMain.handle('translate:text', async (_event, text, target = 'vi') => {

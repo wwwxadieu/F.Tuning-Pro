@@ -151,7 +151,7 @@ function batchNodes(nodes: Text[]): Text[][] {
   return batches
 }
 
-async function translateBatch(batch: Text[], target: string): Promise<void> {
+async function translateBatch(batch: Text[], target: string): Promise<boolean> {
   // Newlines are the delimiter, so any that a node already contains — HTML
   // source is routinely indented across lines — would inflate the split count
   // and force the whole batch down the one-request-per-node path. Collapsing
@@ -170,17 +170,22 @@ async function translateBatch(batch: Text[], target: string): Promise<void> {
       const next = parts[i]?.trim()
       if (next) node.nodeValue = next
     })
-    return
+    return true
   }
 
+  let any = false
   for (let i = 0; i < batch.length; i++) {
     try {
       const single = await translateChunk(originals[i], target)
-      if (single.trim()) batch[i].nodeValue = single.trim()
+      if (single.trim()) {
+        batch[i].nodeValue = single.trim()
+        any = true
+      }
     } catch {
       // leave this node in its original language rather than dropping it
     }
   }
+  return any
 }
 
 export interface TranslateArticleOptions {
@@ -215,12 +220,28 @@ export async function translateArticleHtml(
 
   const batches = batchNodes(nodes)
   let done = 0
+  let succeeded = 0
+
   for (const batch of batches) {
     if (signal?.aborted) throw new Error('aborted')
-    await translateBatch(batch, target)
+    // Back-to-back requests are what trips the endpoint's rate limit, and once
+    // tripped it stays tripped for a while — which is how translating one
+    // article could poison the next one. A short gap keeps it happy.
+    if (done > 0) await new Promise((r) => setTimeout(r, 250))
+
+    try {
+      if (await translateBatch(batch, target)) succeeded++
+    } catch {
+      // One failed batch shouldn't discard the paragraphs that did translate;
+      // leave this stretch in its original language and carry on.
+    }
     done++
     onProgress?.(done / batches.length)
   }
+
+  // Only a total washout is worth an error — a partial translation is still
+  // more useful to the reader than being sent back to the original.
+  if (succeeded === 0) throw new Error('Không thể dịch bài viết này')
 
   const translated = root.innerHTML
   if (cacheKey) writeArticleCache(cacheKey, translated)
