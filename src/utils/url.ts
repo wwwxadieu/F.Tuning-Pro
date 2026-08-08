@@ -1,18 +1,34 @@
-// Parses a feed URL the user typed, tolerating a missing "https://" prefix
-// (e.g. "vnexpress.net/rss/thoi-su.rss") by retrying with it prepended.
+// Parses a feed URL the user typed, tolerating missing "https://" or TLD
+// (e.g. "9to5mac", "9to5mac.com", "vnexpress.net/rss/thoi-su.rss")
 export function parseFeedUrl(input: string): URL | null {
-  const trimmed = input.trim()
+  let trimmed = input.trim()
   if (!trimmed) return null
 
   try {
     return new URL(trimmed)
   } catch {
-    // fall through to the https:// retry below
+    // fall through
+  }
+
+  // Prepend https://
+  if (!trimmed.startsWith('http://') && !trimmed.startsWith('https://')) {
+    trimmed = `https://${trimmed}`
   }
 
   try {
-    return new URL(`https://${trimmed}`)
+    return new URL(trimmed)
   } catch {
-    return null
+    // fall through
   }
+
+  // If missing top-level domain e.g. "https://9to5mac" -> "https://9to5mac.com"
+  if (!trimmed.slice(8).includes('.')) {
+    try {
+      return new URL(`${trimmed}.com`)
+    } catch {
+      return null
+    }
+  }
+
+  return null
 }

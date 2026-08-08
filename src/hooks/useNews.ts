@@ -5,13 +5,9 @@ import type { Article, Tag } from '../types/news'
 
 type TagStatus = 'loading' | 'ok' | 'error'
 
-const REVEAL_STEP = 6
+const REVEAL_STEP = 12
 const POLL_INTERVAL_MS = 3 * 60 * 1000
-// RSS2JSON's free tier caps a single feed fetch at ~10 items, which runs out
-// after one or two "load more" steps — nowhere near enough for scrolling to
-// feel infinite. A tag with this few items on hand is almost certainly
-// sitting at that cap rather than the source genuinely having no more.
-const SUPPLEMENT_THRESHOLD = 10
+const SUPPLEMENT_THRESHOLD = 25
 
 export function useNews(
   tags: Tag[],
@@ -40,11 +36,6 @@ export function useNews(
         const items = await fetchArticlesForTag(tag, signal, {
           forceRefresh: opts?.forceRefresh,
         })
-        // Merge rather than replace: a background/manual refresh only ever
-        // sees the source's current top items (~10 for RSS2JSON), so
-        // replacing would silently discard everything the user already
-        // scrolled past. Keeping the union means the available pool only
-        // grows over a session instead of resetting every few minutes.
         setArticles((prev) => {
           const existingIds = new Set(prev.filter((a) => a.tagId === tag.id).map((a) => a.id))
           const fresh = items.filter((a) => !existingIds.has(a.id))
@@ -76,13 +67,6 @@ export function useNews(
     return () => controller.abort()
   }, [])
 
-  // Load any tag we haven't fetched yet (initial load, or a newly added custom source).
-  // Tags the user actually cares about (their selected interests) are issued
-  // first so those requests grab available per-origin connection slots
-  // ahead of the rest, instead of loading in arbitrary array order.
-  // Bypasses the on-disk cache so every app launch reflects what's actually
-  // live right now instead of replaying whatever was on screen up to 10
-  // minutes ago from a previous session.
   useEffect(() => {
     const priority = priorityTagIds && priorityTagIds.length > 0 ? new Set(priorityTagIds) : null
     const ordered = priority
@@ -93,10 +77,8 @@ export function useNews(
         loadTag(tag, controllerRef.current?.signal, { forceRefresh: true })
       }
     })
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tags, loadTag, priorityTagIds])
 
-  // Background poll for new articles on already-loaded tags.
   useEffect(() => {
     const interval = setInterval(() => {
       tagsRef.current.forEach((tag) => {

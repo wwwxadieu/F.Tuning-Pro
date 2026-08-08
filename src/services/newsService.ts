@@ -13,6 +13,7 @@ interface RawFeedItem {
   link?: string
   pubDate?: string
   thumbnail?: string
+  enclosure?: { link?: string }
 }
 
 interface RawFeedResponse {
@@ -21,17 +22,11 @@ interface RawFeedResponse {
 }
 
 function stripTags(html: string): string {
-  return html.replace(/<[^>]*>/g, ' ')
+  return html.replace(/<script\b[^<]*>([\s\S]*?)<\/script>/gi, '')
+    .replace(/<style\b[^<]*>([\s\S]*?)<\/style>/gi, '')
+    .replace(/<[^>]*>/g, ' ')
 }
 
-/**
- * RSS feeds routinely encode Vietnamese text with HTML entities (named and
- * numeric). A hand-rolled replace list only covers a handful of them and
- * leaves the rest garbled, so decode through a detached <textarea> instead —
- * its content is parsed as text (never as markup), which makes this safe
- * even on untrusted input while still resolving every entity the browser
- * knows about.
- */
 function decodeHtmlEntities(text: string): string {
   const el = document.createElement('textarea')
   el.innerHTML = text
@@ -43,10 +38,21 @@ function cleanText(html: string): string {
 }
 
 function extractImage(item: RawFeedItem): string | null {
-  if (item.thumbnail) return item.thumbnail
+  if (item.thumbnail && item.thumbnail.startsWith('http')) return item.thumbnail
+  if (item.enclosure?.link && item.enclosure.link.startsWith('http')) return item.enclosure.link
   const html = item.content ?? item.description ?? ''
   const match = html.match(/<img[^>]+src=["']([^"']+)["']/i)
-  return match ? decodeHtmlEntities(match[1]) : null
+  if (match && match[1]) {
+    const src = decodeHtmlEntities(match[1])
+    if (src.startsWith('http')) return src
+  }
+  return null
+}
+
+function parsePubDateMs(pubDateStr?: string): number {
+  if (!pubDateStr) return Date.now()
+  const parsed = new Date(pubDateStr).getTime()
+  return isNaN(parsed) ? Date.now() : parsed
 }
 
 function readCache(tagId: string): Article[] | null {
@@ -68,7 +74,7 @@ function writeCache(tagId: string, articles: Article[]) {
       JSON.stringify({ savedAt: Date.now(), articles })
     )
   } catch {
-    // storage full or unavailable — ignore, caching is a pure optimization
+    // ignore
   }
 }
 
@@ -77,27 +83,62 @@ interface FetchOptions {
 }
 
 async function fetchViaRss(tag: Tag, signal?: AbortSignal): Promise<Article[]> {
-  // rss2json's free tier now rejects the `count` parameter without an API
-  // key (HTTP 422) — omit it and take whatever the default page size is.
-  const url = `${RSS2JSON_ENDPOINT}?rss_url=${encodeURIComponent(tag.feedUrl)}`
-  const res = await fetch(url, { signal, priority: 'high' })
-  if (!res.ok) throw new Error(`rss2json HTTP ${res.status}`)
-
-  const data = (await res.json()) as RawFeedResponse
-  if (data.status !== 'ok' || !data.items) {
-    throw new Error('rss2json trả về lỗi')
+  try {
+    const url = `${RSS2JSON_ENDPOINT}?rss_url=${encodeURIComponent(tag.feedUrl)}`
+    const res = await fetch(url, { signal, priority: 'high' })
+    if (res.ok) {
+      const data = (await res.json()) as RawFeedResponse
+      if (data.status === 'ok' && data.items && data.items.length > 0) {
+        return data.items.map((item, index) => ({
+          id: `${tag.id}-${index}-${item.link ?? item.title ?? index}`,
+          title: cleanText(item.title ?? '') || '(Không có tiêu đề)',
+          description: cleanText(item.description ?? ''),
+          link: item.link ?? '#',
+          image: extractImage(item),
+          pubDate: item.pubDate ?? new Date().toISOString(),
+          source: tag.source,
+          tagId: tag.id,
+        }))
+      }
+    }
+  } catch {
+    // fallback to proxy
   }
 
-  return data.items.map((item, index) => ({
-    id: `${tag.id}-${index}-${item.link ?? item.title ?? index}`,
-    title: cleanText(item.title ?? '') || '(Không có tiêu đề)',
-    description: cleanText(item.description ?? ''),
-    link: item.link ?? '#',
-    image: extractImage(item),
-    pubDate: item.pubDate ?? '',
-    source: tag.source,
-    tagId: tag.id,
-  }))
+  // Fallback RSS proxy using allorigins
+  try {
+    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(tag.feedUrl)}`
+    const res = await fetch(proxyUrl, { signal })
+    if (!res.ok) throw new Error(`proxy HTTP ${res.status}`)
+    const data = await res.json()
+    const xmlText = data.contents
+    if (!xmlText) throw new Error('Proxy returned empty content')
+
+    const parser = new DOMParser()
+    const doc = parser.parseFromString(xmlText, 'text/xml')
+    const items = Array.from(doc.querySelectorAll('item, entry'))
+
+    return items.slice(0, 30).map((item, index) => {
+      const title = item.querySelector('title')?.textContent ?? '(Không có tiêu đề)'
+      const description = item.querySelector('description, summary, content')?.textContent ?? ''
+      const link = item.querySelector('link')?.getAttribute('href') || item.querySelector('link')?.textContent || '#'
+      const pubDate = item.querySelector('pubDate, updated, date')?.textContent || new Date().toISOString()
+      const thumb = item.querySelector('thumbnail, content, enclosure')?.getAttribute('url') || null
+
+      return {
+        id: `${tag.id}-${index}-${link}`,
+        title: cleanText(title),
+        description: cleanText(description),
+        link,
+        image: thumb || extractImage({ description }),
+        pubDate,
+        source: tag.source,
+        tagId: tag.id,
+      }
+    })
+  } catch (err) {
+    throw new Error(`Không thể nạp RSS từ ${tag.source}`)
+  }
 }
 
 export async function fetchArticlesForTag(
@@ -110,11 +151,25 @@ export async function fetchArticlesForTag(
     if (cached) return cached
   }
 
-  const articles = tag.scrape ? await scrapeArticles(tag, signal) : await fetchViaRss(tag, signal)
+  let articles = tag.scrape ? await scrapeArticles(tag, signal) : await fetchViaRss(tag, signal)
+
+  // Filter out articles older than 14 days (14 * 24 * 60 * 60 * 1000)
+  const nowMs = Date.now()
+  const fourteenDaysMs = 14 * 24 * 60 * 60 * 1000
+  const freshArticles = articles.filter((a) => {
+    const pubMs = parsePubDateMs(a.pubDate)
+    return nowMs - pubMs <= fourteenDaysMs
+  })
+
+  // Fallback to original articles if filter returned too few
+  if (freshArticles.length >= 3) {
+    articles = freshArticles
+  }
+
+  // Sort strictly by publication date descending (newest first)
+  articles.sort((a, b) => parsePubDateMs(b.pubDate) - parsePubDateMs(a.pubDate))
 
   if (tag.translate) {
-    // Translate before truncating so the model sees whole sentences, not a
-    // mid-word English fragment that a naive slice would otherwise produce.
     await Promise.all(
       articles.map(async (a) => {
         const [title, description] = await Promise.all([translateText(a.title), translateText(a.description)])
@@ -125,7 +180,7 @@ export async function fetchArticlesForTag(
   }
 
   for (const a of articles) {
-    a.description = a.description.slice(0, 220)
+    a.description = a.description.slice(0, 260)
   }
 
   writeCache(tag.id, articles)

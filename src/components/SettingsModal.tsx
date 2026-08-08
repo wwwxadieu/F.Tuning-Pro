@@ -57,18 +57,20 @@ export default function SettingsModal({
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault()
     setError(null)
-    if (!label.trim() || !feedUrl.trim()) {
-      setError('Vui lòng nhập tên và đường dẫn.')
+    const trimmedUrl = feedUrl.trim()
+    if (!trimmedUrl) {
+      setError('Vui lòng nhập đường dẫn trang tin hoặc RSS.')
       return
     }
-    const url = parseFeedUrl(feedUrl)
+    const url = parseFeedUrl(trimmedUrl)
     if (!url) {
-      setError('Đường dẫn không hợp lệ.')
+      setError('Đường dẫn không hợp lệ. Hãy thử nhập tên miền (ví dụ: 9to5mac.com).')
       return
     }
 
     setValidating(true)
     try {
+      const name = label.trim() || url.hostname.replace(/^www\./, '')
       const discovered = await discoverFeed(url)
       if (!discovered) {
         setError('Không tìm thấy nguồn tin RSS từ đường dẫn này.')
@@ -76,7 +78,7 @@ export default function SettingsModal({
         return
       }
       onAddSource({
-        label: label.trim(),
+        label: name,
         feedUrl: discovered.feedUrl,
         emoji: emoji.trim() || undefined,
         scrape: discovered.scrape,
@@ -98,7 +100,7 @@ export default function SettingsModal({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+          className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
           onClick={onClose}
         >
           <motion.div
@@ -107,7 +109,7 @@ export default function SettingsModal({
             exit={{ opacity: 0, y: 20, scale: 0.97 }}
             transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="glass max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl p-6 shadow-[0_30px_80px_rgba(0,0,0,0.7)] lg:max-w-3xl xl:max-w-5xl 2xl:max-w-6xl"
+            className="soft-glass max-h-[85vh] w-full max-w-lg overflow-y-auto rounded-3xl p-6 shadow-[0_30px_80px_rgba(0,0,0,0.85)] border border-white/15 bg-[#12141a]/95 text-white lg:max-w-3xl xl:max-w-5xl 2xl:max-w-6xl"
             data-lenis-prevent
           >
             <div className="mb-6 flex items-center justify-between">

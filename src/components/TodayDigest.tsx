@@ -99,7 +99,7 @@ function DigestRow({
 }) {
   const ref = useRef<HTMLButtonElement>(null)
   const prefetch = useHoverPrefetch(article.link)
-  useViewportPrefetch(article.link, ref)
+  useViewportPrefetch(article.link, ref as any)
 
   return (
     <motion.button

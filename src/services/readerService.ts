@@ -9,13 +9,6 @@ export interface ReaderContent {
 const CACHE_PREFIX = 'luong:reader:'
 const CACHE_TTL_MS = 60 * 60 * 1000 // 1 hour
 
-// Forum/community threads (XenForo, Discourse, WordPress author archives, ...)
-// repeat an avatar-photo-wrapped-in-a-profile-link "author card" once for the
-// original post and again for every reply beneath it. When that pattern shows
-// up more than once, the actual article always sits between the first card
-// (the author) and the second (the first reply) — slicing there drops both
-// the site's nav/search clutter above the post and the entire comment thread
-// below it, without needing any site-specific selectors.
 const AUTHOR_CARD_RE = /\[!\[[^\]]*\]\([^)]*\)\]\((https?:\/\/[^)]*\/(?:profile|user|author|u)\/[^)]*)\)/g
 
 function isolateOriginalPost(markdown: string): string {
@@ -43,16 +36,13 @@ function writeCache(url: string, content: ReaderContent) {
   try {
     sessionStorage.setItem(CACHE_PREFIX + url, JSON.stringify({ savedAt: Date.now(), content }))
   } catch {
-    // storage full or unavailable — ignore
+    // ignore
   }
 }
 
-// Heavy, JS-rendered pages (forum threads, etc.) can take the reader proxy
-// 8-12+ seconds to render on a cold fetch — long, but a real success, not a
-// hang. This bounds the wait instead of leaving it open-ended.
-const FETCH_TIMEOUT_MS = 20_000
+const FETCH_TIMEOUT_MS = 12_000
 
-async function fetchOnce(url: string, signal?: AbortSignal, priority?: RequestPriority): Promise<ReaderContent> {
+async function fetchViaJina(url: string, signal?: AbortSignal, priority?: RequestPriority): Promise<ReaderContent> {
   const combinedSignal = signal ? AbortSignal.any([signal, AbortSignal.timeout(FETCH_TIMEOUT_MS)]) : AbortSignal.timeout(FETCH_TIMEOUT_MS)
   const res = await fetch(`https://r.jina.ai/${url}`, { signal: combinedSignal, priority })
   if (!res.ok) throw new Error(`jina HTTP ${res.status}`)
@@ -64,10 +54,6 @@ async function fetchOnce(url: string, signal?: AbortSignal, priority?: RequestPr
   if (!markdown) throw new Error('Nội dung rỗng')
 
   markdown = isolateOriginalPost(markdown)
-
-  // jina.ai's extraction almost always repeats the article's own headline as
-  // the first line of the markdown (# Headline) — we already render the
-  // title separately above the content, so strip it to avoid a duplicate.
   markdown = markdown.replace(/^#{1,2}[ \t]+.+(?:\r?\n)+/, '')
 
   const rawHtml = await marked.parse(markdown, { async: true })
@@ -78,8 +64,38 @@ async function fetchOnce(url: string, signal?: AbortSignal, priority?: RequestPr
   return content
 }
 
-function delay(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+async function fetchViaCorsProxy(url: string, signal?: AbortSignal): Promise<ReaderContent> {
+  const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`
+  const res = await fetch(proxyUrl, { signal: signal || AbortSignal.timeout(10_000) })
+  if (!res.ok) throw new Error(`proxy HTTP ${res.status}`)
+  const data = await res.json()
+  const rawHtmlStr = data.contents
+  if (!rawHtmlStr) throw new Error('Proxy empty')
+
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(rawHtmlStr, 'text/html')
+
+  const title = doc.querySelector('h1, title')?.textContent?.trim() || null
+  const articleEl = doc.querySelector('article, .fck_detail, .detail-content, .entry-content, .post-content, main')
+  
+  let html = ''
+  if (articleEl) {
+    // Strip scripts & styles
+    articleEl.querySelectorAll('script, style, iframe, nav, header, footer, .ads, .comment').forEach((el) => el.remove())
+    html = articleEl.innerHTML
+  } else {
+    const ps = Array.from(doc.querySelectorAll('p')).slice(0, 15)
+    html = ps.map((p) => p.outerHTML).join('')
+  }
+
+  const cleanHtml = DOMPurify.sanitize(html, { ADD_ATTR: ['target'] })
+  if (!cleanHtml || cleanHtml.trim().length < 50) {
+    throw new Error('Không trích xuất được bài viết')
+  }
+
+  const content: ReaderContent = { title, html: cleanHtml }
+  writeCache(url, content)
+  return content
 }
 
 export async function fetchReaderContent(
@@ -91,14 +107,12 @@ export async function fetchReaderContent(
   if (cached) return cached
 
   try {
-    return await fetchOnce(url, signal, priority)
-  } catch (err) {
-    // The reader proxy occasionally fails on the first attempt (transient
-    // network blip, momentary rate limiting) — one quick retry clears most
-    // of those without the user ever seeing the error state.
-    if (signal?.aborted) throw err
-    await delay(1200)
-    if (signal?.aborted) throw err
-    return await fetchOnce(url, signal, priority)
+    return await fetchViaJina(url, signal, priority)
+  } catch {
+    try {
+      return await fetchViaCorsProxy(url, signal)
+    } catch (err) {
+      throw err
+    }
   }
 }
