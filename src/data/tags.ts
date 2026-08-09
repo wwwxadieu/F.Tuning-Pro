@@ -147,6 +147,19 @@ export const TAGS: Tag[] = [
     ],
 },
   {
+    id: 'phan-mem',
+    label: 'Phần mềm',
+    emoji: '🧩',
+    feedUrl: 'https://www.neowin.net/news/rss/',
+    source: 'Neowin',
+    extraFeeds: [
+      { url: 'https://www.macrumors.com/macrumors.xml', source: 'MacRumors' },
+      { url: 'https://www.techradar.com/feeds/tag/software', source: 'TechRadar Software' },
+      { url: 'https://9to5mac.com/feed/', source: '9to5Mac' },
+    ],
+    translate: true,
+  },
+  {
     id: 'gaming',
     label: 'Gaming',
     emoji: '🎮',
